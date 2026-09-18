@@ -10,3 +10,20 @@ export interface ProfileRow {
   created_at: string;
   updated_at: string;
 }
+
+export interface ProfessionRow {
+  id: string;
+  name_en: string;
+  name_ar: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface TaskTypeRow {
+  id: string;
+  profession_id: string;
+  name_en: string;
+  name_ar: string;
+  is_active: boolean;
+  created_at: string;
+}

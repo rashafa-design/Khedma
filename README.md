@@ -60,8 +60,14 @@ in the Vercel project's Settings → Environment Variables (Vercel never reads a
 
 ## Current status
 
-**Phase 0 — done and verified live at https://khedma-psi.vercel.app** (accounts, roles,
-Arabic/English + genuine RTL, email+password sign-up/login/sign-out, session persists
-across reloads, protected dashboard). Google sign-in is wired up in code but not yet
-configured in Supabase (no Google OAuth credentials added yet) — untested until that's
-done. Next: Phase 1 (admin-editable profession/task-type catalog).
+**Phase 0 — done and verified live** (accounts, roles, Arabic/English + genuine RTL,
+email+password sign-up/login/sign-out, session persists across reloads, protected
+dashboard). Google sign-in is wired up in code but not yet configured in Supabase (no
+Google OAuth credentials added yet) — untested until that's done.
+
+**Phase 1 — built, not yet verified.** Admin-editable professions/task-types catalog at
+`/admin/professions`, guarded by `app/[locale]/admin/layout.tsx` (redirects anyone whose
+`profiles.role` isn't `'admin'`). Requires running
+`supabase/sql/phase1_professions_and_task_types.sql` and manually promoting one account
+to `role = 'admin'` in the Supabase Table Editor before it can be tested (see the SQL
+file's closing comment).

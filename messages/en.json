@@ -39,5 +39,23 @@
     "welcome": "Welcome",
     "role": "Role",
     "signOut": "Sign out"
+  },
+  "admin": {
+    "title": "Professions & tasks",
+    "subtitle": "Manage the list of professions and tasks workers can choose from. Deactivating hides something from new selections without deleting it.",
+    "addProfessionTitle": "Add a profession",
+    "professionNameEn": "Profession name (English)",
+    "professionNameAr": "Profession name (Arabic)",
+    "addTaskTitle": "Add a task",
+    "taskProfession": "Profession",
+    "taskNameEn": "Task name (English)",
+    "taskNameAr": "Task name (Arabic)",
+    "add": "Add",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "inactive": "Inactive",
+    "noProfessions": "No professions yet. Add one below.",
+    "saving": "Saving...",
+    "error": "Something went wrong. Please try again."
   }
 }
