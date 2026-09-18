@@ -61,4 +61,4 @@ in the Vercel project's Settings → Environment Variables (Vercel never reads a
 ## Current status
 
 **Phase 0 (accounts, roles, Arabic/English + RTL shell, email+password and Google
-sign-in) — built, not yet verified against a live deployment.**
+sign-in) — built, database set up, deploying now.**
