@@ -1,0 +1,43 @@
+{
+  "common": {
+    "appName": "Khedma",
+    "language": "Language",
+    "arabic": "Arabic",
+    "english": "English"
+  },
+  "home": {
+    "title": "Find trusted workers for your home or business",
+    "subtitle": "Browse verified cleaners, caterers, drivers, and more. Pay only when you're ready to unlock their contact details.",
+    "browseCta": "Browse workers",
+    "workerCta": "I'm a worker looking for clients",
+    "loginCta": "Log in",
+    "signupCta": "Sign up"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "logIn": "Log in",
+    "signUp": "Sign up",
+    "continueWithGoogle": "Continue with Google",
+    "orDivider": "or",
+    "iAmA": "I am a...",
+    "roleWorker": "Worker looking for clients",
+    "roleClient": "Client looking for workers",
+    "fullName": "Full name",
+    "phoneNumber": "Phone number",
+    "alreadyHaveAccount": "Already have an account?",
+    "noAccount": "Don't have an account?",
+    "checkEmail": "Check your email to confirm your account before logging in.",
+    "signUpError": "Something went wrong signing up. Please try again.",
+    "logInError": "Incorrect email or password.",
+    "submitting": "Please wait...",
+    "completeProfileTitle": "Just a few more details",
+    "completeProfileError": "Something went wrong saving your details. Please try again.",
+    "continue": "Continue"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "role": "Role",
+    "signOut": "Sign out"
+  }
+}
