@@ -102,5 +102,24 @@ alter table public.worker_profiles disable trigger worker_profiles_prevent_self_
 update public.worker_profiles set status = 'approved' where user_id = (select id from auth.users where email = 'worker@example.com');
 alter table public.worker_profiles enable trigger worker_profiles_prevent_self_review;
 ```
-Next: Phase 4 (the real admin ID-review screen, replacing this manual SQL step) — or
-Phase 5 (client browsing/filters), whichever makes more sense to build first.
+**Phase 4 — built, not yet verified.** Real admin ID-review screen at
+`/admin/workers/pending` (linked from a new small nav bar on every admin page): lists
+pending workers with a "View ID document" button (fetches a short-lived signed URL from
+`app/api/admin/worker-id-url/route.ts`, which double-checks the caller is an admin
+server-side before using a **service-role** Supabase client - the only client capable of
+reading the ID-documents bucket, since it has no select policy for anyone else), plus
+Approve/Reject buttons. Rejecting prompts for a reason, stored and shown to the worker.
+**Needs a new environment variable added in Vercel before this can work:**
+`SUPABASE_SERVICE_ROLE_KEY` (from Supabase's dashboard under Settings → API - the
+"service_role" secret key, NOT the publishable key). No new SQL to run for this phase.
+
+**Phase 5 — built, not yet verified.** Client browsing at `/browse`: every approved
+worker's photo, name, profession, nationality, years of experience, and full task-entry
+list (task, scope, price, billing unit) - phone numbers are not rendered anywhere yet
+(that's Phase 7). Filters: profession, home/business (matches a worker if ANY of their
+task entries has that scope or `'both'`), nationality (dropdown built from whichever
+nationalities actually exist among approved workers). Sorting: newest, price low-to-high
+(by the worker's cheapest task entry), most experienced. Filters/sort live in the URL
+query string, so results are shareable/bookmarkable. Dashboard now shows a "Browse
+workers" link for clients. No new SQL or env vars needed - reuses existing tables and
+the public `worker-photos` bucket from Phase 2.

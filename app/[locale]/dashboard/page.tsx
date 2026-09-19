@@ -70,6 +70,15 @@ export default async function DashboardPage({
           {t("adminCta")}
         </Link>
       )}
+
+      {profile.role === "client" && (
+        <Link
+          href="/browse"
+          className="self-start rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+        >
+          {t("browseCta")}
+        </Link>
+      )}
     </main>
   );
 }

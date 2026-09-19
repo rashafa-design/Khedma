@@ -40,9 +40,12 @@
     "role": "Role",
     "signOut": "Sign out",
     "workerOnboardingCta": "Complete your worker profile",
-    "adminCta": "Manage professions & tasks"
+    "adminCta": "Manage professions & tasks",
+    "browseCta": "Browse workers"
   },
   "admin": {
+    "navProfessions": "Professions & tasks",
+    "navPendingWorkers": "Pending workers",
     "title": "Professions & tasks",
     "subtitle": "Manage the list of professions and tasks workers can choose from. Deactivating hides something from new selections without deleting it.",
     "addProfessionTitle": "Add a profession",
@@ -106,5 +109,28 @@
     "deleteProfileBody": "This removes your profile and everything you've added from Khedma. You can always create a new one later.",
     "deleteProfile": "Delete my worker profile",
     "deleting": "Deleting..."
+  },
+  "adminReview": {
+    "title": "Pending worker reviews",
+    "empty": "No workers waiting for review.",
+    "years": "years experience",
+    "viewId": "View ID document",
+    "approve": "Approve",
+    "reject": "Reject",
+    "rejectPrompt": "Why are you rejecting this profile? (shown to the worker)",
+    "error": "Something went wrong. Please try again."
+  },
+  "browse": {
+    "title": "Browse workers",
+    "years": "years experience",
+    "empty": "No workers match your filters yet.",
+    "allProfessions": "All professions",
+    "anyScope": "Any location",
+    "scopeHome": "Homes",
+    "scopeBusiness": "Businesses",
+    "allNationalities": "All nationalities",
+    "sortNewest": "Newest",
+    "sortPrice": "Price: low to high",
+    "sortExperience": "Most experienced"
   }
 }

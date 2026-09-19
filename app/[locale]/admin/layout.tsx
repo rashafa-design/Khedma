@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function AdminLayout({
@@ -25,5 +27,22 @@ export default async function AdminLayout({
     redirect("/");
   }
 
-  return <>{children}</>;
+  const t = await getTranslations("admin");
+
+  return (
+    <div>
+      <nav className="flex gap-4 border-b border-gray-200 px-4 py-3 text-sm">
+        <Link href="/admin/professions" className="font-medium hover:underline">
+          {t("navProfessions")}
+        </Link>
+        <Link
+          href="/admin/workers/pending"
+          className="font-medium hover:underline"
+        >
+          {t("navPendingWorkers")}
+        </Link>
+      </nav>
+      {children}
+    </div>
+  );
 }
