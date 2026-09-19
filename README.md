@@ -102,7 +102,10 @@ alter table public.worker_profiles disable trigger worker_profiles_prevent_self_
 update public.worker_profiles set status = 'approved' where user_id = (select id from auth.users where email = 'worker@example.com');
 alter table public.worker_profiles enable trigger worker_profiles_prevent_self_review;
 ```
-**Phase 4 — built, not yet verified.** Real admin ID-review screen at
+**Phase 4 — done and verified live.** Confirmed: viewing a pending worker's ID document
+returns the real uploaded file via a genuinely short-lived signed URL (checked by
+downloading it directly), and approving removes the worker from the pending queue
+immediately. Real admin ID-review screen at
 `/admin/workers/pending` (linked from a new small nav bar on every admin page): lists
 pending workers with a "View ID document" button (fetches a short-lived signed URL from
 `app/api/admin/worker-id-url/route.ts`, which double-checks the caller is an admin
@@ -113,7 +116,10 @@ Approve/Reject buttons. Rejecting prompts for a reason, stored and shown to the 
 `SUPABASE_SERVICE_ROLE_KEY` (from Supabase's dashboard under Settings → API - the
 "service_role" secret key, NOT the publishable key). No new SQL to run for this phase.
 
-**Phase 5 — built, not yet verified.** Client browsing at `/browse`: every approved
+**Phase 5 — done and verified live.** Confirmed: nationality filter, home/business scope
+filter (correctly matches `'both'`-scoped entries and correctly excludes a worker with no
+task entries at all), and experience sorting all work correctly against two real approved
+workers. Client browsing at `/browse`: every approved
 worker's photo, name, profession, nationality, years of experience, and full task-entry
 list (task, scope, price, billing unit) - phone numbers are not rendered anywhere yet
 (that's Phase 7). Filters: profession, home/business (matches a worker if ANY of their
