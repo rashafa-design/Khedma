@@ -44,12 +44,12 @@ export default async function WorkerOnboardingPage({
     .maybeSingle<WorkerProfileRow>();
 
   if (workerProfile) {
+    if (workerProfile.status === "approved") {
+      redirect("/worker/dashboard");
+    }
+
     const statusKey =
-      workerProfile.status === "approved"
-        ? "statusApproved"
-        : workerProfile.status === "rejected"
-          ? "statusRejected"
-          : "statusPending";
+      workerProfile.status === "rejected" ? "statusRejected" : "statusPending";
 
     return (
       <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-4 px-4 py-16 text-center">

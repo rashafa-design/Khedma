@@ -83,5 +83,21 @@ profession select, nationality, years of experience, a required ID-document uplo
 then shows a status card instead of the form; the worker cannot read back their own
 uploaded ID document (verified directly against Supabase Storage - returns "not found");
 non-worker accounts are redirected away from the onboarding page. Dashboard shows a
-role-appropriate link (workers to onboarding, admins to the professions screen). Next:
-Phase 3 (worker task entries - the price list).
+role-appropriate link (workers to onboarding, admins to the professions screen).
+
+**Phase 3 — built, not yet verified.** Worker dashboard at `/worker/dashboard` (only
+reachable once `worker_profiles.status = 'approved'` - the onboarding page now redirects
+there automatically once approved, instead of showing a static message). Lets a worker:
+add task entries (task + scope + price + billing unit - a list, not one flat price),
+delete a task entry, toggle availability, and delete their whole worker profile (which
+cascades and deletes their task entries too - this does **not** delete their login
+account, just their worker listing, since deleting the actual `auth.users` row needs a
+service-role admin route not built until Phase 4+). Requires running
+`supabase/sql/phase3_worker_task_entries.sql`. Admin approval of a worker (Phase 4) isn't
+built yet, so to test this phase, approve a worker manually via SQL Editor:
+```sql
+alter table public.worker_profiles disable trigger worker_profiles_prevent_self_review;
+update public.worker_profiles set status = 'approved' where user_id = (select id from auth.users where email = 'worker@example.com');
+alter table public.worker_profiles enable trigger worker_profiles_prevent_self_review;
+```
+Next: Phase 4 (the real admin ID-review screen, replacing this manual SQL step).

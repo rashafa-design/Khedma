@@ -47,3 +47,17 @@ export interface WorkerProfileRow {
   created_at: string;
   updated_at: string;
 }
+
+export type TaskScope = "home" | "business" | "both";
+export type BillingUnit = "hourly" | "daily" | "monthly";
+
+export interface WorkerTaskEntryRow {
+  id: string;
+  worker_profile_id: string;
+  task_type_id: string;
+  scope: TaskScope;
+  price: number;
+  billing_unit: BillingUnit;
+  created_at: string;
+  updated_at: string;
+}
