@@ -65,9 +65,15 @@ email+password sign-up/login/sign-out, session persists across reloads, protecte
 dashboard). Google sign-in is wired up in code but not yet configured in Supabase (no
 Google OAuth credentials added yet) — untested until that's done.
 
-**Phase 1 — built, not yet verified.** Admin-editable professions/task-types catalog at
+**Phase 1 — done and verified live.** Admin-editable professions/task-types catalog at
 `/admin/professions`, guarded by `app/[locale]/admin/layout.tsx` (redirects anyone whose
-`profiles.role` isn't `'admin'`). Requires running
-`supabase/sql/phase1_professions_and_task_types.sql` and manually promoting one account
-to `role = 'admin'` in the Supabase Table Editor before it can be tested (see the SQL
-file's closing comment).
+`profiles.role` isn't `'admin'` — confirmed both signed-out and non-admin visitors get
+bounced). Confirmed: adding a profession, adding a task under it, and toggling
+active/inactive all work end-to-end. To bootstrap the very first admin account, run in
+Supabase's SQL Editor:
+```sql
+alter table public.profiles disable trigger profiles_prevent_role_escalation;
+update public.profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.com');
+alter table public.profiles enable trigger profiles_prevent_role_escalation;
+```
+Next: Phase 2 (worker onboarding + ID upload).
