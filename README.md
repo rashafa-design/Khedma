@@ -85,9 +85,11 @@ uploaded ID document (verified directly against Supabase Storage - returns "not 
 non-worker accounts are redirected away from the onboarding page. Dashboard shows a
 role-appropriate link (workers to onboarding, admins to the professions screen).
 
-**Phase 3 — built, not yet verified.** Worker dashboard at `/worker/dashboard` (only
+**Phase 3 — done and verified live.** Worker dashboard at `/worker/dashboard` (only
 reachable once `worker_profiles.status = 'approved'` - the onboarding page now redirects
-there automatically once approved, instead of showing a static message). Lets a worker:
+there automatically once approved, instead of showing a static message). Confirmed:
+adding a task entry, the availability toggle, and the onboarding-to-dashboard redirect
+all work end-to-end. Lets a worker:
 add task entries (task + scope + price + billing unit - a list, not one flat price),
 delete a task entry, toggle availability, and delete their whole worker profile (which
 cascades and deletes their task entries too - this does **not** delete their login
@@ -100,4 +102,5 @@ alter table public.worker_profiles disable trigger worker_profiles_prevent_self_
 update public.worker_profiles set status = 'approved' where user_id = (select id from auth.users where email = 'worker@example.com');
 alter table public.worker_profiles enable trigger worker_profiles_prevent_self_review;
 ```
-Next: Phase 4 (the real admin ID-review screen, replacing this manual SQL step).
+Next: Phase 4 (the real admin ID-review screen, replacing this manual SQL step) — or
+Phase 5 (client browsing/filters), whichever makes more sense to build first.
