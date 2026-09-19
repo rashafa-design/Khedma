@@ -38,7 +38,9 @@
   "dashboard": {
     "welcome": "Welcome",
     "role": "Role",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "workerOnboardingCta": "Complete your worker profile",
+    "adminCta": "Manage professions & tasks"
   },
   "admin": {
     "title": "Professions & tasks",
@@ -57,5 +59,26 @@
     "noProfessions": "No professions yet. Add one below.",
     "saving": "Saving...",
     "error": "Something went wrong. Please try again."
+  },
+  "worker": {
+    "onboardingTitle": "Tell us about your work",
+    "onboardingSubtitle": "An admin will review your ID before your profile is visible to clients.",
+    "profession": "Profession",
+    "nationality": "Nationality",
+    "yearsExperience": "Years of experience",
+    "idDocument": "National ID or residency permit",
+    "idDocumentHint": "This is only ever seen by an admin reviewing your account, never by clients.",
+    "photo": "Profile photo (optional)",
+    "submit": "Submit for review",
+    "submitting": "Submitting...",
+    "error": "Something went wrong. Please try again.",
+    "noProfessionsYet": "There are no professions set up yet. Please check back soon.",
+    "statusPendingTitle": "Your profile is under review",
+    "statusPendingBody": "An admin is checking your ID. We'll let you know once it's approved.",
+    "statusApprovedTitle": "Your profile is approved",
+    "statusApprovedBody": "Adding what you offer and your prices is coming very soon.",
+    "statusRejectedTitle": "Your profile needs another look",
+    "statusRejectedBody": "An admin rejected your submission.",
+    "reason": "Reason"
   }
 }

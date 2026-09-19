@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { ProfileRow } from "@/lib/types";
 import { SignOutButton } from "./sign-out-button";
@@ -51,6 +52,24 @@ export default async function DashboardPage({
         </div>
         <SignOutButton />
       </div>
+
+      {profile.role === "worker" && (
+        <Link
+          href="/worker/onboarding"
+          className="self-start rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+        >
+          {t("workerOnboardingCta")}
+        </Link>
+      )}
+
+      {profile.role === "admin" && (
+        <Link
+          href="/admin/professions"
+          className="self-start rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+        >
+          {t("adminCta")}
+        </Link>
+      )}
     </main>
   );
 }

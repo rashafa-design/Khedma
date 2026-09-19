@@ -76,4 +76,11 @@ alter table public.profiles disable trigger profiles_prevent_role_escalation;
 update public.profiles set role = 'admin' where id = (select id from auth.users where email = 'you@example.com');
 alter table public.profiles enable trigger profiles_prevent_role_escalation;
 ```
-Next: Phase 2 (worker onboarding + ID upload).
+**Phase 2 — built, not yet verified.** Worker onboarding at `/worker/onboarding`:
+profession select, nationality, years of experience, a required ID-document upload
+(private bucket, no read-back policy for anyone but admin) and an optional profile photo
+(public bucket). Submitting creates a `worker_profiles` row with
+`status = 'pending_review'`; the same page then shows a pending/approved/rejected status
+card instead of the form once a row exists. Requires running
+`supabase/sql/phase2_worker_profiles.sql`. The dashboard now shows a role-appropriate
+link (workers to onboarding, admins to the professions screen).
