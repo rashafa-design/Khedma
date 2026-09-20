@@ -41,11 +41,13 @@
     "signOut": "Sign out",
     "workerOnboardingCta": "Complete your worker profile",
     "adminCta": "Manage professions & tasks",
-    "browseCta": "Browse workers"
+    "browseCta": "Browse workers",
+    "subscriptionCta": "My subscription"
   },
   "admin": {
     "navProfessions": "Professions & tasks",
     "navPendingWorkers": "Pending workers",
+    "navPendingPayments": "Pending payments",
     "title": "Professions & tasks",
     "subtitle": "Manage the list of professions and tasks workers can choose from. Deactivating hides something from new selections without deleting it.",
     "addProfessionTitle": "Add a profession",
@@ -108,7 +110,11 @@
     "deleteProfileTitle": "Delete your worker profile",
     "deleteProfileBody": "This removes your profile and everything you've added from Khedma. You can always create a new one later.",
     "deleteProfile": "Delete my worker profile",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "contactPhoneTitle": "Contact phone",
+    "contactPhoneHint": "This is the number clients see once they unlock you.",
+    "save": "Save",
+    "saving": "Saving..."
   },
   "adminReview": {
     "title": "Pending worker reviews",
@@ -131,6 +137,52 @@
     "allNationalities": "All nationalities",
     "sortNewest": "Newest",
     "sortPrice": "Price: low to high",
-    "sortExperience": "Most experienced"
+    "sortExperience": "Most experienced",
+    "unlock": "Unlock contact",
+    "unlocking": "Unlocking...",
+    "unlockError": "Something went wrong. Please try again.",
+    "subscribeToUnlock": "Subscribe to unlock contacts",
+    "noSlotsLeft": "No unlock slots left this month",
+    "phone": "Phone"
+  },
+  "payment": {
+    "subscribeTitle": "Unlock worker contacts",
+    "explainerBody": "2,000 EGP unlocks phone numbers for up to 10 workers of your choice, for exactly 1 month. After that, everything locks again - even workers you already unlocked - so you'll need to subscribe again for a new month. Worker availability can change, so a fresh month means a fresh, accurate list.",
+    "amount": "2,000 EGP",
+    "payVia": "Send 2,000 EGP via Instapay or Vodafone Cash to:",
+    "paymentMethod": "Which did you use?",
+    "methodInstapay": "Instapay",
+    "methodVodafoneCash": "Vodafone Cash",
+    "proofUpload": "Upload a screenshot of the payment",
+    "submit": "Submit for review",
+    "submitting": "Submitting...",
+    "error": "Something went wrong. Please try again.",
+    "pendingTitle": "Your payment is under review",
+    "pendingBody": "An admin is checking your payment proof. We'll let you know once it's approved.",
+    "rejectedTitle": "Your payment needs another look",
+    "rejectedBody": "An admin rejected your submission.",
+    "reason": "Reason",
+    "tryAgain": "Submit a new payment"
+  },
+  "subscription": {
+    "title": "Your subscription",
+    "expiresOn": "Access expires on",
+    "slotsUsed": "workers unlocked",
+    "slotsRemaining": "slots remaining",
+    "unlockedWorkers": "Unlocked workers",
+    "noPhone": "No phone number on file",
+    "browseMore": "Browse more workers",
+    "noneUnlockedYet": "You haven't unlocked anyone yet."
+  },
+  "adminPayments": {
+    "title": "Pending payments",
+    "empty": "No payments waiting for review.",
+    "client": "Client",
+    "method": "Method",
+    "viewProof": "View payment proof",
+    "approve": "Approve",
+    "reject": "Reject",
+    "rejectPrompt": "Why are you rejecting this payment? (shown to the client)",
+    "error": "Something went wrong. Please try again."
   }
 }

@@ -1,16 +1,26 @@
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import type {
   ProfessionRow,
   TaskTypeRow,
   WorkerAvailability,
   WorkerTaskEntryRow,
 } from "@/lib/types";
+import { UnlockButton } from "./unlock-button";
 
 function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+export type ContactState =
+  | { type: "unlocked"; phone: string | null }
+  | { type: "can_unlock"; subscriptionId: string }
+  | { type: "no_slots" }
+  | { type: "subscribe" }
+  | { type: "hidden" };
+
 export async function WorkerCard({
+  workerProfileId,
   fullName,
   photoUrl,
   profession,
@@ -20,7 +30,9 @@ export async function WorkerCard({
   taskEntries,
   taskTypes,
   nameKey,
+  contact,
 }: {
+  workerProfileId: string;
   fullName: string;
   photoUrl: string | null;
   profession: ProfessionRow | undefined;
@@ -30,6 +42,7 @@ export async function WorkerCard({
   taskEntries: WorkerTaskEntryRow[];
   taskTypes: TaskTypeRow[];
   nameKey: "name_en" | "name_ar";
+  contact: ContactState;
 }) {
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
@@ -72,6 +85,31 @@ export async function WorkerCard({
             );
           })}
         </ul>
+
+        <div className="mt-3">
+          {contact.type === "unlocked" && (
+            <p className="text-sm font-medium" dir="ltr">
+              {t("phone")}: {contact.phone ?? "—"}
+            </p>
+          )}
+          {contact.type === "can_unlock" && (
+            <UnlockButton
+              subscriptionId={contact.subscriptionId}
+              workerProfileId={workerProfileId}
+            />
+          )}
+          {contact.type === "no_slots" && (
+            <p className="text-xs text-gray-500">{t("noSlotsLeft")}</p>
+          )}
+          {contact.type === "subscribe" && (
+            <Link
+              href="/client/subscribe"
+              className="text-xs font-medium underline"
+            >
+              {t("subscribeToUnlock")}
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );

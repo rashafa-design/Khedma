@@ -4,11 +4,13 @@ import { LocaleSwitcher } from "@/components/locale-switcher";
 import { createClient } from "@/lib/supabase/server";
 import type {
   ProfessionRow,
+  ProfileRow,
   TaskTypeRow,
   WorkerProfileRow,
   WorkerTaskEntryRow,
 } from "@/lib/types";
 import { AvailabilityToggle } from "./availability-toggle";
+import { ContactPhoneForm } from "./contact-phone-form";
 import { DeleteProfileButton } from "./delete-profile-button";
 import { TaskEntryForm } from "./task-entry-form";
 import { TaskEntryList } from "./task-entry-list";
@@ -40,7 +42,7 @@ export default async function WorkerDashboardPage({
     redirect("/worker/onboarding");
   }
 
-  const [{ data: profession }, { data: taskTypes }, { data: taskEntries }] =
+  const [{ data: profession }, { data: taskTypes }, { data: taskEntries }, { data: profile }] =
     await Promise.all([
       supabase
         .from("professions")
@@ -60,6 +62,11 @@ export default async function WorkerDashboardPage({
         .eq("worker_profile_id", workerProfile.id)
         .order("created_at")
         .returns<WorkerTaskEntryRow[]>(),
+      supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .maybeSingle<ProfileRow>(),
     ]);
 
   const t = await getTranslations("worker");
@@ -103,6 +110,11 @@ export default async function WorkerDashboardPage({
           nameKey={nameKey}
         />
       )}
+
+      <ContactPhoneForm
+        userId={user.id}
+        phoneNumber={profile?.phone_number ?? null}
+      />
 
       <DeleteProfileButton workerProfileId={workerProfile.id} />
     </main>

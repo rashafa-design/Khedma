@@ -61,3 +61,38 @@ export interface WorkerTaskEntryRow {
   created_at: string;
   updated_at: string;
 }
+
+export type PaymentMethod = "instapay" | "vodafone_cash";
+export type PaymentStatus = "pending" | "approved" | "rejected";
+
+export interface PaymentRequestRow {
+  id: string;
+  client_id: string;
+  amount: number;
+  currency: string;
+  payment_method: PaymentMethod;
+  proof_screenshot_path: string;
+  status: PaymentStatus;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  rejection_reason: string | null;
+  external_reference: string | null;
+  created_at: string;
+}
+
+export interface SubscriptionRow {
+  id: string;
+  client_id: string;
+  payment_request_id: string | null;
+  slots_total: number;
+  starts_at: string;
+  expires_at: string;
+  created_at: string;
+}
+
+export interface UnlockRow {
+  id: string;
+  subscription_id: string;
+  worker_profile_id: string;
+  unlocked_at: string;
+}

@@ -41,6 +41,12 @@ export default async function AdminLayout({
         >
           {t("navPendingWorkers")}
         </Link>
+        <Link
+          href="/admin/payments/pending"
+          className="font-medium hover:underline"
+        >
+          {t("navPendingPayments")}
+        </Link>
       </nav>
       {children}
     </div>

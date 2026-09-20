@@ -4,11 +4,14 @@ import { createClient } from "@/lib/supabase/server";
 import type {
   ProfessionRow,
   ProfileRow,
+  SubscriptionRow,
   TaskTypeRow,
+  UnlockRow,
   WorkerProfileRow,
   WorkerTaskEntryRow,
 } from "@/lib/types";
 import { BrowseControls } from "./browse-controls";
+import type { ContactState } from "./worker-card";
 import { WorkerCard } from "./worker-card";
 
 const NIL_UUID = "00000000-0000-0000-0000-000000000000";
@@ -38,6 +41,12 @@ export default async function BrowsePage({
   if (!user) {
     redirect("/login");
   }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle<{ role: string }>();
 
   let workerQuery = supabase
     .from("worker_profiles")
@@ -98,6 +107,71 @@ export default async function BrowsePage({
     .in("id", userIds)
     .returns<ProfileRow[]>();
 
+  // Build a contact state (unlocked / can unlock / out of slots / needs a
+  // subscription) per worker - only meaningful for clients. Workers and
+  // admins browsing just see the listing with no unlock mechanic at all.
+  const contactByWorkerId = new Map<string, ContactState>();
+
+  if (profile?.role === "client") {
+    const { data: subscription } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("client_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle<SubscriptionRow>();
+
+    const hasActiveSubscription =
+      !!subscription && new Date(subscription.expires_at) > new Date();
+
+    let unlockedWorkerIds = new Set<string>();
+    let phoneByWorkerId = new Map<string, string | null>();
+    let slotsUsed = 0;
+
+    if (hasActiveSubscription && subscription) {
+      const { data: unlocks } = await supabase
+        .from("unlocks")
+        .select("*")
+        .eq("subscription_id", subscription.id)
+        .returns<UnlockRow[]>();
+
+      slotsUsed = unlocks?.length ?? 0;
+      unlockedWorkerIds = new Set((unlocks ?? []).map((u) => u.worker_profile_id));
+
+      const phoneResults = await Promise.all(
+        [...unlockedWorkerIds].map(async (workerProfileId) => {
+          const { data } = await supabase.rpc("get_worker_phone_number", {
+            p_worker_profile_id: workerProfileId,
+          });
+          return [workerProfileId, (data as string | null) ?? null] as const;
+        })
+      );
+      phoneByWorkerId = new Map(phoneResults);
+    }
+
+    for (const worker of workerList) {
+      if (unlockedWorkerIds.has(worker.id)) {
+        contactByWorkerId.set(worker.id, {
+          type: "unlocked",
+          phone: phoneByWorkerId.get(worker.id) ?? null,
+        });
+      } else if (!hasActiveSubscription || !subscription) {
+        contactByWorkerId.set(worker.id, { type: "subscribe" });
+      } else if (slotsUsed >= subscription.slots_total) {
+        contactByWorkerId.set(worker.id, { type: "no_slots" });
+      } else {
+        contactByWorkerId.set(worker.id, {
+          type: "can_unlock",
+          subscriptionId: subscription.id,
+        });
+      }
+    }
+  } else {
+    for (const worker of workerList) {
+      contactByWorkerId.set(worker.id, { type: "hidden" });
+    }
+  }
+
   function minPrice(workerId: string) {
     const entries = (taskEntries ?? []).filter(
       (e) => e.worker_profile_id === workerId
@@ -132,7 +206,7 @@ export default async function BrowsePage({
         )}
 
         {sorted.map((worker) => {
-          const profile = profiles?.find((p) => p.id === worker.user_id);
+          const workerProfile = profiles?.find((p) => p.id === worker.user_id);
           const profession = professions?.find(
             (p) => p.id === worker.profession_id
           );
@@ -148,7 +222,8 @@ export default async function BrowsePage({
           return (
             <WorkerCard
               key={worker.id}
-              fullName={profile?.full_name ?? ""}
+              workerProfileId={worker.id}
+              fullName={workerProfile?.full_name ?? ""}
               photoUrl={photoUrl}
               profession={profession}
               nationality={worker.nationality}
@@ -157,6 +232,7 @@ export default async function BrowsePage({
               taskEntries={entries}
               taskTypes={taskTypes ?? []}
               nameKey={nameKey}
+              contact={contactByWorkerId.get(worker.id) ?? { type: "hidden" }}
             />
           );
         })}

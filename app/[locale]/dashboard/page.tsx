@@ -72,12 +72,20 @@ export default async function DashboardPage({
       )}
 
       {profile.role === "client" && (
-        <Link
-          href="/browse"
-          className="self-start rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
-        >
-          {t("browseCta")}
-        </Link>
+        <div className="flex gap-3">
+          <Link
+            href="/browse"
+            className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
+          >
+            {t("browseCta")}
+          </Link>
+          <Link
+            href="/client/subscription"
+            className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-100"
+          >
+            {t("subscriptionCta")}
+          </Link>
+        </div>
       )}
     </main>
   );

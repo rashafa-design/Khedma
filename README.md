@@ -129,3 +129,39 @@ nationalities actually exist among approved workers). Sorting: newest, price low
 query string, so results are shareable/bookmarkable. Dashboard now shows a "Browse
 workers" link for clients. No new SQL or env vars needed - reuses existing tables and
 the public `worker-photos` bucket from Phase 2.
+
+**Phases 6 and 7 — built, not yet verified.** The core monetization mechanic:
+
+- **Phase 6 (payment):** `/client/subscribe` explains the deal (2,000 EGP, up to 10
+  workers, exactly 1 month, full re-lock afterward, worker status can change monthly),
+  shows the fixed pay-to number, and lets the client upload a screenshot as proof. Admin
+  reviews it at `/admin/payments/pending` (same signed-URL-via-service-role pattern as
+  Phase 4's ID documents). The instant an admin approves, a database trigger - not any
+  application code - creates the client's `subscriptions` row with `expires_at` = now + 1
+  month. A client with an already-active subscription is redirected away from the
+  subscribe page entirely (can't double-pay mid-month); a client with a payment still
+  pending review sees a waiting screen instead of the form; a rejected payment shows the
+  reason and lets them resubmit immediately.
+- **Phase 7 (unlock):** worker cards on `/browse` now show, for clients only, one of:
+  the revealed phone number (already unlocked), an "Unlock contact" button (active
+  subscription with slots left), "no slots left this month," or "subscribe to unlock"
+  (no active subscription). Unlocking inserts one row into `unlocks`; a database trigger
+  refuses an 11th unlock for the same subscription outright, independent of the button
+  being disabled client-side. `/client/subscription` shows expiry date, slots used/left,
+  and the unlocked workers' phone numbers. **No separate phone-number table was added** -
+  the worker's `profiles.phone_number` (already collected at sign-up, already unreadable
+  by other users per Phase 0's RLS) is reused, revealed only through a
+  `get_worker_phone_number()` database function that checks for a live unlock first.
+  Re-locking after a month needs no cron job: that check is live on every call.
+
+**Needs a new environment variable in Vercel:** `NEXT_PUBLIC_PAYMENT_PHONE_NUMBER` - the
+real phone number clients should send Instapay/Vodafone Cash payments to (shown as plain
+text on the subscribe page; falls back to a placeholder `01000000000` if unset, so don't
+forget to set the real one before this goes anywhere near real users). Needs
+`supabase/sql/phase6_payments_and_subscriptions.sql` then
+`supabase/sql/phase7_unlocks_and_phone_access.sql` run in that order (Phase 7's function
+references Phase 6's tables). Also: workers signed up before this phase may have no
+`profiles.phone_number` on file (it was optional at sign-up) - there's currently no
+in-app way for a worker to add one after the fact, which means their "unlocked" card
+would show no phone number. Worth fixing in a follow-up phase (e.g. an editable field on
+the worker dashboard) before relying on this for real workers.
