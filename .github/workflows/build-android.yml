@@ -91,13 +91,30 @@ jobs:
         working-directory: android
         run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android.keystore
 
+      # Four straight attempts at fixing "the provided androidSdk isn't
+      # correct" (different SDK packages, different config.json field
+      # names, a cmdline-tools/latest symlink) all failed identically and
+      # instantly - strong sign the guessing is missing something more
+      # basic, like config.json living somewhere other than
+      # ~/.bubblewrap/config.json for this version, or a differently-named
+      # flag. Printing the CLI's own version/help output here means the
+      # next fix (if this attempt still fails) is based on what the tool
+      # actually says, not another guess.
+      - name: Show Bubblewrap's own version and help output
+        run: |
+          bubblewrap --version || true
+          echo "--- bubblewrap build --help ---"
+          bubblewrap build --help || true
+          echo "--- ~/.bubblewrap contents ---"
+          find ~/.bubblewrap -type f 2>/dev/null | xargs -I{} sh -c 'echo "== {} =="; cat {}' || echo "(no ~/.bubblewrap directory)"
+
       - name: Build and sign the APK
         working-directory: android
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           printf '%s\n%s\n%s\n' "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" \
-            | bubblewrap build --skipPwaValidation
+            | bubblewrap build --skipPwaValidation --verbose
 
       - name: Rename to a stable, predictable filename
         working-directory: android
