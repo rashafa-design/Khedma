@@ -37,17 +37,30 @@ jobs:
       # correctly - meaning our self-installed SDK just never satisfied
       # whatever Bubblewrap 1.25.0 specifically checks for. Answering "y"
       # to let Bubblewrap install its own JDK and Android SDK instead (the
-      # tool's own "recommended" default, the same path every TWA tutorial
-      # actually exercises) sidesteps that guessing game entirely, at the
-      # cost of a slower first run while it downloads them.
-      # The JDK yes/no question alone ate all 3 of the previous attempt's
-      # piped answers before the Android SDK question ever got one -
-      # whatever's consuming stdin here (redraws, confirmation prompts,
-      # etc.) uses more lines per question than a plain terminal would.
-      # Padding heavily on both sides removes the guesswork: plenty of
-      # "y" answers for however many yes/no questions there really are,
-      # then plenty of password answers for however many follow.
-      - name: Build and sign the APK
+      # tool's own "recommended" default) sidesteps that guessing game -
+      # but padding the piped answers generously still died at the exact
+      # same spot (the Android SDK question) even with 30 lines available,
+      # which points at something more specific: the JDK download step
+      # spawns child processes that inherit and drain our piped stdin
+      # before the SDK question ever gets to read from it.
+      #
+      # Fix: give the JDK question its OWN step with its OWN fresh stdin,
+      # deliberately letting it "fail" (exit non-zero) the moment it's
+      # done downloading - all that matters is that ~/.bubblewrap/jdk ends
+      # up populated, which makes the next step skip re-asking about it.
+      # Same idea for the SDK question in its own step after that, so by
+      # the time the real build step runs, JDK and SDK are both already
+      # cached and only the keystore password prompt(s) remain to answer
+      # with completely fresh, undrained stdin.
+      - name: Let Bubblewrap install its own JDK (allowed to stop there)
+        working-directory: android
+        run: printf 'y\n' | bubblewrap build --skipPwaValidation || true
+
+      - name: Let Bubblewrap install its own Android SDK (allowed to stop there)
+        working-directory: android
+        run: printf 'y\n' | bubblewrap build --skipPwaValidation || true
+
+      - name: Build and sign the APK (JDK/SDK already cached above)
         working-directory: android
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
