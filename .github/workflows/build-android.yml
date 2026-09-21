@@ -40,14 +40,22 @@ jobs:
       # tool's own "recommended" default, the same path every TWA tutorial
       # actually exercises) sidesteps that guessing game entirely, at the
       # cost of a slower first run while it downloads them.
+      # The JDK yes/no question alone ate all 3 of the previous attempt's
+      # piped answers before the Android SDK question ever got one -
+      # whatever's consuming stdin here (redraws, confirmation prompts,
+      # etc.) uses more lines per question than a plain terminal would.
+      # Padding heavily on both sides removes the guesswork: plenty of
+      # "y" answers for however many yes/no questions there really are,
+      # then plenty of password answers for however many follow.
       - name: Build and sign the APK
         working-directory: android
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
-          printf 'y\ny\ny\n%s\n%s\n%s\n' \
-            "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" \
-            | bubblewrap build --skipPwaValidation
+          {
+            for i in $(seq 1 15); do echo "y"; done
+            for i in $(seq 1 15); do echo "$ANDROID_KEYSTORE_PASSWORD"; done
+          } | bubblewrap build --skipPwaValidation
 
       - name: Rename to a stable, predictable filename
         working-directory: android
