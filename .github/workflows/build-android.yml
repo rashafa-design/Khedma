@@ -51,6 +51,25 @@ jobs:
       # the wrong question). Pre-writing its config file with the JDK and
       # SDK we already installed above skips those questions entirely, so
       # the only prompts left are the keystore ones this step answers.
+      # Bubblewrap's SDK check specifically looks for
+      # cmdline-tools/latest/bin/sdkmanager, but setup-android installs
+      # cmdline-tools under a version-numbered folder (e.g. "16.0"), not
+      # one literally named "latest" - almost certainly why the last two
+      # attempts both failed identically and instantly regardless of
+      # which packages were installed or which config keys were tried.
+      - name: Make a cmdline-tools "latest" symlink Bubblewrap expects
+        run: |
+          echo "--- cmdline-tools before ---"
+          ls -la "$ANDROID_HOME/cmdline-tools/" || true
+          if [ ! -e "$ANDROID_HOME/cmdline-tools/latest" ]; then
+            version_dir=$(find "$ANDROID_HOME/cmdline-tools" -mindepth 1 -maxdepth 1 -type d ! -name latest | head -n1)
+            echo "Linking latest -> $version_dir"
+            ln -s "$version_dir" "$ANDROID_HOME/cmdline-tools/latest"
+          fi
+          echo "--- cmdline-tools after ---"
+          ls -la "$ANDROID_HOME/cmdline-tools/"
+          ls -la "$ANDROID_HOME/cmdline-tools/latest/bin/" || true
+
       - name: Point Bubblewrap at the JDK/SDK already installed above
         run: |
           echo "JAVA_HOME=$JAVA_HOME"
