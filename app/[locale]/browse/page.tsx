@@ -3,7 +3,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import type {
   ProfessionRow,
-  ProfileRow,
   SubscriptionRow,
   TaskTypeRow,
   UnlockRow,
@@ -99,13 +98,18 @@ export default async function BrowsePage({
     workerList = workerList.filter((w) => matchingWorkerIds.has(w.id));
   }
 
-  const userIds =
-    workerList.length > 0 ? workerList.map((w) => w.user_id) : [NIL_UUID];
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("*")
-    .in("id", userIds)
-    .returns<ProfileRow[]>();
+  // profiles has no cross-user select policy (Phase 0, protects phone
+  // numbers) - a worker's display name is meant to be public once
+  // approved, so it's read through this RPC instead of the table directly.
+  const nameResults = await Promise.all(
+    workerList.map(async (worker) => {
+      const { data } = await supabase.rpc("get_worker_display_name", {
+        p_worker_profile_id: worker.id,
+      });
+      return [worker.id, (data as string | null) ?? ""] as const;
+    })
+  );
+  const nameByWorkerId = new Map(nameResults);
 
   // Build a contact state (unlocked / can unlock / out of slots / needs a
   // subscription) per worker - only meaningful for clients. Workers and
@@ -206,7 +210,6 @@ export default async function BrowsePage({
         )}
 
         {sorted.map((worker) => {
-          const workerProfile = profiles?.find((p) => p.id === worker.user_id);
           const profession = professions?.find(
             (p) => p.id === worker.profession_id
           );
@@ -223,7 +226,7 @@ export default async function BrowsePage({
             <WorkerCard
               key={worker.id}
               workerProfileId={worker.id}
-              fullName={workerProfile?.full_name ?? ""}
+              fullName={nameByWorkerId.get(worker.id) ?? ""}
               photoUrl={photoUrl}
               profession={profession}
               nationality={worker.nationality}

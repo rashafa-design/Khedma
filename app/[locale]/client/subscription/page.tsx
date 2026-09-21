@@ -4,7 +4,6 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type {
   ProfessionRow,
-  ProfileRow,
   SubscriptionRow,
   UnlockRow,
   WorkerProfileRow,
@@ -68,19 +67,27 @@ export default async function ClientSubscriptionPage({
       .in("id", workerProfileIds)
       .returns<WorkerProfileRow[]>();
 
-    const userIds = (workerProfiles ?? []).map((w) => w.user_id);
     const professionIds = [
       ...new Set((workerProfiles ?? []).map((w) => w.profession_id)),
     ];
 
-    const [{ data: profiles }, { data: professions }, phoneResults] =
+    // profiles has no cross-user select policy (Phase 0, protects phone
+    // numbers) - names come through get_worker_display_name instead,
+    // same reasoning as the fix applied to the browse page.
+    const [{ data: professions }, nameResults, phoneResults] =
       await Promise.all([
-        supabase.from("profiles").select("*").in("id", userIds).returns<ProfileRow[]>(),
         supabase
           .from("professions")
           .select("*")
           .in("id", professionIds)
           .returns<ProfessionRow[]>(),
+        Promise.all(
+          (workerProfiles ?? []).map((w) =>
+            supabase.rpc("get_worker_display_name", {
+              p_worker_profile_id: w.id,
+            })
+          )
+        ),
         Promise.all(
           (workerProfiles ?? []).map((w) =>
             supabase.rpc("get_worker_phone_number", {
@@ -92,9 +99,7 @@ export default async function ClientSubscriptionPage({
 
     unlockedWorkers = (workerProfiles ?? []).map((workerProfile, index) => ({
       workerProfile,
-      fullName:
-        profiles?.find((p) => p.id === workerProfile.user_id)?.full_name ??
-        "—",
+      fullName: (nameResults[index]?.data as string | null) ?? "—",
       professionName:
         professions?.find((p) => p.id === workerProfile.profession_id)?.[
           nameKey
