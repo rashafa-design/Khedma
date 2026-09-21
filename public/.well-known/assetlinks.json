@@ -5,7 +5,7 @@
       "namespace": "android_app",
       "package_name": "app.khedma.twa",
       "sha256_cert_fingerprints": [
-        "PLACEHOLDER-REPLACE-WITH-REAL-SHA256-AFTER-RUNNING-generate-android-keystore.yml"
+        "80:BD:AC:8E:A3:41:B2:61:6B:E4:EF:4B:50:FC:52:35:BC:B1:7F:83:C3:5C:36:84:BA:03:CC:2B:34:C9:CE:A9"
       ]
     }
   }
