@@ -24,8 +24,15 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      # The action's default package list includes a legacy "tools"
+      # package Google removed from the SDK repository years ago, which
+      # makes the default install fail outright - platform-tools is all
+      # this step actually needs to provide; Bubblewrap installs whatever
+      # specific platform/build-tools versions it needs itself.
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: "platform-tools"
 
       - name: Set up Node (only to install the Bubblewrap CLI itself)
         uses: actions/setup-node@v4
