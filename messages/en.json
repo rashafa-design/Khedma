@@ -42,7 +42,10 @@
     "workerOnboardingCta": "Complete your worker profile",
     "adminCta": "Manage professions & tasks",
     "browseCta": "Browse workers",
-    "subscriptionCta": "My subscription"
+    "subscriptionCta": "My subscription",
+    "roleWorker": "Worker",
+    "roleClient": "Client",
+    "roleAdmin": "Admin"
   },
   "admin": {
     "navProfessions": "Professions & tasks",

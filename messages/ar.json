@@ -42,7 +42,10 @@
     "workerOnboardingCta": "أكمل ملفك كعامل",
     "adminCta": "إدارة المهن والمهام",
     "browseCta": "تصفح العمال",
-    "subscriptionCta": "اشتراكي"
+    "subscriptionCta": "اشتراكي",
+    "roleWorker": "عامل",
+    "roleClient": "عميل",
+    "roleAdmin": "مسؤول"
   },
   "admin": {
     "navProfessions": "المهن والمهام",

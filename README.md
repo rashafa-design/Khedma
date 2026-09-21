@@ -167,10 +167,20 @@ instead of allowing a second payment. The core monetization mechanic:
 real phone number clients should send Instapay/Vodafone Cash payments to (shown as plain
 text on the subscribe page; falls back to a placeholder `01000000000` if unset, so don't
 forget to set the real one before this goes anywhere near real users). Needs
-`supabase/sql/phase6_payments_and_subscriptions.sql` then
-`supabase/sql/phase7_unlocks_and_phone_access.sql` run in that order (Phase 7's function
-references Phase 6's tables). Also: workers signed up before this phase may have no
-`profiles.phone_number` on file (it was optional at sign-up) - there's currently no
-in-app way for a worker to add one after the fact, which means their "unlocked" card
-would show no phone number. Worth fixing in a follow-up phase (e.g. an editable field on
-the worker dashboard) before relying on this for real workers.
+`supabase/sql/phase6_payments_and_subscriptions.sql`, then
+`supabase/sql/phase7_unlocks_and_phone_access.sql`, then
+`supabase/sql/phase7b_worker_display_name.sql`, run in that order.
+
+## Arabic/RTL audit (Phase 10)
+
+Done and verified live. A full grep across every screen for hardcoded directional
+Tailwind classes (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`,
+`text-right`, `rounded-l`, `rounded-r`, `border-l`, `border-r`, `float-left`,
+`float-right`) found **zero genuine matches** - every layout was already built with
+flexbox/logical properties (`gap-`, `justify-between`, `ms-`/`me-`) from Phase 0 onward,
+so nothing needed retrofitting. Spot-checked `/browse` in Arabic and confirmed real
+mirroring, not just translated text: the worker photo moved to the right side of the
+card, text flows right-to-left, filter dropdowns reordered correctly. Fixed one small
+gap found along the way: the dashboard's role label (`worker`/`client`/`admin`) was
+showing the raw English database value instead of a translated word - added
+`roleWorker`/`roleClient`/`roleAdmin` to the `dashboard` message namespace.

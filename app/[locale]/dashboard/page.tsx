@@ -34,6 +34,12 @@ export default async function DashboardPage({
   }
 
   const t = await getTranslations("dashboard");
+  const roleLabel =
+    profile.role === "worker"
+      ? t("roleWorker")
+      : profile.role === "admin"
+        ? t("roleAdmin")
+        : t("roleClient");
 
   return (
     <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 px-4 py-16">
@@ -47,7 +53,7 @@ export default async function DashboardPage({
             {t("welcome")}, {profile.full_name}
           </p>
           <p className="text-sm text-gray-600">
-            {user.email} · {t("role")}: {profile.role}
+            {user.email} · {t("role")}: {roleLabel}
           </p>
         </div>
         <SignOutButton />
