@@ -50,13 +50,20 @@ jobs:
       # the only prompts left are the keystore ones this step answers.
       - name: Point Bubblewrap at the JDK/SDK already installed above
         run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
           mkdir -p ~/.bubblewrap
           cat > ~/.bubblewrap/config.json <<EOF
           {
             "jdkPath": "$JAVA_HOME",
-            "androidSdkPath": "$ANDROID_HOME"
+            "jdk": "$JAVA_HOME",
+            "androidSdkPath": "$ANDROID_HOME",
+            "androidSdk": "$ANDROID_HOME"
           }
           EOF
+          echo "--- config.json ---"
+          cat ~/.bubblewrap/config.json
 
       - name: Restore the signing keystore from secrets
         working-directory: android
