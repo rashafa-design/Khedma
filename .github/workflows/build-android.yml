@@ -24,6 +24,9 @@ jobs:
           distribution: temurin
           java-version: "17"
 
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Set up Node (only to install the Bubblewrap CLI itself)
         uses: actions/setup-node@v4
         with:
@@ -31,6 +34,22 @@ jobs:
 
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli
+
+      # Bubblewrap's first-ever run interactively asks whether to install
+      # its own JDK/Android SDK copies (that's what broke the first
+      # attempt at this workflow - the piped keystore password answered
+      # the wrong question). Pre-writing its config file with the JDK and
+      # SDK we already installed above skips those questions entirely, so
+      # the only prompts left are the keystore ones this step answers.
+      - name: Point Bubblewrap at the JDK/SDK already installed above
+        run: |
+          mkdir -p ~/.bubblewrap
+          cat > ~/.bubblewrap/config.json <<EOF
+          {
+            "jdkPath": "$JAVA_HOME",
+            "androidSdkPath": "$ANDROID_HOME"
+          }
+          EOF
 
       - name: Restore the signing keystore from secrets
         working-directory: android
@@ -41,7 +60,7 @@ jobs:
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
-          printf '%s\n%s\n' "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" \
+          printf '%s\n%s\n%s\n' "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" \
             | bubblewrap build --skipPwaValidation
 
       - name: Rename to a stable, predictable filename
