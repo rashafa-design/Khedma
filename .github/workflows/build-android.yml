@@ -56,18 +56,36 @@ jobs:
         working-directory: android
         run: printf 'y\n' | bubblewrap build --skipPwaValidation || true
 
-      - name: Let Bubblewrap install its own Android SDK (allowed to stop there)
-        working-directory: android
-        run: printf 'y\n' | bubblewrap build --skipPwaValidation || true
-
-      - name: Build and sign the APK (JDK/SDK already cached above)
+      # The JDK step above genuinely finished (4m31s, real download) and
+      # its answer stays cached, so it isn't re-asked below. The Android
+      # SDK question is different: separating it into its own step still
+      # failed instantly, and the actual log revealed why - after the
+      # first "y" answers "install the SDK?", a SECOND question ("accept
+      # the SDK terms and conditions?") follows immediately, and even 15
+      # padded "y" answers piped all at once still died there. That proves
+      # this prompt reads and discards the ENTIRE piped buffer in one gulp
+      # rather than one line per question, so no amount of padding a
+      # single upfront pipe can ever satisfy more than the first prompt.
+      #
+      # Fix: feed answers one at a time with a real pause between each, so
+      # only ever one line is sitting in the pipe when a prompt reads -
+      # matching how a human answering in a real terminal would look, and
+      # not giving the greedy read anything extra to consume. Each `echo`
+      # blocks until bubblewrap actually reads it (pipes are only 64KB and
+      # self-limiting), and the whole feeder dies via SIGPIPE the moment
+      # bubblewrap exits, so this doesn't wait around once it's done.
+      - name: Build and sign the APK (JDK already cached above)
         working-directory: android
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
+          feed() {
+            echo "$1"
+            sleep 3
+          }
           {
-            for i in $(seq 1 15); do echo "y"; done
-            for i in $(seq 1 15); do echo "$ANDROID_KEYSTORE_PASSWORD"; done
+            for i in $(seq 1 20); do feed "y"; done
+            for i in $(seq 1 10); do feed "$ANDROID_KEYSTORE_PASSWORD"; done
           } | bubblewrap build --skipPwaValidation
 
       - name: Rename to a stable, predictable filename
