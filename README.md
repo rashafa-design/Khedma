@@ -130,7 +130,16 @@ query string, so results are shareable/bookmarkable. Dashboard now shows a "Brow
 workers" link for clients. No new SQL or env vars needed - reuses existing tables and
 the public `worker-photos` bucket from Phase 2.
 
-**Phases 6 and 7 — built, not yet verified.** The core monetization mechanic:
+**Phases 6 and 7 — done and verified live**, including a real bug found and fixed during
+testing (worker names weren't rendering on `/browse` or `/client/subscription` - Phase
+0's profiles privacy rule was silently blocking names too, not just phone numbers; fixed
+with `get_worker_display_name()`, see `supabase/sql/phase7b_worker_display_name.sql`).
+Confirmed end to end: submit a payment → admin approves → subscription auto-created by
+the trigger (10 slots, expires exactly 1 month later) → unlock two workers on `/browse` →
+phone number reveals correctly for the one with a phone on file, gracefully shows "no
+phone number on file" for the one without → `/client/subscription` shows both, correct
+slot count → revisiting `/client/subscribe` with an active subscription redirects away
+instead of allowing a second payment. The core monetization mechanic:
 
 - **Phase 6 (payment):** `/client/subscribe` explains the deal (2,000 EGP, up to 10
   workers, exactly 1 month, full re-lock afterward, worker status can change monthly),
