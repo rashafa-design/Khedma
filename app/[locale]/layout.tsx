@@ -12,6 +12,8 @@ export function generateStaticParams() {
 export const metadata: Metadata = {
   title: "Khedma",
   description: "Find trusted, verified workers for your home or business.",
+  manifest: "/manifest.json",
+  themeColor: "#111827",
 };
 
 export default async function LocaleLayout({

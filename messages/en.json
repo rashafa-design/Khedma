@@ -11,7 +11,8 @@
     "browseCta": "Browse workers",
     "workerCta": "I'm a worker looking for clients",
     "loginCta": "Log in",
-    "signupCta": "Sign up"
+    "signupCta": "Sign up",
+    "androidAppCta": "Get the Android app"
   },
   "auth": {
     "email": "Email",
@@ -187,5 +188,15 @@
     "reject": "Reject",
     "rejectPrompt": "Why are you rejecting this payment? (shown to the client)",
     "error": "Something went wrong. Please try again."
+  },
+  "download": {
+    "title": "Download the Khedma Android app",
+    "subtitle": "This installs Khedma as an app on your Android phone, without using the Google Play Store.",
+    "downloadCta": "Download for Android",
+    "stepsTitle": "How to install it",
+    "step1": "Tap the download button above. Your phone may warn you this file isn't from the Play Store - that's expected.",
+    "step2": "Open the downloaded file. If asked, allow your browser to \"install unknown apps.\"",
+    "step3": "Tap Install, then open Khedma from your home screen.",
+    "note": "Khedma will always show the latest version of the website - you'll only need to download this again if we specifically ask you to."
   }
 }

@@ -1,0 +1,65 @@
+name: Build Android app
+
+# Builds the Khedma Android app (a Trusted Web Activity - essentially
+# Chrome wrapped as an installable app shell pointed at the live site, so
+# there's no separate app codebase to maintain; only this shell needs
+# rebuilding, and only when icon/branding/package-level things change,
+# not for ordinary website updates). Run manually whenever a new APK is
+# needed. Requires the one-time keystore (see
+# generate-android-keystore.yml) to already be saved as the four secrets
+# below.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Node (only to install the Bubblewrap CLI itself)
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
+
+      - name: Restore the signing keystore from secrets
+        working-directory: android
+        run: echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android.keystore
+
+      - name: Build and sign the APK
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          printf '%s\n%s\n' "$ANDROID_KEYSTORE_PASSWORD" "$ANDROID_KEYSTORE_PASSWORD" \
+            | bubblewrap build --skipPwaValidation
+
+      - name: Rename to a stable, predictable filename
+        working-directory: android
+        run: cp app-release-signed.apk Khedma.apk
+
+      - name: Upload APK as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: khedma-android
+          path: android/Khedma.apk
+
+      - name: Attach APK to a GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag="android-build-${{ github.run_number }}"
+          gh release create "$tag" \
+            "android/Khedma.apk" \
+            --title "Khedma Android build #${{ github.run_number }}" \
+            --notes "Automated build from commit ${{ github.sha }}."

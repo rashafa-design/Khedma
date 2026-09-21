@@ -39,6 +39,10 @@ export default async function HomePage({
           {t("loginCta")}
         </Link>
       </div>
+
+      <Link href="/download" className="text-sm underline">
+        {t("androidAppCta")}
+      </Link>
     </main>
   );
 }

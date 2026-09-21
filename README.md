@@ -184,3 +184,53 @@ card, text flows right-to-left, filter dropdowns reordered correctly. Fixed one 
 gap found along the way: the dashboard's role label (`worker`/`client`/`admin`) was
 showing the raw English database value instead of a translated word - added
 `roleWorker`/`roleClient`/`roleAdmin` to the `dashboard` message namespace.
+
+## Android app (Phase 11)
+
+Code is built, but the actual APK has never been produced yet - it needs a one-time,
+manual setup in GitHub before the first build can run. The Android "app" is a Trusted
+Web Activity (Chrome wrapped as an installable shell around the live site) - there is no
+separate app codebase, so it only needs rebuilding when shell-level things change
+(icon, package id), never for ordinary website updates.
+
+**Files:** `public/manifest.json` + `public/icons/` (PWA manifest and app icons -
+generated locally via PowerShell's System.Drawing since this machine has no
+Python/ImageMagick; simple placeholder "K" wordmark, swap for a real logo whenever one
+exists), `android/twa-manifest.json` (Bubblewrap's config - package id
+`app.khedma.twa`, points at the live `khedma-psi.vercel.app` host), `public/.well-known/assetlinks.json`
+(proves this Android package is allowed to act as this website - currently has a
+placeholder fingerprint, must be updated once the real keystore exists, see below),
+`.github/workflows/generate-android-keystore.yml` (run once, ever) and
+`.github/workflows/build-android.yml` (run whenever a new APK build is needed),
+`app/[locale]/download/page.tsx` (the page real users land on, linked from the homepage).
+
+**One-time setup, in order:**
+1. In the GitHub repo → Settings → Secrets and variables → Actions, add a temporary
+   secret `KEYSTORE_TEMP_PASSWORD` (any password you'll remember).
+2. Actions tab → "Generate Android signing keystore (run ONCE, manually)" → Run workflow
+   → type `generate` to confirm → Run.
+3. Once it finishes, open the run, download the `android-keystore-DOWNLOAD-THEN-DELETE`
+   artifact **immediately**, and back up the `android.keystore` file inside it somewhere
+   safe outside GitHub (password manager / private cloud storage). This is the single
+   most important file in this whole phase - GitHub secrets are write-only (can't be
+   read back later), so if this file is lost without a backup, every future app update
+   would break existing installs and there would be no way to fix it.
+4. In that same run's log, copy the `SHA256:` fingerprint value shown in the "Show the
+   fingerprint" step, and send it over - it needs to replace the placeholder in
+   `public/.well-known/assetlinks.json`.
+5. Add two more (permanent) secrets: `ANDROID_KEYSTORE_BASE64` (the contents of
+   `android.keystore.base64.txt` from that same artifact) and
+   `ANDROID_KEYSTORE_PASSWORD` (the same value as `KEYSTORE_TEMP_PASSWORD` from step 1).
+6. Delete the `KEYSTORE_TEMP_PASSWORD` secret and delete the workflow artifact from
+   GitHub (cleanup - it also auto-expires in 1 day regardless).
+7. Actions tab → "Build Android app" → Run workflow. This produces a signed
+   `Khedma.apk`, attached to a new GitHub Release.
+8. Visit `/download` on the live site and confirm the APK downloads and installs on a
+   real Android device.
+
+**Known risk, flagged honestly:** the exact Bubblewrap CLI flags in
+`build-android.yml` (Android SDK auto-install, non-interactive password prompts via
+piped stdin) are written from documented behavior, not a live test run - this workflow
+may need a round or two of "push, read the Actions log, fix forward" the first time it
+actually runs, the same way the very first Vercel deploy needed two fixes. That's
+expected, not a sign anything is fundamentally wrong.
