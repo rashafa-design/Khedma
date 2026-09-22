@@ -270,3 +270,11 @@ placeholder fingerprint, must be updated once the real keystore exists, see belo
 opened genuinely chromeless (no browser address bar - the Digital Asset Links fingerprint
 setup worked), and every screen tested correctly on-device (home, sign-in, browse with
 filters, subscription page with phone reveal). Phase 11 is done.
+
+## Admin dashboard (Phase 9)
+
+Built: `/admin` is now the admin landing page (linked from both the main dashboard and
+the admin nav bar) showing three counts - pending worker reviews, pending payments, and
+active subscriptions - with the first two clickable straight through to their review
+queues. Purely cosmetic/convenience, no new tables or logic. No new SQL or env vars
+needed.

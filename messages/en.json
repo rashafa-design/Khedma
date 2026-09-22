@@ -49,9 +49,14 @@
     "roleAdmin": "Admin"
   },
   "admin": {
+    "navOverview": "Overview",
     "navProfessions": "Professions & tasks",
     "navPendingWorkers": "Pending workers",
     "navPendingPayments": "Pending payments",
+    "overviewTitle": "Overview",
+    "pendingWorkersCount": "Pending worker reviews",
+    "pendingPaymentsCount": "Pending payments",
+    "activeSubscriptionsCount": "Active subscriptions",
     "title": "Professions & tasks",
     "subtitle": "Manage the list of professions and tasks workers can choose from. Deactivating hides something from new selections without deleting it.",
     "addProfessionTitle": "Add a profession",

@@ -49,9 +49,14 @@
     "roleAdmin": "مسؤول"
   },
   "admin": {
+    "navOverview": "نظرة عامة",
     "navProfessions": "المهن والمهام",
     "navPendingWorkers": "مراجعات العمال",
     "navPendingPayments": "المدفوعات المعلقة",
+    "overviewTitle": "نظرة عامة",
+    "pendingWorkersCount": "مراجعات عمال معلقة",
+    "pendingPaymentsCount": "مدفوعات معلقة",
+    "activeSubscriptionsCount": "اشتراكات نشطة",
     "title": "المهن والمهام",
     "subtitle": "إدارة قائمة المهن والمهام التي يمكن للعمال الاختيار منها. إلغاء التفعيل يخفي العنصر من الاختيارات الجديدة دون حذفه.",
     "addProfessionTitle": "إضافة مهنة",
