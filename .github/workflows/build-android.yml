@@ -74,11 +74,21 @@ jobs:
       # blocks until bubblewrap actually reads it (pipes are only 64KB and
       # self-limiting), and the whole feeder dies via SIGPIPE the moment
       # bubblewrap exits, so this doesn't wait around once it's done.
+      # Once the prompts were finally answered correctly, Gradle itself
+      # refused to run: GitHub's runner image pre-sets ANDROID_SDK_ROOT to
+      # its own pre-installed SDK (/usr/local/lib/android/sdk), which now
+      # conflicts with Bubblewrap's own self-installed one at
+      # ~/.bubblewrap/android_sdk (exported as ANDROID_HOME) - Gradle
+      # refuses to guess between two different SDK paths and fails outright
+      # rather than silently picking one. Unsetting the leftover one here
+      # leaves ANDROID_HOME (Bubblewrap's own, correctly populated) as the
+      # only source of truth, exactly as Gradle's own error suggested.
       - name: Build and sign the APK (JDK already cached above)
         working-directory: android
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
+          unset ANDROID_SDK_ROOT
           feed() {
             echo "$1"
             sleep 3
