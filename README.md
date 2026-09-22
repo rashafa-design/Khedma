@@ -264,5 +264,9 @@ placeholder fingerprint, must be updated once the real keystore exists, see belo
    empty placeholder variable names and code that references env vars by name), then
    made the repo public.
 9. Confirmed live: the release and `Khedma.apk` asset are now reachable without any
-   login. Final confirmation - that it actually installs and opens chromeless on a real
-   Android phone - is pending Rasha trying `/download` on her own device.
+   login.
+
+**Confirmed working on a real Android phone (2026-09-22):** installed via `/download`,
+opened genuinely chromeless (no browser address bar - the Digital Asset Links fingerprint
+setup worked), and every screen tested correctly on-device (home, sign-in, browse with
+filters, subscription page with phone reveal). Phase 11 is done.
