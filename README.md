@@ -228,9 +228,41 @@ placeholder fingerprint, must be updated once the real keystore exists, see belo
 8. Visit `/download` on the live site and confirm the APK downloads and installs on a
    real Android device.
 
-**Known risk, flagged honestly:** the exact Bubblewrap CLI flags in
-`build-android.yml` (Android SDK auto-install, non-interactive password prompts via
-piped stdin) are written from documented behavior, not a live test run - this workflow
-may need a round or two of "push, read the Actions log, fix forward" the first time it
-actually runs, the same way the very first Vercel deploy needed two fixes. That's
-expected, not a sign anything is fundamentally wrong.
+**Status: build succeeds (2026-09-22), APK published.** Getting there took ~9 rounds of
+"push, read the Actions log, fix forward" - worth knowing the real story before touching
+`build-android.yml` again:
+1. Piped keystore-password answers hit the WRONG prompt - Bubblewrap's first-ever run
+   asks interactively whether to install its own JDK/Android SDK before ever reaching
+   keystore questions.
+2. Tried pre-staging a JDK/SDK ourselves (`setup-java` + `setup-android`) and pointing
+   Bubblewrap at them via a hand-written `~/.bubblewrap/config.json`. Hit "the provided
+   androidSdk isn't correct" four different ways (missing packages, two config-key-name
+   guesses, a missing `cmdline-tools/latest` symlink) - confirmed via diagnostics that the
+   config file WAS in the right place with the right values, yet still rejected. Root
+   cause never identified; abandoned rather than keep guessing blind.
+3. Switched to letting Bubblewrap install its own JDK/SDK (its documented "recommended"
+   default) - the right general direction, but piped "y" answers (even 30 of them,
+   pre-queued) kept dying at the same spot.
+4. Real logs revealed why: the confirm-prompt reads and discards the ENTIRE piped stdin
+   buffer in one gulp per prompt, not one line per question - so no amount of upfront
+   padding can ever satisfy more than the first prompt it hits.
+5. Fixed by feeding answers ONE AT A TIME with a `sleep 3` between each (self-terminates
+   via SIGPIPE once bubblewrap exits) - only one line is ever sitting in the pipe when a
+   prompt actually reads.
+6. That got past every prompt into a real Gradle build, which then failed with a fully
+   self-explanatory error: GitHub's runner pre-sets `ANDROID_SDK_ROOT` to its own
+   preinstalled SDK, conflicting with Bubblewrap's self-installed one (`ANDROID_HOME`).
+   Fixed with `unset ANDROID_SDK_ROOT`.
+7. APK built successfully. Attaching it to a GitHub Release then failed with "HTTP 403:
+   Resource not accessible by integration" - the default `GITHUB_TOKEN` is read-only
+   unless a workflow explicitly requests write access. Fixed with a `permissions:
+   contents: write` block.
+8. Build succeeded end to end (6m39s) and published a release - but the `/download`
+   page's link still 404'd for a real visitor, because **the GitHub repo itself was
+   private**, and private-repo release assets require a GitHub login to fetch. Checked
+   the full git history first to confirm no real secret values were ever committed (only
+   empty placeholder variable names and code that references env vars by name), then
+   made the repo public.
+9. Confirmed live: the release and `Khedma.apk` asset are now reachable without any
+   login. Final confirmation - that it actually installs and opens chromeless on a real
+   Android phone - is pending Rasha trying `/download` on her own device.
