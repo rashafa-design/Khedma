@@ -220,7 +220,7 @@ export default async function DashboardPage({
       { label: t("pendingWorkers"), value: String(pendingWorkers ?? 0) },
       { label: t("pendingPayments"), value: String(pendingPayments ?? 0) },
     ];
-    summaryAction = { href: "/admin", label: t("adminCta") };
+    summaryAction = { href: "/admin", label: t("openAdmin") };
   }
 
   const rowList = (rows: InfoRow[]) => (
