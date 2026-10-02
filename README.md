@@ -349,3 +349,8 @@ subscription (workers unlocked, slots left, access end date) or a Subscribe prom
 listing (profession, nationality, experience, review status, availability, number of services) with a
 link to manage it or finish applying; admins see the pending worker and payment counts. All read-only
 from existing tables; no new SQL.
+
+The signed-in user's name (with their role underneath) now sits in the header on every page, next to
+the Khedma logo, and links to the dashboard. Long names are cut off with an ellipsis so they can't push
+the language and sign-out buttons off a phone screen; the full name shows on hover. If someone signed in
+with Google and hasn't finished their profile yet, their email is shown instead.
