@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { nationalityLabel } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/server";
 import type {
   ProfessionRow,
@@ -65,20 +66,14 @@ export default async function BrowsePage({
   const t = await getTranslations("browse");
   const nameKey = locale === "ar" ? "name_ar" : "name_en";
 
-  const [{ data: professions }, { data: taskTypes }, { data: allApproved }] =
-    await Promise.all([
-      supabase
-        .from("professions")
-        .select("*")
-        .eq("is_active", true)
-        .returns<ProfessionRow[]>(),
-      supabase.from("task_types").select("*").returns<TaskTypeRow[]>(),
-      supabase.from("worker_profiles").select("nationality").eq("status", "approved"),
-    ]);
-
-  const nationalities = [
-    ...new Set((allApproved ?? []).map((w) => w.nationality)),
-  ].sort();
+  const [{ data: professions }, { data: taskTypes }] = await Promise.all([
+    supabase
+      .from("professions")
+      .select("*")
+      .eq("is_active", true)
+      .returns<ProfessionRow[]>(),
+    supabase.from("task_types").select("*").returns<TaskTypeRow[]>(),
+  ]);
 
   const workerIds = workerList.length > 0 ? workerList.map((w) => w.id) : [NIL_UUID];
   const { data: taskEntries } = await supabase
@@ -200,7 +195,6 @@ export default async function BrowsePage({
 
       <BrowseControls
         professions={professions ?? []}
-        nationalities={nationalities}
         nameKey={nameKey}
       />
 
@@ -229,7 +223,7 @@ export default async function BrowsePage({
               fullName={nameByWorkerId.get(worker.id) ?? ""}
               photoUrl={photoUrl}
               profession={profession}
-              nationality={worker.nationality}
+              nationality={nationalityLabel(worker.nationality, locale)}
               yearsExperience={worker.years_experience}
               availability={worker.availability}
               taskEntries={entries}

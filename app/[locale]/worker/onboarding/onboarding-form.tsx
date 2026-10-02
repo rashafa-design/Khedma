@@ -1,8 +1,9 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
+import { nationalityOptions } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/client";
 import type { ProfessionRow } from "@/lib/types";
 
@@ -16,8 +17,10 @@ export function OnboardingForm({
   nameKey: "name_en" | "name_ar";
 }) {
   const t = useTranslations("worker");
+  const locale = useLocale();
   const router = useRouter();
   const supabase = createClient();
+  const nationalities = nationalityOptions(locale);
 
   const [professionId, setProfessionId] = useState(professions[0]?.id ?? "");
   const [nationality, setNationality] = useState("");
@@ -96,14 +99,21 @@ export function OnboardingForm({
         ))}
       </select>
 
-      <input
-        type="text"
+      <select
         required
-        placeholder={t("nationality")}
         value={nationality}
         onChange={(e) => setNationality(e.target.value)}
         className="rounded-md border border-gray-300 px-3 py-2"
-      />
+      >
+        <option value="" disabled>
+          {t("selectNationality")}
+        </option>
+        {nationalities.map((n) => (
+          <option key={n.code} value={n.code}>
+            {n.label}
+          </option>
+        ))}
+      </select>
 
       <input
         type="number"

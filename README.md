@@ -302,3 +302,15 @@ with 174 tasks, all in English and Arabic. It only inserts rows whose English na
 already exist, so it is safe to re-run and never overwrites what an admin has edited. Before
 this, the catalog held only the "Cleaner" test entry created during Phase 1. Everything in it
 can be renamed, deactivated or extended from `/admin/professions`.
+
+## Nationalities
+
+A worker's nationality is now picked from a list (`lib/nationalities.ts`: every UN member
+state plus Palestine, Kosovo and Taiwan, with an "Other" catch-all) instead of typed freely,
+and is stored as an ISO country code such as `EG`, never as text. Before this, the same
+nationality could be stored several ways ("Egypt", "Egyptian", "مصري") and the browse filter
+treated them as different people. The name shown follows the viewer's language, Egyptian is
+pinned first in every list, and the browse filter now lists all nationalities rather than only
+those that currently have a worker. Rows saved before the change are converted with
+`supabase/sql/migrate_nationality_to_codes.sql`; any value that isn't a known code is shown as
+stored rather than hidden. Workers can't edit their nationality after onboarding yet.

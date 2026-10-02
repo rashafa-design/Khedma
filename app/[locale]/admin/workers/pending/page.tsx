@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { nationalityLabel } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/server";
 import type { ProfessionRow, ProfileRow, WorkerProfileRow } from "@/lib/types";
 import { ReviewActions } from "./review-actions";
@@ -65,7 +66,7 @@ export default async function AdminPendingWorkersPage({
             <div key={worker.id} className="rounded-md border border-gray-200 p-4">
               <p className="font-semibold">{profile?.full_name ?? "—"}</p>
               <p className="text-sm text-gray-600">
-                {profession?.[nameKey]} · {worker.nationality} ·{" "}
+                {profession?.[nameKey]} · {nationalityLabel(worker.nationality, locale)} ·{" "}
                 {worker.years_experience} {t("years")}
               </p>
               <ReviewActions

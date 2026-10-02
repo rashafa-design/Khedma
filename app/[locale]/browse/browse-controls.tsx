@@ -1,20 +1,21 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { nationalityOptions } from "@/lib/nationalities";
 import type { ProfessionRow } from "@/lib/types";
 
 export function BrowseControls({
   professions,
-  nationalities,
   nameKey,
 }: {
   professions: ProfessionRow[];
-  nationalities: string[];
   nameKey: "name_en" | "name_ar";
 }) {
   const t = useTranslations("browse");
+  const locale = useLocale();
+  const nationalities = nationalityOptions(locale);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -60,9 +61,9 @@ export function BrowseControls({
         className="rounded-md border border-gray-300 px-3 py-2 text-sm"
       >
         <option value="">{t("allNationalities")}</option>
-        {nationalities.map((nationality) => (
-          <option key={nationality} value={nationality}>
-            {nationality}
+        {nationalities.map((n) => (
+          <option key={n.code} value={n.code}>
+            {n.label}
           </option>
         ))}
       </select>

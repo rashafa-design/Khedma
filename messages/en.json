@@ -90,6 +90,7 @@
     "onboardingSubtitle": "An admin will review your ID before your profile is visible to clients.",
     "profession": "Profession",
     "nationality": "Nationality",
+    "selectNationality": "Select your nationality",
     "yearsExperience": "Years of experience",
     "idDocument": "National ID or residency permit",
     "idDocumentHint": "This is only ever seen by an admin reviewing your account, never by clients.",
