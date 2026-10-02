@@ -164,6 +164,11 @@
     "unlockError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
     "subscribeToUnlock": "اشترك لفتح بيانات التواصل",
     "noSlotsLeft": "لا توجد فتحات متبقية هذا الشهر",
+    "unlockedBadge": "✓ تم فتح البيانات",
+    "counterUnlocked": "تم فتح {used} من {total} عمال",
+    "counterLeft": "المتبقي {left}",
+    "counterValidUntil": "اشتراكك ساري حتى {date}",
+    "noActiveSubscription": "ليس لديك اشتراك نشط.",
     "unlockedBefore": "سبق أن فتحت بيانات هذا العامل ({date})",
     "confirmReunlock": "سبق أن فتحت بيانات هذا العامل بتاريخ {date}. فتحه مرة أخرى سيستهلك فتحة أخرى من فتحات هذا الشهر. هل تريد المتابعة؟",
     "phone": "الهاتف"

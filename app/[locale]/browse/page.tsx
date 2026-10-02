@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { nationalityLabel } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -111,8 +112,19 @@ export default async function BrowsePage({
   // admins browsing just see the listing with no unlock mechanic at all.
   const contactByWorkerId = new Map<string, ContactState>();
   const previousUnlockByWorkerId = new Map<string, string>();
+  const isClient = profile?.role === "client";
+  let slotCounter: { used: number; total: number; validUntil: string } | null =
+    null;
 
-  if (profile?.role === "client") {
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleDateString(locale, {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: "Africa/Cairo",
+    });
+
+  if (isClient) {
     const { data: subscription } = await supabase
       .from("subscriptions")
       .select("*")
@@ -158,6 +170,11 @@ export default async function BrowsePage({
     if (hasActiveSubscription && subscription) {
       slotsUsed = currentUnlocks.length;
       unlockedWorkerIds = new Set(currentUnlocks.map((u) => u.worker_profile_id));
+      slotCounter = {
+        used: slotsUsed,
+        total: subscription.slots_total,
+        validUntil: formatDate(subscription.expires_at),
+      };
 
       const phoneResults = await Promise.all(
         [...unlockedWorkerIds].map(async (workerProfileId) => {
@@ -215,6 +232,49 @@ export default async function BrowsePage({
     <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-6 px-4 py-16">
       <h1 className="text-2xl font-bold">{t("title")}</h1>
 
+      {isClient &&
+        (slotCounter ? (
+          <div className="sticky top-2 z-10 rounded-md border border-gray-200 bg-white p-3 shadow-sm">
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <p className="font-semibold">
+                {t("counterUnlocked", {
+                  used: slotCounter.used,
+                  total: slotCounter.total,
+                })}
+              </p>
+              <p
+                className={
+                  slotCounter.total - slotCounter.used === 0
+                    ? "font-semibold text-red-700"
+                    : "font-semibold"
+                }
+              >
+                {t("counterLeft", {
+                  left: slotCounter.total - slotCounter.used,
+                })}
+              </p>
+            </div>
+            <div className="mt-2 h-2 overflow-hidden rounded bg-gray-200">
+              <div
+                className="h-2 bg-gray-900"
+                style={{
+                  width: `${(slotCounter.used / slotCounter.total) * 100}%`,
+                }}
+              />
+            </div>
+            <p className="mt-1 text-xs text-gray-500">
+              {t("counterValidUntil", { date: slotCounter.validUntil })}
+            </p>
+          </div>
+        ) : (
+          <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm">
+            {t("noActiveSubscription")}{" "}
+            <Link href="/client/subscribe" className="font-medium underline">
+              {t("subscribeToUnlock")}
+            </Link>
+          </div>
+        ))}
+
       <BrowseControls
         professions={professions ?? []}
         nameKey={nameKey}
@@ -254,14 +314,7 @@ export default async function BrowsePage({
               contact={contactByWorkerId.get(worker.id) ?? { type: "hidden" }}
               previouslyUnlockedOn={
                 previousUnlockByWorkerId.has(worker.id)
-                  ? new Date(
-                      previousUnlockByWorkerId.get(worker.id)!
-                    ).toLocaleDateString(locale, {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                      timeZone: "Africa/Cairo",
-                    })
+                  ? formatDate(previousUnlockByWorkerId.get(worker.id)!)
                   : null
               }
             />

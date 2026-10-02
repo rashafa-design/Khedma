@@ -164,6 +164,11 @@
     "unlockError": "Something went wrong. Please try again.",
     "subscribeToUnlock": "Subscribe to unlock contacts",
     "noSlotsLeft": "No unlock slots left this month",
+    "unlockedBadge": "✓ Unlocked",
+    "counterUnlocked": "{used} of {total} workers unlocked",
+    "counterLeft": "{left} left",
+    "counterValidUntil": "Your access lasts until {date}",
+    "noActiveSubscription": "You don't have an active subscription.",
     "unlockedBefore": "You unlocked this worker before ({date})",
     "confirmReunlock": "You already unlocked this worker on {date}. Unlocking again uses another one of this month's slots. Continue?",
     "phone": "Phone"

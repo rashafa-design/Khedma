@@ -328,3 +328,13 @@ new table or SQL. Only unlocking is tracked: contacting a worker happens outside
 or WhatsApp) and merely looking at a card isn't recorded, so "unlocked" is the one signal the
 app can honestly give. The rule that an expired month re-locks everyone, and that re-unlocking
 costs a slot, is unchanged.
+
+## Unlock counter and "unlocked" sign
+
+For clients, `/browse` now shows a banner pinned near the top: "2 of 10 workers unlocked", "8 left",
+a progress bar and "Your access lasts until <date>" (the "left" count turns red at zero). A client
+with no active subscription sees a notice with a Subscribe link instead. Workers whose contact the
+client has unlocked this month carry a green "✓ Unlocked" sign next to their phone number, alongside
+the amber "unlocked before" sign for earlier months. Both are derived from the existing
+subscription and unlock rows; no new table or SQL. Only unlocking is tracked - just viewing a card is
+not recorded.
