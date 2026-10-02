@@ -73,6 +73,7 @@
     "memberSince": "Member since",
     "subscriptionTitle": "Your subscription",
     "unlockedWorkers": "Workers unlocked",
+    "unlockedOf": "{used} of {total}",
     "slotsLeft": "Slots left",
     "accessUntil": "Access until",
     "noActiveSubscription": "You don't have an active subscription.",

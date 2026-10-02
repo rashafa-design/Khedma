@@ -73,6 +73,7 @@
     "memberSince": "عضو منذ",
     "subscriptionTitle": "اشتراكك",
     "unlockedWorkers": "العمال الذين تم فتحهم",
+    "unlockedOf": "{used} من {total}",
     "slotsLeft": "الفتحات المتبقية",
     "accessUntil": "الوصول حتى",
     "noActiveSubscription": "ليس لديك اشتراك نشط.",

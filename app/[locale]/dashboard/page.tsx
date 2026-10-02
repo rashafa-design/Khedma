@@ -124,7 +124,7 @@ export default async function DashboardPage({
       summaryRows = [
         {
           label: t("unlockedWorkers"),
-          value: `${used} / ${subscription.slots_total}`,
+          value: t("unlockedOf", { used, total: subscription.slots_total }),
         },
         { label: t("slotsLeft"), value: String(subscription.slots_total - used) },
         { label: t("accessUntil"), value: formatDate(subscription.expires_at) },
