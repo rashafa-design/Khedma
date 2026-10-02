@@ -305,8 +305,9 @@ can be renamed, deactivated or extended from `/admin/professions`.
 
 ## Nationalities
 
-A worker's nationality is now picked from a list (`lib/nationalities.ts`: every UN member
-state plus Palestine, Kosovo and Taiwan, with an "Other" catch-all) instead of typed freely,
+A worker's nationality is now picked from a hand-curated list (`lib/nationalities.ts`: UN
+member states plus Palestine, Kosovo and Taiwan, with an "Other" catch-all; entries are added
+or removed by editing that file) instead of typed freely,
 and is stored as an ISO country code such as `EG`, never as text. Before this, the same
 nationality could be stored several ways ("Egypt", "Egyptian", "مصري") and the browse filter
 treated them as different people. The name shown follows the viewer's language, Egyptian is

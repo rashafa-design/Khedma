@@ -1,5 +1,5 @@
-// Every UN member state plus Palestine, Kosovo and Taiwan, as nationalities
-// (demonyms), in English and Arabic. A worker's nationality is stored as the
+// A hand-curated list of nationalities (demonyms) in English and Arabic - add or
+// remove entries here. A worker's nationality is stored as the
 // ISO 3166-1 code (e.g. "EG"), never as typed text, so "Egypt" / "Egyptian" /
 // "مصري" can't end up as three different values - and the name shown follows
 // the viewer's language. "XX" is the catch-all for anything not listed.
@@ -88,7 +88,6 @@ const RAW: [code: string, en: string, ar: string][] = [
   ["IR", "Iranian", "إيراني"],
   ["IQ", "Iraqi", "عراقي"],
   ["IE", "Irish", "أيرلندي"],
-  ["IL", "Israeli", "إسرائيلي"],
   ["IT", "Italian", "إيطالي"],
   ["CI", "Ivorian", "إيفواري"],
   ["JM", "Jamaican", "جامايكي"],
