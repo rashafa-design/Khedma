@@ -8,9 +8,11 @@ import { createClient } from "@/lib/supabase/client";
 export function UnlockButton({
   subscriptionId,
   workerProfileId,
+  previouslyUnlockedOn,
 }: {
   subscriptionId: string;
   workerProfileId: string;
+  previouslyUnlockedOn: string | null;
 }) {
   const t = useTranslations("browse");
   const router = useRouter();
@@ -19,6 +21,13 @@ export function UnlockButton({
   const [error, setError] = useState<string | null>(null);
 
   async function handleClick() {
+    if (
+      previouslyUnlockedOn &&
+      !window.confirm(t("confirmReunlock", { date: previouslyUnlockedOn }))
+    ) {
+      return;
+    }
+
     setSubmitting(true);
     setError(null);
 

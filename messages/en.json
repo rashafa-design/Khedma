@@ -164,6 +164,8 @@
     "unlockError": "Something went wrong. Please try again.",
     "subscribeToUnlock": "Subscribe to unlock contacts",
     "noSlotsLeft": "No unlock slots left this month",
+    "unlockedBefore": "You unlocked this worker before ({date})",
+    "confirmReunlock": "You already unlocked this worker on {date}. Unlocking again uses another one of this month's slots. Continue?",
     "phone": "Phone"
   },
   "payment": {

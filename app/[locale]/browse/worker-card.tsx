@@ -31,6 +31,7 @@ export async function WorkerCard({
   taskTypes,
   nameKey,
   contact,
+  previouslyUnlockedOn,
 }: {
   workerProfileId: string;
   fullName: string;
@@ -43,6 +44,7 @@ export async function WorkerCard({
   taskTypes: TaskTypeRow[];
   nameKey: "name_en" | "name_ar";
   contact: ContactState;
+  previouslyUnlockedOn: string | null;
 }) {
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
@@ -69,6 +71,11 @@ export async function WorkerCard({
             </span>
           )}
         </div>
+        {previouslyUnlockedOn && contact.type !== "unlocked" && (
+          <p className="mt-1 inline-block rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900">
+            {t("unlockedBefore", { date: previouslyUnlockedOn })}
+          </p>
+        )}
         <p className="text-sm text-gray-600">
           {profession?.[nameKey]} · {nationality} · {yearsExperience}{" "}
           {t("years")}
@@ -96,6 +103,7 @@ export async function WorkerCard({
             <UnlockButton
               subscriptionId={contact.subscriptionId}
               workerProfileId={workerProfileId}
+              previouslyUnlockedOn={previouslyUnlockedOn}
             />
           )}
           {contact.type === "no_slots" && (

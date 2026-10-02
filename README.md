@@ -315,3 +315,16 @@ pinned first in every list, and the browse filter now lists all nationalities ra
 those that currently have a worker. Rows saved before the change are converted with
 `supabase/sql/migrate_nationality_to_codes.sql`; any value that isn't a known code is shown as
 stored rather than hidden. Workers can't edit their nationality after onboarding yet.
+
+## "Unlocked before" flag
+
+Contact numbers re-lock when a month ends, so a client who pays again has no way to tell which
+workers they already spent a slot on. On `/browse`, any worker the client unlocked in an
+EARLIER month now carries an amber "You unlocked this worker before (date)" badge, and pressing
+Unlock on one asks for confirmation first ("unlocking again uses another slot"). Workers
+unlocked in the CURRENT month show their phone number as before, with no badge. The history
+comes from the existing `unlocks` rows (they stay after a subscription expires), so there is no
+new table or SQL. Only unlocking is tracked: contacting a worker happens outside the app (call
+or WhatsApp) and merely looking at a card isn't recorded, so "unlocked" is the one signal the
+app can honestly give. The rule that an expired month re-locks everyone, and that re-unlocking
+costs a slot, is unchanged.

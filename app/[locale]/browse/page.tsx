@@ -110,6 +110,7 @@ export default async function BrowsePage({
   // subscription) per worker - only meaningful for clients. Workers and
   // admins browsing just see the listing with no unlock mechanic at all.
   const contactByWorkerId = new Map<string, ContactState>();
+  const previousUnlockByWorkerId = new Map<string, string>();
 
   if (profile?.role === "client") {
     const { data: subscription } = await supabase
@@ -123,19 +124,40 @@ export default async function BrowsePage({
     const hasActiveSubscription =
       !!subscription && new Date(subscription.expires_at) > new Date();
 
+    // Every unlock this client ever made, across all their months (RLS already
+    // limits this to their own). Newest first, so the first one seen per
+    // worker is the most recent time they spent a slot on them.
+    const { data: allUnlocks } = await supabase
+      .from("unlocks")
+      .select("*")
+      .order("unlocked_at", { ascending: false })
+      .returns<UnlockRow[]>();
+
+    const currentSubscriptionId =
+      hasActiveSubscription && subscription ? subscription.id : null;
+    const currentUnlocks = (allUnlocks ?? []).filter(
+      (u) => u.subscription_id === currentSubscriptionId
+    );
+
+    // Workers unlocked in an EARLIER month: once that month ends the contact
+    // number re-locks, so without this flag nothing tells the client they've
+    // already paid a slot to see this person and would pay again.
+    for (const u of allUnlocks ?? []) {
+      if (
+        u.subscription_id !== currentSubscriptionId &&
+        !previousUnlockByWorkerId.has(u.worker_profile_id)
+      ) {
+        previousUnlockByWorkerId.set(u.worker_profile_id, u.unlocked_at);
+      }
+    }
+
     let unlockedWorkerIds = new Set<string>();
     let phoneByWorkerId = new Map<string, string | null>();
     let slotsUsed = 0;
 
     if (hasActiveSubscription && subscription) {
-      const { data: unlocks } = await supabase
-        .from("unlocks")
-        .select("*")
-        .eq("subscription_id", subscription.id)
-        .returns<UnlockRow[]>();
-
-      slotsUsed = unlocks?.length ?? 0;
-      unlockedWorkerIds = new Set((unlocks ?? []).map((u) => u.worker_profile_id));
+      slotsUsed = currentUnlocks.length;
+      unlockedWorkerIds = new Set(currentUnlocks.map((u) => u.worker_profile_id));
 
       const phoneResults = await Promise.all(
         [...unlockedWorkerIds].map(async (workerProfileId) => {
@@ -230,6 +252,18 @@ export default async function BrowsePage({
               taskTypes={taskTypes ?? []}
               nameKey={nameKey}
               contact={contactByWorkerId.get(worker.id) ?? { type: "hidden" }}
+              previouslyUnlockedOn={
+                previousUnlockByWorkerId.has(worker.id)
+                  ? new Date(
+                      previousUnlockByWorkerId.get(worker.id)!
+                    ).toLocaleDateString(locale, {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      timeZone: "Africa/Cairo",
+                    })
+                  : null
+              }
             />
           );
         })}
