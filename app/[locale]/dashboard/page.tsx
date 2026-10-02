@@ -77,7 +77,7 @@ export default async function DashboardPage({
         ? t("greetingAfternoon", { name: firstName })
         : t("greetingEvening", { name: firstName });
 
-  const intro =
+  let intro =
     profile.role === "worker"
       ? t("introWorker")
       : profile.role === "admin"
@@ -143,6 +143,7 @@ export default async function DashboardPage({
       .maybeSingle<WorkerProfileRow>();
 
     if (!workerProfile) {
+      intro = t("introWorkerNew");
       summaryNote = t("noWorkerProfile");
       summaryAction = {
         href: "/worker/onboarding",
@@ -160,6 +161,12 @@ export default async function DashboardPage({
           .select("*", { count: "exact", head: true })
           .eq("worker_profile_id", workerProfile.id),
       ]);
+
+      if (workerProfile.status === "pending_review") {
+        intro = t("introWorkerPending");
+      } else if (workerProfile.status === "rejected") {
+        intro = t("introWorkerRejected");
+      }
 
       const statusLabel =
         workerProfile.status === "approved"
