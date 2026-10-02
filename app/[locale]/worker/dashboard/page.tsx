@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { createClient } from "@/lib/supabase/server";
 import type {
   ProfessionRow,
@@ -73,11 +72,7 @@ export default async function WorkerDashboardPage({
   const nameKey = locale === "ar" ? "name_ar" : "name_en";
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-8 px-4 py-16">
-      <div className="flex justify-end">
-        <LocaleSwitcher />
-      </div>
-
+    <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-8 px-4 py-16">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">{t("dashboardTitle")}</h1>

@@ -33,7 +33,7 @@ export default async function CompleteProfilePage({
   const t = await getTranslations("auth");
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 px-4 py-16">
+    <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-sm flex-col justify-center gap-6 px-4 py-16">
       <h1 className="text-center text-2xl font-bold">
         {t("completeProfileTitle")}
       </h1>

@@ -1,5 +1,4 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 
 const APK_URL =
   "https://github.com/rashafa-design/Khedma/releases/latest/download/Khedma.apk";
@@ -15,11 +14,7 @@ export default async function DownloadPage({
   const t = await getTranslations("download");
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 px-4 py-16">
-      <div className="flex justify-end">
-        <LocaleSwitcher />
-      </div>
-
+    <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-sm flex-col justify-center gap-6 px-4 py-16">
       <div>
         <h1 className="text-2xl font-bold">{t("title")}</h1>
         <p className="mt-2 text-sm text-gray-600">{t("subtitle")}</p>

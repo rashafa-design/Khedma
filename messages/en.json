@@ -5,6 +5,17 @@
     "arabic": "Arabic",
     "english": "English"
   },
+  "nav": {
+    "dashboard": "Dashboard",
+    "browse": "Browse workers",
+    "subscription": "My subscription",
+    "myListing": "My listing",
+    "admin": "Admin",
+    "login": "Log in",
+    "signup": "Sign up",
+    "androidApp": "Android app",
+    "signOut": "Sign out"
+  },
   "home": {
     "title": "Find trusted workers for your home or business",
     "subtitle": "Browse verified cleaners, caterers, drivers, and more. Pay only when you're ready to unlock their contact details.",

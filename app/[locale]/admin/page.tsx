@@ -49,7 +49,7 @@ export default async function AdminOverviewPage({
   ];
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 px-4 py-16">
+    <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-6 px-4 py-16">
       <h1 className="text-2xl font-bold">{t("overviewTitle")}</h1>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

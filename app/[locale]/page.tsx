@@ -1,5 +1,4 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Link } from "@/i18n/navigation";
 
 export default async function HomePage({
@@ -14,11 +13,7 @@ export default async function HomePage({
   const tCommon = await getTranslations("common");
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-8 px-4 py-16 text-center">
-      <div className="flex justify-end">
-        <LocaleSwitcher />
-      </div>
-
+    <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col justify-center gap-8 px-4 py-16 text-center">
       <div>
         <h1 className="text-3xl font-bold">{tCommon("appName")}</h1>
         <p className="mt-4 text-xl font-semibold">{t("title")}</p>

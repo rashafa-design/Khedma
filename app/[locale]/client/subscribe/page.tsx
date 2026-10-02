@@ -59,7 +59,7 @@ export default async function ClientSubscribePage({
 
   if (latestPayment?.status === "pending") {
     return (
-      <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-4 px-4 py-16 text-center">
+      <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-sm flex-col justify-center gap-4 px-4 py-16 text-center">
         <h1 className="text-xl font-bold">{t("pendingTitle")}</h1>
         <p className="text-gray-600">{t("pendingBody")}</p>
       </main>
@@ -70,7 +70,7 @@ export default async function ClientSubscribePage({
     process.env.NEXT_PUBLIC_PAYMENT_PHONE_NUMBER || "01000000000";
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 px-4 py-16">
+    <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-sm flex-col justify-center gap-6 px-4 py-16">
       <div>
         <h1 className="text-2xl font-bold">{t("subscribeTitle")}</h1>
         <p className="mt-2 text-sm text-gray-600">{t("explainerBody")}</p>

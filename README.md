@@ -278,3 +278,17 @@ the admin nav bar) showing three counts - pending worker reviews, pending paymen
 active subscriptions - with the first two clickable straight through to their review
 queues. Purely cosmetic/convenience, no new tables or logic. No new SQL or env vars
 needed.
+
+## Site navigation
+
+Every page now sits under one shared, role-aware header (`components/site-header.tsx`,
+mounted in `app/[locale]/layout.tsx`) instead of each page carrying its own language
+switcher. It shows the brand (links to the dashboard when signed in, home otherwise), the
+language switcher, a sign-out button when signed in, and a row of links that depends on who
+is signed in: signed out gets Log in / Sign up / Android app; clients get Dashboard / Browse
+workers / My subscription; workers get Dashboard / My listing; admins get Dashboard /
+Admin / Browse workers (the admin screens keep their own sub-nav underneath). The current
+page's link is highlighted, and the link row scrolls sideways on narrow phone screens rather
+than wrapping. Page heights were reduced from `min-h-screen` to
+`min-h-[calc(100vh-7rem)]` so the header doesn't cause a pointless extra scrollbar.
+No new SQL or env vars.

@@ -1,10 +1,8 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { ProfileRow } from "@/lib/types";
-import { SignOutButton } from "./sign-out-button";
 
 export default async function DashboardPage({
   params,
@@ -42,21 +40,14 @@ export default async function DashboardPage({
         : t("roleClient");
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 px-4 py-16">
-      <div className="flex justify-end">
-        <LocaleSwitcher />
-      </div>
-
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-lg font-semibold">
-            {t("welcome")}, {profile.full_name}
-          </p>
-          <p className="text-sm text-gray-600">
-            {user.email} · {t("role")}: {roleLabel}
-          </p>
-        </div>
-        <SignOutButton />
+    <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-6 px-4 py-16">
+      <div>
+        <p className="text-lg font-semibold">
+          {t("welcome")}, {profile.full_name}
+        </p>
+        <p className="text-sm text-gray-600">
+          {user.email} · {t("role")}: {roleLabel}
+        </p>
       </div>
 
       {profile.role === "worker" && (
