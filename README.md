@@ -354,3 +354,6 @@ The signed-in user's name (with their role underneath) now sits in the header on
 the Khedma logo, and links to the dashboard. Long names are cut off with an ellipsis so they can't push
 the language and sign-out buttons off a phone screen; the full name shows on hover. If someone signed in
 with Google and hasn't finished their profile yet, their email is shown instead.
+
+## Seen / viewed / unlocked markers (Phase 12)
+Run `supabase/sql/phase12_worker_views.sql` once. For clients, every worker card on Browse is colour-coded: green = unlocked now, amber = unlocked in a past month, blue = viewed only, white = not seen yet. A card counts as "viewed" once it has been mostly on screen for 2 seconds (`view-tracker.tsx`, writes to `worker_views`). A "Show" filter (all / new / viewed only / unlocked) sits with the other filters. Views are kept across subscription months.

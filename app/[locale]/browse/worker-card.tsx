@@ -7,6 +7,7 @@ import type {
   WorkerTaskEntryRow,
 } from "@/lib/types";
 import { UnlockButton } from "./unlock-button";
+import { ViewTracker } from "./view-tracker";
 
 function capitalize(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
@@ -32,6 +33,8 @@ export async function WorkerCard({
   nameKey,
   contact,
   previouslyUnlockedOn,
+  viewedOn,
+  trackView,
 }: {
   workerProfileId: string;
   fullName: string;
@@ -45,12 +48,31 @@ export async function WorkerCard({
   nameKey: "name_en" | "name_ar";
   contact: ContactState;
   previouslyUnlockedOn: string | null;
+  viewedOn: string | null;
+  trackView: boolean;
 }) {
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
 
+  // One look per state, so a client can tell at a glance what they have
+  // already unlocked, unlocked in a past month, only looked at, or not seen.
+  const showViewed =
+    !!viewedOn && contact.type !== "unlocked" && !previouslyUnlockedOn;
+  const stateStyle =
+    contact.type === "unlocked"
+      ? "border-green-400 bg-green-50"
+      : previouslyUnlockedOn
+        ? "border-amber-400 bg-amber-50"
+        : showViewed
+          ? "border-sky-300 bg-sky-50"
+          : "border-gray-200 bg-white";
+
   return (
-    <div className="flex gap-4 rounded-md border border-gray-200 p-4">
+    <ViewTracker
+      workerProfileId={workerProfileId}
+      enabled={trackView && !viewedOn && contact.type !== "unlocked" && !previouslyUnlockedOn}
+      className={`flex gap-4 rounded-md border p-4 ${stateStyle}`}
+    >
       {photoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -79,6 +101,11 @@ export async function WorkerCard({
         {previouslyUnlockedOn && contact.type !== "unlocked" && (
           <p className="mt-1 inline-block rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-900">
             {t("unlockedBefore", { date: previouslyUnlockedOn })}
+          </p>
+        )}
+        {showViewed && (
+          <p className="mt-1 inline-block rounded bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-900">
+            {t("viewedBefore", { date: viewedOn })}
           </p>
         )}
         <p className="text-sm text-gray-600">
@@ -124,6 +151,6 @@ export async function WorkerCard({
           )}
         </div>
       </div>
-    </div>
+    </ViewTracker>
   );
 }

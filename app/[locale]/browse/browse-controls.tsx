@@ -9,9 +9,11 @@ import type { ProfessionRow } from "@/lib/types";
 export function BrowseControls({
   professions,
   nameKey,
+  showSeenFilter,
 }: {
   professions: ProfessionRow[];
   nameKey: "name_en" | "name_ar";
+  showSeenFilter: boolean;
 }) {
   const t = useTranslations("browse");
   const locale = useLocale();
@@ -67,6 +69,19 @@ export function BrowseControls({
           </option>
         ))}
       </select>
+
+      {showSeenFilter && (
+        <select
+          value={searchParams.get("seen") ?? ""}
+          onChange={(e) => updateParam("seen", e.target.value)}
+          className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+        >
+          <option value="">{t("seenAll")}</option>
+          <option value="new">{t("seenNew")}</option>
+          <option value="viewed">{t("seenViewed")}</option>
+          <option value="unlocked">{t("seenUnlocked")}</option>
+        </select>
+      )}
 
       <select
         value={searchParams.get("sort") ?? "newest"}

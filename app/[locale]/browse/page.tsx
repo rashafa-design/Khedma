@@ -112,6 +112,8 @@ export default async function BrowsePage({
   // admins browsing just see the listing with no unlock mechanic at all.
   const contactByWorkerId = new Map<string, ContactState>();
   const previousUnlockByWorkerId = new Map<string, string>();
+  const viewedByWorkerId = new Map<string, string>();
+  const unlockedNowIds = new Set<string>();
   const isClient = profile?.role === "client";
   let slotCounter: { used: number; total: number; validUntil: string } | null =
     null;
@@ -163,6 +165,16 @@ export default async function BrowsePage({
       }
     }
 
+    // Workers this client has looked at (cards that stayed on screen), kept
+    // across months. RLS limits this to their own rows.
+    const { data: views } = await supabase
+      .from("worker_views")
+      .select("worker_profile_id, first_viewed_at")
+      .returns<{ worker_profile_id: string; first_viewed_at: string }[]>();
+    for (const v of views ?? []) {
+      viewedByWorkerId.set(v.worker_profile_id, v.first_viewed_at);
+    }
+
     let unlockedWorkerIds = new Set<string>();
     let phoneByWorkerId = new Map<string, string | null>();
     let slotsUsed = 0;
@@ -170,6 +182,7 @@ export default async function BrowsePage({
     if (hasActiveSubscription && subscription) {
       slotsUsed = currentUnlocks.length;
       unlockedWorkerIds = new Set(currentUnlocks.map((u) => u.worker_profile_id));
+      unlockedWorkerIds.forEach((id) => unlockedNowIds.add(id));
       slotCounter = {
         used: slotsUsed,
         total: subscription.slots_total,
@@ -216,6 +229,19 @@ export default async function BrowsePage({
     );
     if (entries.length === 0) return Infinity;
     return Math.min(...entries.map((e) => e.price));
+  }
+
+  // "Have I dealt with this worker before?" filter. unlocked = unlocked now or
+  // in an earlier month; viewed = only looked at; new = neither.
+  const seenFilter = typeof sp.seen === "string" ? sp.seen : "";
+  const stateOf = (workerId: string) =>
+    unlockedNowIds.has(workerId) || previousUnlockByWorkerId.has(workerId)
+      ? "unlocked"
+      : viewedByWorkerId.has(workerId)
+        ? "viewed"
+        : "new";
+  if (isClient && (seenFilter === "new" || seenFilter === "viewed" || seenFilter === "unlocked")) {
+    workerList = workerList.filter((w) => stateOf(w.id) === seenFilter);
   }
 
   const sorted = [...workerList].sort((a, b) => {
@@ -275,9 +301,27 @@ export default async function BrowsePage({
           </div>
         ))}
 
+      {isClient && (
+        <ul className="flex flex-wrap gap-2 text-xs">
+          <li className="rounded border border-green-400 bg-green-50 px-2 py-1">
+            {t("legendUnlocked")}
+          </li>
+          <li className="rounded border border-amber-400 bg-amber-50 px-2 py-1">
+            {t("legendUnlockedBefore")}
+          </li>
+          <li className="rounded border border-sky-300 bg-sky-50 px-2 py-1">
+            {t("legendViewed")}
+          </li>
+          <li className="rounded border border-gray-200 bg-white px-2 py-1">
+            {t("legendNew")}
+          </li>
+        </ul>
+      )}
+
       <BrowseControls
         professions={professions ?? []}
         nameKey={nameKey}
+        showSeenFilter={isClient}
       />
 
       <div className="flex flex-col gap-4">
@@ -317,6 +361,12 @@ export default async function BrowsePage({
                   ? formatDate(previousUnlockByWorkerId.get(worker.id)!)
                   : null
               }
+              viewedOn={
+                viewedByWorkerId.has(worker.id)
+                  ? formatDate(viewedByWorkerId.get(worker.id)!)
+                  : null
+              }
+              trackView={isClient}
             />
           );
         })}
