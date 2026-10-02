@@ -292,3 +292,13 @@ page's link is highlighted, and the link row scrolls sideways on narrow phone sc
 than wrapping. Page heights were reduced from `min-h-screen` to
 `min-h-[calc(100vh-7rem)]` so the header doesn't cause a pointless extra scrollbar.
 No new SQL or env vars.
+
+## Starter catalog of professions and tasks
+
+`supabase/sql/seed_professions_and_tasks.sql` holds the starter list that was loaded on
+2026-10-02: 41 professions (home repair trades, appliance/AC/TV technicians, beauty and
+barbers, cooks and caterers, childcare and care, drivers and movers, car services, and more)
+with 174 tasks, all in English and Arabic. It only inserts rows whose English name doesn't
+already exist, so it is safe to re-run and never overwrites what an admin has edited. Before
+this, the catalog held only the "Cleaner" test entry created during Phase 1. Everything in it
+can be renamed, deactivated or extended from `/admin/professions`.
