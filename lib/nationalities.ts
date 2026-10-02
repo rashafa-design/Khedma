@@ -85,7 +85,6 @@ const RAW: [code: string, en: string, ar: string][] = [
   ["IS", "Icelandic", "آيسلندي"],
   ["IN", "Indian", "هندي"],
   ["ID", "Indonesian", "إندونيسي"],
-  ["IR", "Iranian", "إيراني"],
   ["IQ", "Iraqi", "عراقي"],
   ["IE", "Irish", "أيرلندي"],
   ["IT", "Italian", "إيطالي"],
