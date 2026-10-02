@@ -338,3 +338,14 @@ client has unlocked this month carry a green "✓ Unlocked" sign next to their p
 the amber "unlocked before" sign for earlier months. Both are derived from the existing
 subscription and unlock rows; no new table or SQL. Only unlocking is tracked - just viewing a card is
 not recorded.
+
+## Dashboard welcome and user information
+
+`/dashboard` now opens with a welcome - "Welcome to Khedma, <first name>!" for an account less than a day
+old, otherwise a greeting that follows the time of day in Egypt ("Good morning/afternoon/evening, ...") -
+with a one-line intro for the user's role. Below it are two cards. "Your information" lists name, email,
+phone, role and the month they joined. The card above it depends on the role: clients see their
+subscription (workers unlocked, slots left, access end date) or a Subscribe prompt; workers see their
+listing (profession, nationality, experience, review status, availability, number of services) with a
+link to manage it or finish applying; admins see the pending worker and payment counts. All read-only
+from existing tables; no new SQL.
