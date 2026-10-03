@@ -30,3 +30,8 @@ android-keystore-*.zip
 *.apk
 /API key/
 *.docx
+
+# the Android signing key backup (key + password) - must never be committed
+/Khedma-signing-key-BACKUP/
+PASSWORD.txt
+fingerprint.txt
