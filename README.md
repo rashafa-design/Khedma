@@ -377,3 +377,6 @@ Run `supabase/sql/phase16_push_subscriptions.sql` once. Workers and clients tap 
 - A daily cron (`vercel.json` -> `/api/cron/reminders`, protected by `CRON_SECRET`) nudges workers whose 2-weekly / 3-monthly check-ins are due.
 - Inside the Android app this needs `enableNotifications: true` in `android/twa-manifest.json` (done, version 1.1.0) and a rebuild + reinstall of the APK. In plain Chrome it works without that.
 - NEVER commit keystores, APKs or key notes: they are in `.gitignore` now (an earlier `git add -A` pushed them to the public repo - see the security note in the conversation / rotate the signing key).
+
+## Android signing key was replaced (2026-10-03)
+The first signing key was accidentally committed to this public repo, so it was retired. The new key (fingerprint in `public/.well-known/assetlinks.json`) and its password are kept OUTSIDE the repo in `C:\Rasha Drive\Khedma-signing-key-BACKUP` and in two GitHub secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`). Keep a second backup of that folder somewhere safe (password manager / private cloud): if the key and password are lost, the app can never be updated again, only replaced.
