@@ -143,6 +143,13 @@ export default async function ClientSubscriptionPage({
           (u) => u.subscription_id === subscription.id
         );
         const used = planUnlocks.length;
+        // Only workers whose kind of work fits this plan show a number.
+        const visibleUnlocks = planUnlocks.filter((u) =>
+          unlockedById
+            .get(u.worker_profile_id)
+            ?.workerProfile.work_types.includes(plan)
+        );
+        const hiddenCount = planUnlocks.length - visibleUnlocks.length;
 
         return (
           <section key={plan} className="flex flex-col gap-3">
@@ -158,11 +165,17 @@ export default async function ClientSubscriptionPage({
               </p>
             </div>
 
-            {planUnlocks.length === 0 ? (
+            {hiddenCount > 0 && (
+              <p className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950">
+                {t("hiddenUnlocks", { count: hiddenCount })}
+              </p>
+            )}
+
+            {visibleUnlocks.length === 0 ? (
               <p className="text-sm text-gray-600">{t("noneUnlockedYet")}</p>
             ) : (
               <ul className="flex flex-col gap-2">
-                {planUnlocks.map((unlock) => {
+                {visibleUnlocks.map((unlock) => {
                   const worker = unlockedById.get(unlock.worker_profile_id);
                   if (!worker) return null;
                   return (

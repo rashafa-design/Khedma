@@ -646,6 +646,7 @@
     "unlockedWorkers": "Unlocked workers",
     "noPhone": "No phone number on file",
     "browseMore": "Browse more workers",
+    "hiddenUnlocks": "{count} earlier unlock(s) used a slot of this plan but are for a different kind of worker, so their number is not shown. To see it, get the plan that matches that worker.",
     "noneUnlockedYet": "You haven't unlocked anyone yet."
   },
   "adminPayments": {

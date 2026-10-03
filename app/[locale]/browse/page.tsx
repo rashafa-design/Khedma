@@ -319,8 +319,26 @@ export default async function BrowsePage({
       }
     }
 
+    // An unlock only counts as "unlocked" (and reveals the number) when the
+    // plan it was made under fits the worker's kind of work. Older unlocks
+    // made before the two plans existed may not - they still used up a slot,
+    // but they show nothing.
+    const planBySubscriptionId = new Map(
+      (subscriptionRows ?? []).map((s) => [s.id, s.plan] as const)
+    );
+    const workTypesByWorkerId = new Map(
+      (workers ?? []).map((w) => [w.id, w.work_types] as const)
+    );
     const unlockedWorkerIds = new Set(
-      currentUnlocks.map((u) => u.worker_profile_id)
+      currentUnlocks
+        .filter((u) => {
+          const plan = planBySubscriptionId.get(u.subscription_id);
+          return (
+            !!plan &&
+            (workTypesByWorkerId.get(u.worker_profile_id) ?? []).includes(plan)
+          );
+        })
+        .map((u) => u.worker_profile_id)
     );
     unlockedWorkerIds.forEach((id) => unlockedNowIds.add(id));
 
