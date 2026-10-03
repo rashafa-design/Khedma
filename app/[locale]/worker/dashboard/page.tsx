@@ -128,6 +128,10 @@ export default async function WorkerDashboardPage({
             key: "itemNeighborhood",
             done: workerProfile.service_neighborhoods.length > 0,
           },
+          {
+            key: "itemTransport",
+            done: workerProfile.transport_fee !== null,
+          },
         ]
       : []),
   ];
@@ -214,6 +218,7 @@ export default async function WorkerDashboardPage({
         neighborhoods={workerProfile.service_neighborhoods}
         worksByVisits={workerProfile.work_types.includes("visits")}
         suggestions={neighborhoodSuggestions}
+        transportFee={workerProfile.transport_fee}
       />
 
       <div>
@@ -233,6 +238,7 @@ export default async function WorkerDashboardPage({
           taskTypes={taskTypes ?? []}
           professions={heldProfessions}
           nameKey={nameKey}
+          worksByVisits={worksByVisits}
         />
       )}
 

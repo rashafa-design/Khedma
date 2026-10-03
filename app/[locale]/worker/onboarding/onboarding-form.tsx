@@ -34,6 +34,7 @@ export function OnboardingForm({
   const [professionId, setProfessionId] = useState("");
   const [workTypes, setWorkTypes] = useState<WorkType[]>([]);
   const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
+  const [transportFee, setTransportFee] = useState("");
   const [nationality, setNationality] = useState("");
   const [yearsExperience, setYearsExperience] = useState("");
   const [baseGovernorate, setBaseGovernorate] = useState("");
@@ -59,6 +60,12 @@ export function OnboardingForm({
 
     if (workTypes.includes("visits") && neighborhoods.length === 0) {
       setError(tLocation("neighborhoodsRequired"));
+      return;
+    }
+
+    const feeNumber = transportFee.trim() === "" ? null : Number(transportFee);
+    if (workTypes.includes("visits") && (feeNumber === null || !(feeNumber >= 0))) {
+      setError(tLocation("transportRequired"));
       return;
     }
 
@@ -105,6 +112,8 @@ export function OnboardingForm({
       base_governorate: baseGovernorate,
       work_types: workTypes,
       service_neighborhoods: neighborhoods,
+      transport_fee:
+        workTypes.includes("visits") && feeNumber !== null ? feeNumber : null,
       response_terms_accepted_at: new Date().toISOString(),
       years_experience: Number(yearsExperience) || 0,
       id_document_path: idPath,
@@ -226,6 +235,28 @@ export function OnboardingForm({
           {tLocation("neighborhoodsHint")}
         </span>
       </div>
+
+      {workTypes.includes("visits") && (
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="font-medium">{tLocation("transportTitle")}</span>
+          <span className="rounded-md border border-amber-300 bg-amber-50 p-2 text-xs text-amber-950">
+            {tLocation("transportSeparateNote")}
+          </span>
+          <input
+            type="number"
+            min={0}
+            max={10000}
+            step={1}
+            value={transportFee}
+            placeholder="0"
+            onChange={(e) => setTransportFee(e.target.value)}
+            className="rounded-md border border-gray-300 px-3 py-2 text-base"
+          />
+          <span className="text-xs text-gray-500">
+            {tLocation("transportHint")}
+          </span>
+        </label>
+      )}
 
       <input
         type="number"

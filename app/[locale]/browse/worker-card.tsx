@@ -34,6 +34,8 @@ export async function WorkerCard({
   professionNames,
   workTypes,
   neighborhoods,
+  transportFee,
+  showTransport,
   nationality,
   livesIn,
   worksIn,
@@ -55,6 +57,8 @@ export async function WorkerCard({
   professionNames: string[];
   workTypes: WorkType[];
   neighborhoods: string[];
+  transportFee: number | null;
+  showTransport: boolean;
   nationality: string;
   livesIn: string;
   worksIn: string[];
@@ -160,6 +164,18 @@ export async function WorkerCard({
               : list.format(worksIn)}
           </span>
         </p>
+        {showTransport && (
+          <p className="mt-1 text-sm text-gray-700">
+            🚕 {t("transportLabel")}:{" "}
+            <span className="font-medium">
+              {transportFee === null
+                ? t("transportNotStated")
+                : transportFee === 0
+                  ? t("transportFree")
+                  : t("transportFee", { fee: transportFee })}
+            </span>
+          </p>
+        )}
         {neighborhoods.length > 0 && (
           <p className="mt-1 text-sm text-gray-700">
             🚗 {t("visitsIn")}:{" "}

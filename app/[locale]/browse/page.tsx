@@ -95,7 +95,9 @@ export default async function BrowsePage({
   // Visit workers are found by neighborhood. One with none listed can't be
   // found "nearby", so they stay out of the Visits tab until they add some.
   if (typeFilter === "visits") {
-    workerList = workerList.filter((w) => w.service_neighborhoods.length > 0);
+    workerList = workerList.filter(
+      (w) => w.service_neighborhoods.length > 0 && w.transport_fee !== null
+    );
   }
   // Suggestions for the "near me" box, taken before it narrows the list.
   const neighborhoodSuggestions = [
@@ -560,6 +562,10 @@ export default async function BrowsePage({
                   ? worker.service_neighborhoods
                   : []
               }
+              transportFee={
+                worker.work_types.includes("visits") ? worker.transport_fee : null
+              }
+              showTransport={worker.work_types.includes("visits")}
               nationality={nationalityLabel(worker.nationality, locale)}
               livesIn={governorateLabel(worker.base_governorate, locale)}
               worksIn={(areasByWorkerId.get(worker.id) ?? []).map((code) =>

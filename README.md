@@ -389,3 +389,6 @@ Run `supabase/sql/phase18_visit_plan_and_neighborhoods.sql` once. Clients can bu
 
 ## Listings must be complete to show (Phase 19)
 Run `supabase/sql/phase19_incomplete_worker_ids.sql` once. Phone number is now required for workers at sign-up. A worker only appears in Browse once: approved, phone on file, at least one priced task (`get_incomplete_worker_ids()`), plus (checked in the app) work location and, for visit workers, a neighborhood. The worker dashboard shows a checklist of what is missing.
+
+## Transportation fee (Phase 20)
+Run `supabase/sql/phase20_transport_fee.sql` once. Visit workers enter a transportation fee per visit (EGP, 0 = free; `worker_profiles.transport_fee`). It is explicitly separate from their visit/hourly prices (worker screens say so; client cards say "on top of the price"). Required for visit workers (checklist item; visit workers without it stay out of the Visits tab).

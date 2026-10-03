@@ -26,11 +26,13 @@ export function TaskEntryForm({
   taskTypes,
   professions,
   nameKey,
+  worksByVisits,
 }: {
   workerProfileId: string;
   taskTypes: TaskTypeRow[];
   professions: ProfessionRow[];
   nameKey: "name_en" | "name_ar";
+  worksByVisits: boolean;
 }) {
   const t = useTranslations("worker");
   const router = useRouter();
@@ -185,6 +187,11 @@ export function TaskEntryForm({
       <p className="text-xs text-gray-500">
         {t("scopeHint")} {t("priceHint")}
       </p>
+      {worksByVisits && (
+        <p className="rounded-md border border-amber-300 bg-amber-50 p-2 text-xs text-amber-950">
+          {t("priceWithoutTransport")}
+        </p>
+      )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 

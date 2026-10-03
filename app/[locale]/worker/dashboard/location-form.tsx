@@ -18,6 +18,7 @@ export function LocationForm({
   neighborhoods,
   worksByVisits,
   suggestions,
+  transportFee,
 }: {
   workerProfileId: string;
   baseGovernorate: string | null;
@@ -25,6 +26,7 @@ export function LocationForm({
   neighborhoods: string[];
   worksByVisits: boolean;
   suggestions: string[];
+  transportFee: number | null;
 }) {
   const t = useTranslations("location");
   const locale = useLocale();
@@ -35,6 +37,7 @@ export function LocationForm({
   const [base, setBase] = useState(baseGovernorate ?? "");
   const [areas, setAreas] = useState<string[]>(serviceAreas);
   const [spots, setSpots] = useState<string[]>(neighborhoods);
+  const [fee, setFee] = useState(transportFee === null ? "" : String(transportFee));
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -54,11 +57,21 @@ export function LocationForm({
       return;
     }
 
+    const feeNumber = fee.trim() === "" ? null : Number(fee);
+    if (worksByVisits && (feeNumber === null || !(feeNumber >= 0))) {
+      setError(t("transportRequired"));
+      return;
+    }
+
     setSaving(true);
 
     const { error: baseError } = await supabase
       .from("worker_profiles")
-      .update({ base_governorate: base, service_neighborhoods: spots })
+      .update({
+        base_governorate: base,
+        service_neighborhoods: spots,
+        transport_fee: feeNumber !== null && feeNumber >= 0 ? feeNumber : null,
+      })
       .eq("id", workerProfileId);
 
     // Add first, remove second: the worker is never left with zero areas
@@ -143,6 +156,26 @@ export function LocationForm({
         />
         <span className="text-xs text-gray-500">{t("neighborhoodsHint")}</span>
       </div>
+
+      {worksByVisits && (
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="font-medium">{t("transportTitle")}</span>
+          <span className="rounded-md border border-amber-300 bg-amber-50 p-2 text-xs text-amber-950">
+            {t("transportSeparateNote")}
+          </span>
+          <input
+            type="number"
+            min={0}
+            max={10000}
+            step={1}
+            value={fee}
+            placeholder="0"
+            onChange={(e) => setFee(e.target.value)}
+            className="rounded-md border border-gray-300 px-3 py-2 text-base"
+          />
+          <span className="text-xs text-gray-500">{t("transportHint")}</span>
+        </label>
+      )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
       {saved && <p className="text-sm text-green-700">{t("saved")}</p>}

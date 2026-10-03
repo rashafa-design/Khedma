@@ -47,6 +47,7 @@ export interface WorkerProfileRow {
   base_governorate: string | null;
   work_types: WorkType[];
   service_neighborhoods: string[];
+  transport_fee: number | null;
   years_experience: number;
   photo_path: string | null;
   id_document_path: string;
