@@ -24,6 +24,7 @@ export type ContactState =
       check: CheckState;
     }
   | { type: "no_slots" }
+  | { type: "choose_tab" }
   | { type: "subscribe"; plan: WorkType }
   | { type: "hidden" };
 
@@ -233,6 +234,9 @@ export async function WorkerCard({
               previouslyUnlockedOn={previouslyUnlockedOn}
               check={contact.check}
             />
+          )}
+          {contact.type === "choose_tab" && (
+            <p className="text-sm text-gray-700">{t("chooseTab")}</p>
           )}
           {contact.type === "no_slots" && (
             <p className="text-xs text-gray-500">{t("noSlotsLeft")}</p>

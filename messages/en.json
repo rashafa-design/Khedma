@@ -336,7 +336,7 @@
       "items": [
         "Visits pass (50 EGP): for workers who come for a visit or job - plumbers, electricians, technicians, one-off cleaning. You can unlock 5 workers within 3 days.",
         "Monthly plan (2,000 EGP): for workers who work for you by the month - drivers, cooks, nannies, housekeepers. You can unlock 10 workers within one month.",
-        "Each plan unlocks workers of its own kind. You can buy both at the same time.",
+        "Each plan only pays for its own tab: your monthly plan unlocks workers on the Monthly tab, and your visits pass unlocks workers on the Visits tab. Monthly credit is never spent on a visit worker - a visit worker has to be paid for with the visits pass. You can buy both at the same time.",
         "If a worker does both kinds of work and you paid for them under one plan, you see them under the other tab too - no second payment, and they are not counted twice. You can see them for as long as the plan you paid with lasts: 3 days for the visits pass, one month for the monthly plan."
       ]
     },
@@ -589,6 +589,7 @@
     "getPlan": "Get it",
     "paidViaVisits": "Paid with your visits pass - you can see this worker until {date}, even in the Monthly tab. No second payment, and they are not counted twice.",
     "paidViaMonthly": "Paid with your monthly plan - you can see this worker until {date}, even in the Visits tab. No second payment, and they are not counted twice.",
+    "chooseTab": "This worker does both kinds of work. To unlock them, open the Monthly tab (uses your monthly plan) or the Visits tab (uses your visits pass) - each plan only pays for its own tab.",
     "usesVisitsPass": "Unlocking uses 1 slot of your visits pass.",
     "usesMonthlyPlan": "Unlocking uses 1 slot of your monthly plan.",
     "subscribeVisits": "Get a visits pass to unlock",

@@ -392,32 +392,39 @@ export default async function BrowsePage({
         continue;
       }
 
-      // Which of the client's plans fit this worker's kind of work?
-      const fitting = PLAN_ORDER.filter(
-        (plan) => worker.work_types.includes(plan) && activeByPlan[plan]
-      );
-
-      if (fitting.length === 0) {
-        // No plan that fits - point them at the one that would.
-        const wanted: WorkType =
-          tab && worker.work_types.includes(tab)
-            ? tab
-            : worker.work_types.includes("visits")
-              ? "visits"
-              : "monthly";
-        contactByWorkerId.set(worker.id, { type: "subscribe", plan: wanted });
+      // Which plan pays for this unlock? The two plans are priced very
+      // differently (a monthly slot is worth ~200 EGP, a visits slot ~10 EGP),
+      // so a plan is never spent on the other kind of hire:
+      //  - on the Monthly or Visits tab, only THAT tab's plan can be used;
+      //  - on "All workers", a worker of one kind uses their own plan;
+      //  - a worker who does both is ambiguous there, so the client is asked
+      //    to open the tab for the plan they want.
+      let plan: WorkType | null = null;
+      if (tab) {
+        plan = worker.work_types.includes(tab) ? tab : null;
+      } else if (worker.work_types.length === 1) {
+        plan = worker.work_types[0];
+      } else {
+        contactByWorkerId.set(worker.id, { type: "choose_tab" });
         continue;
       }
 
-      const usable = fitting.filter(hasSlots);
-      if (usable.length === 0) {
+      if (!plan) {
+        contactByWorkerId.set(worker.id, { type: "hidden" });
+        continue;
+      }
+
+      if (!activeByPlan[plan]) {
+        // No such plan yet - they pay for it separately.
+        contactByWorkerId.set(worker.id, { type: "subscribe", plan });
+        continue;
+      }
+
+      if (!hasSlots(plan)) {
         contactByWorkerId.set(worker.id, { type: "no_slots" });
         continue;
       }
 
-      // The tab the client is on decides when both plans would fit;
-      // otherwise the cheaper visits pass is used first.
-      const plan = tab && usable.includes(tab) ? tab : usable[0];
       contactByWorkerId.set(worker.id, {
         type: "can_unlock",
         subscriptionId: activeByPlan[plan]!.id,
