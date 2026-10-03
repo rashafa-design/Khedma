@@ -75,7 +75,12 @@ export function CompleteProfileForm({ userId }: { userId: string }) {
       />
       <input
         type="tel"
-        placeholder={t("phoneNumber")}
+        required={role === "worker"}
+        placeholder={
+          role === "worker"
+            ? `${t("phoneNumber")} (${t("requiredForWorkers")})`
+            : t("phoneNumber")
+        }
         value={phoneNumber}
         onChange={(e) => setPhoneNumber(e.target.value)}
         className="rounded-md border border-gray-300 px-3 py-2"

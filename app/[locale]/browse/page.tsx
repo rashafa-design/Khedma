@@ -165,6 +165,14 @@ export default async function BrowsePage({
   const { data: hiddenRows } = await supabase.rpc("get_hidden_worker_ids");
   const hiddenIds = new Set((hiddenRows as string[] | null) ?? []);
   workerList = workerList.filter((w) => !hiddenIds.has(w.id));
+
+  // A listing with no phone number or nothing priced is a "useless contact":
+  // keep it off the list until the worker finishes it.
+  const { data: incompleteRows } = await supabase.rpc(
+    "get_incomplete_worker_ids"
+  );
+  const incompleteIds = new Set((incompleteRows as string[] | null) ?? []);
+  workerList = workerList.filter((w) => !incompleteIds.has(w.id));
   if (areaFilter) {
     workerList = workerList.filter((w) =>
       areasByWorkerId.get(w.id)?.includes(areaFilter)

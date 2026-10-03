@@ -108,9 +108,29 @@ export default async function WorkerDashboardPage({
     ]);
 
   const t = await getTranslations("worker");
-  const tLocation = await getTranslations("location");
   const nameKey = locale === "ar" ? "name_ar" : "name_en";
+  const tCheck = await getTranslations("completeness");
   const serviceAreas = (areaRows ?? []).map((a) => a.governorate);
+
+  // What a listing needs before clients can see it (the database enforces
+  // the phone + priced task part in get_incomplete_worker_ids()).
+  const worksByVisits = workerProfile.work_types.includes("visits");
+  const checklist = [
+    { key: "itemPhone", done: !!profile?.phone_number?.trim() },
+    { key: "itemTask", done: (taskEntries ?? []).length > 0 },
+    {
+      key: "itemLocation",
+      done: serviceAreas.length > 0 && !!workerProfile.base_governorate,
+    },
+    ...(worksByVisits
+      ? [
+          {
+            key: "itemNeighborhood",
+            done: workerProfile.service_neighborhoods.length > 0,
+          },
+        ]
+      : []),
+  ];
   const professionList = allProfessions ?? [];
   const heldProfessions = professionList.filter((p) => heldIds.includes(p.id));
   const availableProfessions = professionList.filter(
@@ -145,20 +165,31 @@ export default async function WorkerDashboardPage({
       <WorkerCheckin />
       <PushToggle audience="worker" />
 
-      {serviceAreas.length === 0 && (
-        <div className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">
-          <p className="font-semibold">{tLocation("missingTitle")}</p>
-          <p className="mt-1">{tLocation("missingBody")}</p>
-        </div>
-      )}
-
-      {workerProfile.work_types.includes("visits") &&
-        workerProfile.service_neighborhoods.length === 0 && (
-          <div className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">
-            <p className="font-semibold">{tLocation("noNeighborhoodsTitle")}</p>
-            <p className="mt-1">{tLocation("noNeighborhoodsBody")}</p>
-          </div>
-        )}
+      <section
+        className={`rounded-md border p-4 text-sm ${
+          checklist.every((item) => item.done)
+            ? "border-green-300 bg-green-50 text-green-950"
+            : "border-red-300 bg-red-50 text-red-950"
+        }`}
+      >
+        <h2 className="font-semibold">
+          {checklist.every((item) => item.done)
+            ? tCheck("completeTitle")
+            : tCheck("incompleteTitle")}
+        </h2>
+        <p className="mt-1">
+          {checklist.every((item) => item.done)
+            ? tCheck("completeBody")
+            : tCheck("incompleteBody")}
+        </p>
+        <ul className="mt-2 flex flex-col gap-1">
+          {checklist.map((item) => (
+            <li key={item.key}>
+              {item.done ? "✅" : "⬜"} {tCheck(item.key)}
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <HelpBox topic="workerListing" />
 

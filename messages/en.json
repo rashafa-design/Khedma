@@ -71,6 +71,16 @@
     "add": "Add",
     "error": "Something went wrong. Please try again."
   },
+  "completeness": {
+    "incompleteTitle": "Your listing is not complete - clients can't see you yet",
+    "incompleteBody": "Finish these and you will appear to clients straight away:",
+    "completeTitle": "Your listing is complete",
+    "completeBody": "Clients can find you. Keep your details up to date.",
+    "itemPhone": "Your phone number (add it under \"Contact phone\" below)",
+    "itemTask": "At least one task with a price (\"Add something you offer\" below)",
+    "itemLocation": "Where you live and at least one governorate where you work",
+    "itemNeighborhood": "At least one neighborhood you visit (you work by visits)"
+  },
   "plans": {
     "chooseTitle": "Choose a plan",
     "chooseIntro": "Browsing is always free. You only pay to see a worker's phone number. Pick the plan that matches the kind of worker you need - you can have both at the same time.",
@@ -209,7 +219,7 @@
       "title": "Your dashboard",
       "items": [
         "This is a summary of your listing. Clients see your name, profession, locations and prices - never your ID.",
-        "Your listing only appears to clients once an admin approves your ID and you have added at least one work location.",
+        "Your listing only appears to clients once an admin approves your ID AND it is complete: your phone number, where you live and work, at least one priced task and, if you work by visits, a neighborhood. Your dashboard shows a checklist of what is missing.",
         "Use \"Manage my listing\" to change your prices, locations, availability and phone number."
       ]
     },
@@ -371,6 +381,7 @@
     "roleClient": "Client looking for workers",
     "fullName": "Full name",
     "phoneNumber": "Phone number",
+    "requiredForWorkers": "required for workers",
     "alreadyHaveAccount": "Already have an account?",
     "noAccount": "Don't have an account?",
     "checkEmail": "Check your email to confirm your account before logging in.",
