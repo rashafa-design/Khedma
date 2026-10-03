@@ -1,6 +1,6 @@
 {
-  "name": "Khedma",
-  "short_name": "Khedma",
+  "name": "Khedma - خدمة",
+  "short_name": "Khedma خدمة",
   "description": "Find trusted, verified workers for your home or business.",
   "start_url": "/",
   "display": "standalone",

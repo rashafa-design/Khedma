@@ -1,8 +1,8 @@
 {
   "packageId": "app.khedma.twa",
   "host": "khedma-psi.vercel.app",
-  "name": "Khedma",
-  "launcherName": "Khedma",
+  "name": "Khedma - خدمة",
+  "launcherName": "Khedma خدمة",
   "display": "standalone",
   "themeColor": "#111827",
   "themeColorDark": "#111827",
