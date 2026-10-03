@@ -79,7 +79,7 @@
     "itemPhone": "Your phone number (add it under \"Contact phone\" below)",
     "itemTask": "At least one task with a price (\"Add something you offer\" below)",
     "itemLocation": "Where you live and at least one governorate where you work",
-    "itemNeighborhood": "At least one neighborhood you visit (you work by visits)"
+    "itemNeighborhood": "At least one neighborhood you visit (you work by visits - without it you won't appear in the Visits tab)"
   },
   "plans": {
     "chooseTitle": "Choose a plan",
