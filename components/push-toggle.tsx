@@ -158,16 +158,33 @@ export function PushToggle({ audience }: { audience: "worker" | "client" }) {
         {audience === "worker" ? t("bodyWorker") : t("bodyClient")}
       </p>
       {state === "denied" ? (
-        <p className="mt-2 font-medium">{t("denied")}</p>
+        <div className="mt-2">
+          <p className="font-medium">{t("denied")}</p>
+          <p className="mt-2 font-medium">{t("unblockTitle")}</p>
+          <ol className="mt-1 list-decimal ps-5">
+            <li>{t("unblock1")}</li>
+            <li>{t("unblock2")}</li>
+            <li>{t("unblock3")}</li>
+          </ol>
+          <p className="mt-2 text-xs">{t("unblockWebsite")}</p>
+        </div>
       ) : (
-        <button
-          type="button"
-          disabled={busy}
-          onClick={turnOn}
-          className="mt-3 rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
-        >
-          {t("turnOn")}
-        </button>
+        <>
+          <p className="mt-3 font-medium">{t("stepsTitle")}</p>
+          <ol className="mt-1 list-decimal ps-5">
+            <li>{t("step1")}</li>
+            <li>{t("step2")}</li>
+            <li>{t("step3")}</li>
+          </ol>
+          <button
+            type="button"
+            disabled={busy}
+            onClick={turnOn}
+            className="mt-3 rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+          >
+            {t("turnOn")}
+          </button>
+        </>
       )}
       {message && <p className="mt-2 text-xs text-red-700">{message}</p>}
     </div>

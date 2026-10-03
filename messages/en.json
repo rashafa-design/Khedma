@@ -118,6 +118,15 @@
     "sendTest": "Send me a test",
     "testSent": "Test sent - it should appear on your phone in a few seconds.",
     "testNotSent": "We couldn't send it. Try turning notifications off and on again.",
+    "stepsTitle": "How to turn them on (takes 10 seconds):",
+    "step1": "Tap the dark button below: \"Turn on notifications\".",
+    "step2": "Your phone shows a small box asking to allow notifications. Tap \"Allow\".",
+    "step3": "Tap \"Send me a test\" - a notification should appear at the top of your screen. Done!",
+    "unblockTitle": "How to unblock them:",
+    "unblock1": "Open your phone's Settings, then Apps, then Khedma (or Chrome if you use the website).",
+    "unblock2": "Tap Notifications and switch them on (Allow).",
+    "unblock3": "Come back here, reload this page and tap \"Turn on notifications\" again.",
+    "unblockWebsite": "On the website in Chrome: tap the lock icon next to the address, then Permissions, then Notifications, then Allow.",
     "denied": "Notifications are blocked. Open your phone's Settings, find Khedma (or your browser), allow notifications, then come back here.",
     "unsupported": "This browser can't show notifications. Use Chrome on Android, or install the Khedma app.",
     "error": "Something went wrong. Please try again."
@@ -259,7 +268,7 @@
     "workerPending": {
       "title": "What happens now",
       "items": [
-        "An admin is checking your ID. There is nothing else you need to do.",
+        "An admin is checking your ID. While you wait, turn on notifications below - that is how you will hear about clients instantly once you are approved.",
         "Log in again later - once you are approved you can add your tasks and prices, and clients will be able to find you."
       ]
     },

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HelpBox } from "@/components/help-box";
+import { PushToggle } from "@/components/push-toggle";
 import { createClient } from "@/lib/supabase/server";
 import type { ProfessionRow, WorkerProfileRow } from "@/lib/types";
 import { OnboardingForm } from "./onboarding-form";
@@ -70,6 +71,11 @@ export default async function WorkerOnboardingPage({
             }
           />
         </div>
+        {workerProfile.status === "pending_review" && (
+          <div className="text-start">
+            <PushToggle audience="worker" />
+          </div>
+        )}
       </main>
     );
   }
