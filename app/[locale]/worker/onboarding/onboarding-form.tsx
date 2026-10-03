@@ -3,6 +3,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
+import { ServiceAreaPicker } from "@/components/service-area-picker";
+import { governorateOptions } from "@/lib/governorates";
 import { nationalityOptions } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/client";
 import type { ProfessionRow } from "@/lib/types";
@@ -17,7 +19,9 @@ export function OnboardingForm({
   nameKey: "name_en" | "name_ar";
 }) {
   const t = useTranslations("worker");
+  const tLocation = useTranslations("location");
   const locale = useLocale();
+  const governorates = governorateOptions(locale);
   const router = useRouter();
   const supabase = createClient();
   const nationalities = nationalityOptions(locale);
@@ -25,6 +29,8 @@ export function OnboardingForm({
   const [professionId, setProfessionId] = useState(professions[0]?.id ?? "");
   const [nationality, setNationality] = useState("");
   const [yearsExperience, setYearsExperience] = useState("");
+  const [baseGovernorate, setBaseGovernorate] = useState("");
+  const [serviceAreas, setServiceAreas] = useState<string[]>([]);
   const [idFile, setIdFile] = useState<File | null>(null);
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +42,11 @@ export function OnboardingForm({
 
     if (!idFile) {
       setError(t("error"));
+      return;
+    }
+
+    if (!baseGovernorate || serviceAreas.length === 0) {
+      setError(tLocation("atLeastOneArea"));
       return;
     }
 
@@ -66,18 +77,40 @@ export function OnboardingForm({
       }
     }
 
+    // Pick the id here so the service areas can point at the new profile
+    // without needing to read it back.
+    const workerProfileId = crypto.randomUUID();
     const { error: insertError } = await supabase.from("worker_profiles").insert({
+      id: workerProfileId,
       user_id: userId,
       profession_id: professionId,
       nationality,
+      base_governorate: baseGovernorate,
       years_experience: Number(yearsExperience) || 0,
       id_document_path: idPath,
       photo_path: photoPath,
     });
 
+    if (insertError) {
+      setSubmitting(false);
+      setError(t("error"));
+      return;
+    }
+
+    const { error: areasError } = await supabase
+      .from("worker_service_areas")
+      .insert(
+        serviceAreas.map((governorate) => ({
+          worker_profile_id: workerProfileId,
+          governorate,
+        }))
+      );
+
     setSubmitting(false);
 
-    if (insertError) {
+    // The profile exists either way; if only the areas failed, the worker
+    // dashboard will ask them to add where they work.
+    if (areasError) {
       setError(t("error"));
       return;
     }
@@ -114,6 +147,36 @@ export function OnboardingForm({
           </option>
         ))}
       </select>
+
+      <label className="flex flex-col gap-1 text-sm">
+        {tLocation("livesIn")}
+        <select
+          required
+          value={baseGovernorate}
+          onChange={(e) => {
+            setBaseGovernorate(e.target.value);
+            // Most workers serve the area they live in - start there.
+            if (serviceAreas.length === 0) setServiceAreas([e.target.value]);
+          }}
+          className="rounded-md border border-gray-300 px-3 py-2 text-base"
+        >
+          <option value="" disabled>
+            {tLocation("selectGovernorate")}
+          </option>
+          {governorates.map((g) => (
+            <option key={g.code} value={g.code}>
+              {g.label}
+            </option>
+          ))}
+        </select>
+        <span className="text-xs text-gray-500">{tLocation("livesInHint")}</span>
+      </label>
+
+      <div className="flex flex-col gap-1 text-sm">
+        <p>{tLocation("worksIn")}</p>
+        <ServiceAreaPicker selected={serviceAreas} onChange={setServiceAreas} />
+        <span className="text-xs text-gray-500">{tLocation("worksInHint")}</span>
+      </div>
 
       <input
         type="number"

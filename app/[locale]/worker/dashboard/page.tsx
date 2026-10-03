@@ -6,8 +6,11 @@ import type {
   ProfileRow,
   TaskTypeRow,
   WorkerProfileRow,
+  WorkerServiceAreaRow,
   WorkerTaskEntryRow,
 } from "@/lib/types";
+import { HelpBox } from "@/components/help-box";
+import { LocationForm } from "./location-form";
 import { AvailabilityToggle } from "./availability-toggle";
 import { ContactPhoneForm } from "./contact-phone-form";
 import { DeleteProfileButton } from "./delete-profile-button";
@@ -41,8 +44,13 @@ export default async function WorkerDashboardPage({
     redirect("/worker/onboarding");
   }
 
-  const [{ data: profession }, { data: taskTypes }, { data: taskEntries }, { data: profile }] =
-    await Promise.all([
+  const [
+    { data: profession },
+    { data: taskTypes },
+    { data: taskEntries },
+    { data: profile },
+    { data: areaRows },
+  ] = await Promise.all([
       supabase
         .from("professions")
         .select("*")
@@ -66,10 +74,17 @@ export default async function WorkerDashboardPage({
         .select("*")
         .eq("id", user.id)
         .maybeSingle<ProfileRow>(),
+      supabase
+        .from("worker_service_areas")
+        .select("*")
+        .eq("worker_profile_id", workerProfile.id)
+        .returns<WorkerServiceAreaRow[]>(),
     ]);
 
   const t = await getTranslations("worker");
+  const tLocation = await getTranslations("location");
   const nameKey = locale === "ar" ? "name_ar" : "name_en";
+  const serviceAreas = (areaRows ?? []).map((a) => a.governorate);
 
   return (
     <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-8 px-4 py-16">
@@ -86,6 +101,21 @@ export default async function WorkerDashboardPage({
           availability={workerProfile.availability}
         />
       </div>
+
+      {serviceAreas.length === 0 && (
+        <div className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">
+          <p className="font-semibold">{tLocation("missingTitle")}</p>
+          <p className="mt-1">{tLocation("missingBody")}</p>
+        </div>
+      )}
+
+      <HelpBox topic="workerListing" />
+
+      <LocationForm
+        workerProfileId={workerProfile.id}
+        baseGovernorate={workerProfile.base_governorate}
+        serviceAreas={serviceAreas}
+      />
 
       <div>
         <h2 className="mb-3 font-semibold">{t("yourTasks")}</h2>

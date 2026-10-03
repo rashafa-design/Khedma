@@ -357,3 +357,6 @@ with Google and hasn't finished their profile yet, their email is shown instead.
 
 ## Seen / viewed / unlocked markers (Phase 12)
 Run `supabase/sql/phase12_worker_views.sql` once. For clients, every worker card on Browse is colour-coded: green = unlocked now, amber = unlocked in a past month, blue = viewed only, white = not seen yet. A card counts as "viewed" once it has been mostly on screen for 2 seconds (`view-tracker.tsx`, writes to `worker_views`). A "Show" filter (all / new / viewed only / unlocked) sits with the other filters. Views are kept across subscription months.
+
+## Worker locations and on-screen help (Phase 13)
+Run `supabase/sql/phase13_worker_locations.sql` once. Workers now give the governorate they live in and at least one governorate where they work (`worker_profiles.base_governorate`, `worker_service_areas`; names in `lib/governorates.ts`). The database refuses to remove a worker's last area, and Browse hides any worker with no area. Clients get a governorate filter and each card shows where the worker lives and works. Every page also has a blue help box (`components/help-box.tsx`) whose text lives under `help.*` in `messages/en.json` and `messages/ar.json`.

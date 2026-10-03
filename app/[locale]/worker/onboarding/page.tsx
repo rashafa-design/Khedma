@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { HelpBox } from "@/components/help-box";
 import { createClient } from "@/lib/supabase/server";
 import type { ProfessionRow, WorkerProfileRow } from "@/lib/types";
 import { OnboardingForm } from "./onboarding-form";
@@ -60,6 +61,15 @@ export default async function WorkerOnboardingPage({
             {t("reason")}: {workerProfile.rejection_reason}
           </p>
         )}
+        <div className="text-start">
+          <HelpBox
+            topic={
+              workerProfile.status === "rejected"
+                ? "workerRejected"
+                : "workerPending"
+            }
+          />
+        </div>
       </main>
     );
   }
@@ -77,6 +87,8 @@ export default async function WorkerOnboardingPage({
         <h1 className="text-2xl font-bold">{t("onboardingTitle")}</h1>
         <p className="mt-1 text-sm text-gray-600">{t("onboardingSubtitle")}</p>
       </div>
+
+      <HelpBox topic="workerOnboarding" />
 
       {(professions ?? []).length === 0 ? (
         <p className="text-sm text-gray-600">{t("noProfessionsYet")}</p>

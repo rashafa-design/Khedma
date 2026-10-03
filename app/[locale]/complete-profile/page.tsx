@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { HelpBox } from "@/components/help-box";
 import { createClient } from "@/lib/supabase/server";
 import { CompleteProfileForm } from "./complete-profile-form";
 
@@ -37,6 +38,7 @@ export default async function CompleteProfilePage({
       <h1 className="text-center text-2xl font-bold">
         {t("completeProfileTitle")}
       </h1>
+      <HelpBox topic="completeProfile" />
       <CompleteProfileForm userId={user.id} />
     </main>
   );

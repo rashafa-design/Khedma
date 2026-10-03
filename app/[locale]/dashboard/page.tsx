@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { HelpBox } from "@/components/help-box";
 import { Link } from "@/i18n/navigation";
 import { nationalityLabel } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/server";
@@ -249,6 +250,16 @@ export default async function DashboardPage({
         <h1 className="text-2xl font-bold">{greeting}</h1>
         <p className="mt-1 text-gray-600">{intro}</p>
       </div>
+
+      <HelpBox
+        topic={
+          profile.role === "worker"
+            ? "dashboardWorker"
+            : profile.role === "admin"
+              ? "dashboardAdmin"
+              : "dashboardClient"
+        }
+      />
 
       {summaryTitle && (
         <section className="rounded-md border border-gray-200 bg-white p-4">

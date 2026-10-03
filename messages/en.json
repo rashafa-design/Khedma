@@ -5,6 +5,159 @@
     "arabic": "Arabic",
     "english": "English"
   },
+  "location": {
+    "title": "Where you live and work",
+    "intro": "Clients use this to find workers near them, so keep it accurate.",
+    "livesIn": "The governorate you live in",
+    "selectGovernorate": "Select a governorate",
+    "livesInHint": "This is shown to clients next to your name.",
+    "worksIn": "Governorates where you offer your services (choose at least one)",
+    "worksInHint": "Only tick places you are really willing to travel to. You can change this any time.",
+    "selectAll": "Select all governorates",
+    "atLeastOneArea": "Please choose where you live and at least one governorate where you work.",
+    "save": "Save locations",
+    "saving": "Saving...",
+    "saved": "Saved.",
+    "saveError": "Something went wrong saving your locations. Please try again.",
+    "missingTitle": "Clients can't see you yet",
+    "missingBody": "You haven't chosen where you work. Add at least one governorate below - until you do, your listing stays hidden from clients."
+  },
+  "help": {
+    "signup": {
+      "title": "Creating your account",
+      "items": [
+        "Choose \"Worker\" if you want clients to find and call you for jobs. Choose \"Client\" if you are looking for someone to hire.",
+        "Use your real name - it is what other people will see.",
+        "Workers: after signing up you will be asked for your profession, where you work and your ID. Clients: you can browse right away."
+      ]
+    },
+    "login": {
+      "title": "Logging in",
+      "items": [
+        "Use the same email and password (or Google account) you signed up with.",
+        "No account yet? Use the link below to sign up - it takes a minute."
+      ]
+    },
+    "completeProfile": {
+      "title": "One last step",
+      "items": [
+        "Tell us whether you are a worker or a client and add your name and phone number.",
+        "Your role can't be changed later, so choose carefully."
+      ]
+    },
+    "dashboardClient": {
+      "title": "Your dashboard",
+      "items": [
+        "Browsing workers is free. Paying 2,000 EGP unlocks the phone numbers of up to 10 workers for one month.",
+        "Below you can see your subscription: how many workers you have unlocked and until when it lasts.",
+        "Tap \"Browse workers\" to find someone, or \"My subscription\" to see the numbers you already unlocked."
+      ]
+    },
+    "dashboardWorker": {
+      "title": "Your dashboard",
+      "items": [
+        "This is a summary of your listing. Clients see your name, profession, locations and prices - never your ID.",
+        "Your listing only appears to clients once an admin approves your ID and you have added at least one work location.",
+        "Use \"Manage my listing\" to change your prices, locations, availability and phone number."
+      ]
+    },
+    "dashboardAdmin": {
+      "title": "Admin dashboard",
+      "items": [
+        "Pending worker reviews: workers waiting for you to check their ID and approve them.",
+        "Pending payments: clients who sent 2,000 EGP and are waiting for you to confirm it so their month starts.",
+        "Open the admin panel to work through both queues."
+      ]
+    },
+    "workerOnboarding": {
+      "title": "Setting up your worker profile",
+      "items": [
+        "Choose the one profession you offer. You can add several tasks and prices for it later.",
+        "Choose the governorate you live in, and every governorate you are willing to work in. At least one is required - clients only contact workers who serve their area.",
+        "Upload a clear photo of your national ID or residency permit. Only the admin reviewing your account can ever see it.",
+        "A profile photo is optional but helps clients trust you.",
+        "After you submit, an admin reviews your ID. You will see the result the next time you log in."
+      ]
+    },
+    "workerPending": {
+      "title": "What happens now",
+      "items": [
+        "An admin is checking your ID. There is nothing else you need to do.",
+        "Log in again later - once you are approved you can add your tasks and prices, and clients will be able to find you."
+      ]
+    },
+    "workerRejected": {
+      "title": "What to do next",
+      "items": [
+        "Read the reason above. The most common reasons are an unclear ID photo or details that don't match.",
+        "Contact the Khedma team if you think this was a mistake."
+      ]
+    },
+    "workerListing": {
+      "title": "How your listing works",
+      "items": [
+        "Locations: clients filter by governorate, so list every place you really work. You always need at least one.",
+        "What you offer: add each task with a price. You can add the same task twice, for example one price for homes and another for businesses.",
+        "Availability: switch to \"unavailable\" when you are fully booked. Clients still see you but know not to expect an answer.",
+        "Contact phone: clients only see this number after paying to unlock you - keep it correct and keep your phone on.",
+        "Deleting your profile removes you from Khedma completely."
+      ]
+    },
+    "browseClient": {
+      "title": "How to find a worker",
+      "items": [
+        "Use the filters to narrow the list - especially the governorate, so you only see workers who work in your area.",
+        "Each card shows where the worker lives, where they work, what they offer and their prices.",
+        "Unlock contact uses one of your 10 slots and shows the phone number until your month ends. Call or message them yourself.",
+        "Colours help you remember: green = unlocked now, orange = unlocked in an earlier month, blue = you looked at them but never unlocked, white = new to you.",
+        "Use the \"Show\" filter to see only workers you haven't seen yet."
+      ]
+    },
+    "browseViewer": {
+      "title": "What you are looking at",
+      "items": [
+        "This is the list clients see when they search for workers.",
+        "Phone numbers are hidden - only clients who have paid and unlocked a worker can see them."
+      ]
+    },
+    "subscribe": {
+      "title": "How to pay",
+      "items": [
+        "Send 2,000 EGP to the number below using Instapay or Vodafone Cash.",
+        "Take a screenshot of the confirmation, choose the method you used, upload the screenshot and press Submit.",
+        "An admin checks it and starts your month. You will see the status on this page when you log in again."
+      ]
+    },
+    "paymentPending": {
+      "title": "What happens now",
+      "items": [
+        "An admin is checking your screenshot. You don't need to pay again or send it again.",
+        "Once approved, you can unlock up to 10 workers for one month."
+      ]
+    },
+    "mySubscription": {
+      "title": "Your subscription",
+      "items": [
+        "This lists every worker you unlocked this month, with their phone number.",
+        "On the expiry date everything locks again, even workers you unlocked. Subscribe again to unlock new ones.",
+        "Workers you unlocked before are flagged on the Browse page so you don't spend a slot on them twice by accident."
+      ]
+    },
+    "adminWorkers": {
+      "title": "Reviewing workers",
+      "items": [
+        "Open the ID and check the photo is clear and the details match the profile.",
+        "Check the locations make sense. Approve to make the worker visible to clients, or reject and give a reason the worker will see."
+      ]
+    },
+    "adminPayments": {
+      "title": "Confirming payments",
+      "items": [
+        "Open the screenshot and check the amount (2,000 EGP) and that the money reached your Instapay or Vodafone Cash.",
+        "Approve to start the client's month with 10 unlock slots. Reject with a reason if something is wrong."
+      ]
+    }
+  },
   "nav": {
     "dashboard": "Dashboard",
     "browse": "Browse workers",
@@ -127,6 +280,8 @@
     "profession": "Profession",
     "nationality": "Nationality",
     "selectNationality": "Select your nationality",
+    "scopeHint": "Choose whether this price is for homes, businesses or both.",
+    "priceHint": "Enter your price in Egyptian pounds and whether it is per hour, per day or per month.",
     "yearsExperience": "Years of experience",
     "idDocument": "National ID or residency permit",
     "idDocumentHint": "This is only ever seen by an admin reviewing your account, never by clients.",
@@ -207,6 +362,10 @@
     "noActiveSubscription": "You don't have an active subscription.",
     "unlockedBefore": "You unlocked this worker before ({date})",
     "viewedBefore": "You viewed this worker ({date}) - not unlocked",
+    "allAreas": "All governorates",
+    "livesIn": "Lives in",
+    "worksIn": "Works in",
+    "andMore": "+{count} more",
     "legendUnlocked": "Unlocked now",
     "legendUnlockedBefore": "Unlocked in a past month",
     "legendViewed": "Viewed only",

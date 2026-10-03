@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { HelpBox } from "@/components/help-box";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type {
@@ -119,6 +120,8 @@ export default async function ClientSubscriptionPage({
           {subscription.slots_total - slotsUsed} {t("slotsRemaining")}
         </p>
       </div>
+
+      <HelpBox topic="mySubscription" />
 
       <div>
         <h2 className="mb-3 font-semibold">{t("unlockedWorkers")}</h2>

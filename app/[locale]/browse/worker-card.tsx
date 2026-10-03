@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type {
   ProfessionRow,
@@ -26,6 +26,8 @@ export async function WorkerCard({
   photoUrl,
   profession,
   nationality,
+  livesIn,
+  worksIn,
   yearsExperience,
   availability,
   taskEntries,
@@ -41,6 +43,8 @@ export async function WorkerCard({
   photoUrl: string | null;
   profession: ProfessionRow | undefined;
   nationality: string;
+  livesIn: string;
+  worksIn: string[];
   yearsExperience: number;
   availability: WorkerAvailability;
   taskEntries: WorkerTaskEntryRow[];
@@ -53,6 +57,10 @@ export async function WorkerCard({
 }) {
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
+  const list = new Intl.ListFormat(await getLocale(), {
+    style: "narrow",
+    type: "unit",
+  });
 
   // One look per state, so a client can tell at a glance what they have
   // already unlocked, unlocked in a past month, only looked at, or not seen.
@@ -111,6 +119,20 @@ export async function WorkerCard({
         <p className="text-sm text-gray-600">
           {profession?.[nameKey]} · {nationality} · {yearsExperience}{" "}
           {t("years")}
+        </p>
+        <p className="mt-1 text-sm text-gray-700">
+          📍{" "}
+          {livesIn && (
+            <>
+              {t("livesIn")}: <span className="font-medium">{livesIn}</span> ·{" "}
+            </>
+          )}
+          {t("worksIn")}:{" "}
+          <span className="font-medium">
+            {worksIn.length > 5
+              ? `${list.format(worksIn.slice(0, 4))} ${t("andMore", { count: worksIn.length - 4 })}`
+              : list.format(worksIn)}
+          </span>
         </p>
         <ul className="mt-2 flex flex-col gap-1 text-sm">
           {taskEntries.map((entry) => {

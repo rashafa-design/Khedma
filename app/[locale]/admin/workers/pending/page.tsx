@@ -1,7 +1,14 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { HelpBox } from "@/components/help-box";
+import { governorateLabel } from "@/lib/governorates";
 import { nationalityLabel } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/server";
-import type { ProfessionRow, ProfileRow, WorkerProfileRow } from "@/lib/types";
+import type {
+  ProfessionRow,
+  ProfileRow,
+  WorkerProfileRow,
+  WorkerServiceAreaRow,
+} from "@/lib/types";
 import { ReviewActions } from "./review-actions";
 
 export default async function AdminPendingWorkersPage({
@@ -38,7 +45,7 @@ export default async function AdminPendingWorkersPage({
     ...new Set(pendingWorkers.map((worker) => worker.profession_id)),
   ];
 
-  const [{ data: profiles }, { data: professions }] = await Promise.all([
+  const [{ data: profiles }, { data: professions }, { data: areaRows }] = await Promise.all([
     supabase
       .from("profiles")
       .select("*")
@@ -49,11 +56,18 @@ export default async function AdminPendingWorkersPage({
       .select("*")
       .in("id", professionIds)
       .returns<ProfessionRow[]>(),
+    supabase
+      .from("worker_service_areas")
+      .select("*")
+      .in("worker_profile_id", pendingWorkers.map((w) => w.id))
+      .returns<WorkerServiceAreaRow[]>(),
   ]);
 
   return (
     <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-6 px-4 py-16">
       <h1 className="text-2xl font-bold">{t("title")}</h1>
+
+      <HelpBox topic="adminWorkers" />
 
       <div className="flex flex-col gap-4">
         {pendingWorkers.map((worker) => {
@@ -68,6 +82,13 @@ export default async function AdminPendingWorkersPage({
               <p className="text-sm text-gray-600">
                 {profession?.[nameKey]} · {nationalityLabel(worker.nationality, locale)} ·{" "}
                 {worker.years_experience} {t("years")}
+              </p>
+              <p className="text-sm text-gray-600">
+                📍 {governorateLabel(worker.base_governorate, locale) || "—"} →{" "}
+                {(areaRows ?? [])
+                  .filter((a) => a.worker_profile_id === worker.id)
+                  .map((a) => governorateLabel(a.governorate, locale))
+                  .join(", ") || "—"}
               </p>
               <ReviewActions
                 workerProfileId={worker.id}

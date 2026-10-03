@@ -80,6 +80,7 @@ export function TaskEntryForm({
         <option value="business">{t("scopeBusiness")}</option>
         <option value="both">{t("scopeBoth")}</option>
       </select>
+      <p className="-mt-1 text-xs text-gray-500">{t("scopeHint")}</p>
 
       <input
         type="number"
@@ -101,6 +102,7 @@ export function TaskEntryForm({
         <option value="daily">{t("billingDaily")}</option>
         <option value="monthly">{t("billingMonthly")}</option>
       </select>
+      <p className="-mt-1 text-xs text-gray-500">{t("priceHint")}</p>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { HelpBox } from "@/components/help-box";
 import { createClient } from "@/lib/supabase/server";
 import type { PaymentRequestRow, SubscriptionRow } from "@/lib/types";
 import { SubscribeForm } from "./subscribe-form";
@@ -62,6 +63,7 @@ export default async function ClientSubscribePage({
       <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-sm flex-col justify-center gap-4 px-4 py-16 text-center">
         <h1 className="text-xl font-bold">{t("pendingTitle")}</h1>
         <p className="text-gray-600">{t("pendingBody")}</p>
+        <HelpBox topic="paymentPending" />
       </main>
     );
   }
@@ -75,6 +77,8 @@ export default async function ClientSubscribePage({
         <h1 className="text-2xl font-bold">{t("subscribeTitle")}</h1>
         <p className="mt-2 text-sm text-gray-600">{t("explainerBody")}</p>
       </div>
+
+      <HelpBox topic="subscribe" />
 
       <div className="rounded-md border border-gray-200 p-4 text-center">
         <p className="text-sm text-gray-600">{t("payVia")}</p>

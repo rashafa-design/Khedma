@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { HelpBox } from "@/components/help-box";
 import { createClient } from "@/lib/supabase/server";
 import type { PaymentRequestRow, ProfileRow } from "@/lib/types";
 import { ReviewActions } from "./review-actions";
@@ -45,6 +46,8 @@ export default async function AdminPendingPaymentsPage({
   return (
     <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-6 px-4 py-16">
       <h1 className="text-2xl font-bold">{t("title")}</h1>
+
+      <HelpBox topic="adminPayments" />
 
       <div className="flex flex-col gap-4">
         {pendingPayments.map((payment) => {

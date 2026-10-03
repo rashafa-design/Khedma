@@ -36,6 +36,7 @@ export interface WorkerProfileRow {
   user_id: string;
   profession_id: string;
   nationality: string;
+  base_governorate: string | null;
   years_experience: number;
   photo_path: string | null;
   id_document_path: string;
@@ -60,6 +61,12 @@ export interface WorkerTaskEntryRow {
   billing_unit: BillingUnit;
   created_at: string;
   updated_at: string;
+}
+
+export interface WorkerServiceAreaRow {
+  worker_profile_id: string;
+  governorate: string;
+  created_at: string;
 }
 
 export type PaymentMethod = "instapay" | "vodafone_cash";

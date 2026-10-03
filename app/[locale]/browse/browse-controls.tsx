@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { governorateOptions } from "@/lib/governorates";
 import { nationalityOptions } from "@/lib/nationalities";
 import type { ProfessionRow } from "@/lib/types";
 
@@ -18,6 +19,7 @@ export function BrowseControls({
   const t = useTranslations("browse");
   const locale = useLocale();
   const nationalities = nationalityOptions(locale);
+  const governorates = governorateOptions(locale);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -55,6 +57,19 @@ export function BrowseControls({
         <option value="">{t("anyScope")}</option>
         <option value="home">{t("scopeHome")}</option>
         <option value="business">{t("scopeBusiness")}</option>
+      </select>
+
+      <select
+        value={searchParams.get("area") ?? ""}
+        onChange={(e) => updateParam("area", e.target.value)}
+        className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+      >
+        <option value="">{t("allAreas")}</option>
+        {governorates.map((g) => (
+          <option key={g.code} value={g.code}>
+            {g.label}
+          </option>
+        ))}
       </select>
 
       <select

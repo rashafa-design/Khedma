@@ -9,8 +9,11 @@ import type {
   TaskTypeRow,
   UnlockRow,
   WorkerProfileRow,
+  WorkerServiceAreaRow,
   WorkerTaskEntryRow,
 } from "@/lib/types";
+import { HelpBox } from "@/components/help-box";
+import { governorateLabel } from "@/lib/governorates";
 import { BrowseControls } from "./browse-controls";
 import type { ContactState } from "./worker-card";
 import { WorkerCard } from "./worker-card";
@@ -32,6 +35,7 @@ export default async function BrowsePage({
   const scopeFilter = typeof sp.scope === "string" ? sp.scope : "";
   const nationalityFilter =
     typeof sp.nationality === "string" ? sp.nationality : "";
+  const areaFilter = typeof sp.area === "string" ? sp.area : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "newest";
 
   const supabase = await createClient();
@@ -82,6 +86,27 @@ export default async function BrowsePage({
     .select("*")
     .in("worker_profile_id", workerIds)
     .returns<WorkerTaskEntryRow[]>();
+
+  // Where each worker works. A worker with no service area at all is left
+  // out of the list: a client would spend an unlock on someone who may not
+  // even work near them.
+  const { data: areaRows } = await supabase
+    .from("worker_service_areas")
+    .select("*")
+    .in("worker_profile_id", workerIds)
+    .returns<WorkerServiceAreaRow[]>();
+  const areasByWorkerId = new Map<string, string[]>();
+  for (const row of areaRows ?? []) {
+    const list = areasByWorkerId.get(row.worker_profile_id) ?? [];
+    list.push(row.governorate);
+    areasByWorkerId.set(row.worker_profile_id, list);
+  }
+  workerList = workerList.filter((w) => areasByWorkerId.has(w.id));
+  if (areaFilter) {
+    workerList = workerList.filter((w) =>
+      areasByWorkerId.get(w.id)?.includes(areaFilter)
+    );
+  }
 
   if (scopeFilter === "home" || scopeFilter === "business") {
     const matchingWorkerIds = new Set(
@@ -258,6 +283,8 @@ export default async function BrowsePage({
     <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-6 px-4 py-16">
       <h1 className="text-2xl font-bold">{t("title")}</h1>
 
+      <HelpBox topic={isClient ? "browseClient" : "browseViewer"} />
+
       {isClient &&
         (slotCounter ? (
           <div className="sticky top-2 z-10 rounded-md border border-gray-200 bg-white p-3 shadow-sm">
@@ -350,6 +377,10 @@ export default async function BrowsePage({
               photoUrl={photoUrl}
               profession={profession}
               nationality={nationalityLabel(worker.nationality, locale)}
+              livesIn={governorateLabel(worker.base_governorate, locale)}
+              worksIn={(areasByWorkerId.get(worker.id) ?? []).map((code) =>
+                governorateLabel(code, locale)
+              )}
               yearsExperience={worker.years_experience}
               availability={worker.availability}
               taskEntries={entries}
