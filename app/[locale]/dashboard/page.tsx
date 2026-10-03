@@ -4,6 +4,7 @@ import { HelpBox } from "@/components/help-box";
 import { FollowupPrompts } from "@/components/followup-prompts";
 import { PushToggle } from "@/components/push-toggle";
 import { isActive, PLAN_ORDER } from "@/lib/plans";
+import { WorkerActivity } from "@/components/worker-activity";
 import { WorkerCheckin } from "@/components/worker-checkin";
 import { WorkerRequests } from "@/components/worker-requests";
 import { Link } from "@/i18n/navigation";
@@ -286,6 +287,7 @@ export default async function DashboardPage({
         <>
           <WorkerRequests />
           <WorkerCheckin />
+          <WorkerActivity />
         </>
       )}
       {profile.role === "client" && <FollowupPrompts />}

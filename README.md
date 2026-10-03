@@ -406,3 +406,6 @@ Run `supabase/sql/phase24_reply_window_by_plan.sql` once. An availability reques
 
 ## Unanswered requests move a worker down, not out (Phase 25)
 Run `supabase/sql/phase25_unanswered_requests_move_down.sql` once. A request that expires unanswered no longer counts toward hiding a worker (reports and bad follow-up answers still do). Instead `get_unresponsive_worker_ids()` lists workers who missed a question since they last answered/confirmed (and within 30 days); Browse shows them LAST with a "slow to reply" tag, and their dashboard shows a "you missed a client's question" box with the one-tap availability buttons. Answering any later question, or tapping "still available", puts them back immediately.
+
+## Worker activity numbers (Phase 26)
+Run `supabase/sql/phase26_worker_activity_stats.sql` once. The worker dashboards show three counts (last 30 days + all time): clients who viewed the card but never unlocked, "are you available?" questions received (with answered/missed), and clients who paid to unlock the number. `get_worker_activity()` returns counts only - never who - and only to the worker themself or an admin. "Viewed" comes from `worker_views` (card on screen 2+ seconds).

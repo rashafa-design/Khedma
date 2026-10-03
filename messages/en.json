@@ -84,6 +84,19 @@
     "itemNeighborhood": "At least one neighborhood you visit (you work by visits - without it you won't appear in the Visits tab)",
     "itemTransport": "Your transportation fee per visit (type 0 if it is free)"
   },
+  "activity": {
+    "title": "How is your listing doing?",
+    "intro": "A quick look at how many clients noticed you.",
+    "viewedTitle": "Looked at you",
+    "viewedNote": "Clients who saw your card but didn't unlock your number.",
+    "askedTitle": "Asked if you're available",
+    "askedNote": "You answered {answered}, missed {missed}.",
+    "unlockedTitle": "Saw your phone number",
+    "unlockedNote": "Clients who paid to unlock your number.",
+    "last30": "in the last 30 days",
+    "allTime": "{count} in total",
+    "privacy": "We only show numbers. You never see who the clients are - their details stay private, just like yours stay private until a client pays."
+  },
   "plans": {
     "chooseTitle": "Choose a plan",
     "chooseIntro": "Browsing is always free. You only pay to see a worker's phone number. Pick the plan that matches the kind of worker you need - you can have both at the same time.",
@@ -282,6 +295,7 @@
     "workerListing": {
       "title": "How your listing works",
       "items": [
+        "Your activity: the box near the top shows how many clients looked at your card, how many asked if you're available, and how many paid to see your number. You only ever see numbers, never who the clients are.",
         "Professions: you can offer more than one, for example a cleaner who also drives. Add them in \"Your professions\", then price each profession's tasks below. Your main profession can't be removed.",
         "How you work: tick monthly, visits or both. Clients can filter for workers who work by the month or who come for visits. A client who paid to unlock you under one plan sees you under the other too, for as long as that plan lasts.",
         "Neighborhoods: if you work by visits, list the neighborhoods you visit. Nearby clients search by neighborhood, and you won't appear in the Visits tab without at least one.",

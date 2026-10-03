@@ -12,6 +12,7 @@ import type {
 } from "@/lib/types";
 import { HelpBox } from "@/components/help-box";
 import { PushToggle } from "@/components/push-toggle";
+import { WorkerActivity } from "@/components/worker-activity";
 import { WorkerCheckin } from "@/components/worker-checkin";
 import { WorkerRequests } from "@/components/worker-requests";
 import { LocationForm } from "./location-form";
@@ -167,6 +168,7 @@ export default async function WorkerDashboardPage({
 
       <WorkerRequests />
       <WorkerCheckin />
+      <WorkerActivity />
       <PushToggle audience="worker" />
 
       <section
