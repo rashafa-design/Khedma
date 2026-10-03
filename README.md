@@ -369,3 +369,11 @@ Run `supabase/sql/phase15_availability_and_feedback.sql` once (it also contains 
 - **Ask before unlocking:** a client taps "Check availability" (free). The worker gets a green box on their dashboard and has 24 hours to say Yes/No. An unlock is only possible after a Yes given in the last 48 hours - enforced by a trigger on `unlocks`, not just the button. A Yes refreshes the worker's availability date; a No marks them unavailable. An unanswered request counts as a bad experience. Max 3 open checks per client. Delivery is in-app only for now; WhatsApp/email/push would just notify the worker that a request exists.
 - **2-weekly renewal:** workers marked available are asked from day 10, clients see a warning tag from day 14, hidden from Browse at day 28 (`lib/checkin.ts` + `get_hidden_worker_ids()`).
 - **Follow-up:** ~3 days after an unlock the client is asked "did you reach them?" (`unlock_feedback`). Bad answers, reports and unanswered checks all feed `worker_negative_events`: 2 different clients since the worker last confirmed, or 3 in 90 days, hides the worker. Only an admin ("Flagged workers" page) can clear the 90-day record.
+
+## Push notifications (Phase 16)
+Run `supabase/sql/phase16_push_subscriptions.sql` once. Workers and clients tap "Turn on notifications" on their dashboard (service worker `public/sw.js`, subscriptions in `push_subscriptions`). Sent with the `web-push` library using VAPID keys (`NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` in Vercel env vars; generate a new pair with openssl if they are ever lost - everyone then has to turn notifications on again).
+- Worker gets a push when a client asks "are you available?" (`/api/push/notify-request`, called by the client's browser after the request is saved).
+- Client gets a push when the worker answers (`/api/push/notify-answer`).
+- A daily cron (`vercel.json` -> `/api/cron/reminders`, protected by `CRON_SECRET`) nudges workers whose 2-weekly / 3-monthly check-ins are due.
+- Inside the Android app this needs `enableNotifications: true` in `android/twa-manifest.json` (done, version 1.1.0) and a rebuild + reinstall of the APK. In plain Chrome it works without that.
+- NEVER commit keystores, APKs or key notes: they are in `.gitignore` now (an earlier `git add -A` pushed them to the public repo - see the security note in the conversation / rotate the signing key).

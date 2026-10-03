@@ -42,6 +42,20 @@
     "thanks": "Thank you. We have asked the worker to confirm their details.",
     "error": "Something went wrong. Please try again."
   },
+  "push": {
+    "title": "Turn on notifications",
+    "bodyWorker": "So your phone buzzes the moment a client asks if you're available - you only have 24 hours to answer, and a quick reply is how you get hired.",
+    "bodyClient": "So your phone buzzes as soon as a worker answers whether they're available, without you having to keep checking.",
+    "turnOn": "Turn on notifications",
+    "turnOff": "Turn off",
+    "on": "Notifications are on for this phone",
+    "sendTest": "Send me a test",
+    "testSent": "Test sent - it should appear on your phone in a few seconds.",
+    "testNotSent": "We couldn't send it. Try turning notifications off and on again.",
+    "denied": "Notifications are blocked. Open your phone's Settings, find Khedma (or your browser), allow notifications, then come back here.",
+    "unsupported": "This browser can't show notifications. Use Chrome on Android, or install the Khedma app.",
+    "error": "Something went wrong. Please try again."
+  },
   "requests": {
     "title": "A client is asking if you're available ({count})",
     "body": "A client wants to contact you and is waiting for your answer before they continue. Please answer honestly - if you say yes, they will get your phone number.",
@@ -154,6 +168,7 @@
         "Choose the governorate you live in, and every governorate you are willing to work in. At least one is required - clients only contact workers who serve their area.",
         "Upload a clear photo of your national ID or residency permit. Only the admin reviewing your account can ever see it.",
         "A profile photo is optional but helps clients trust you.",
+        "Turn on notifications on your dashboard so your phone buzzes when a client asks if you're available.",
         "Important: when a client wants your number, you will get a question on your dashboard \"Are you available?\" and must answer within 24 hours. We also ask every 2 weeks if you are still available. Check the app regularly.",
         "After you submit, an admin reviews your ID. You will see the result the next time you log in."
       ]

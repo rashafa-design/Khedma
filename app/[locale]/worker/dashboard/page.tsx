@@ -10,6 +10,7 @@ import type {
   WorkerTaskEntryRow,
 } from "@/lib/types";
 import { HelpBox } from "@/components/help-box";
+import { PushToggle } from "@/components/push-toggle";
 import { WorkerCheckin } from "@/components/worker-checkin";
 import { WorkerRequests } from "@/components/worker-requests";
 import { LocationForm } from "./location-form";
@@ -106,6 +107,7 @@ export default async function WorkerDashboardPage({
 
       <WorkerRequests />
       <WorkerCheckin />
+      <PushToggle audience="worker" />
 
       {serviceAreas.length === 0 && (
         <div className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HelpBox } from "@/components/help-box";
 import { FollowupPrompts } from "@/components/followup-prompts";
+import { PushToggle } from "@/components/push-toggle";
 import { WorkerCheckin } from "@/components/worker-checkin";
 import { WorkerRequests } from "@/components/worker-requests";
 import { Link } from "@/i18n/navigation";
@@ -273,6 +274,9 @@ export default async function DashboardPage({
         </>
       )}
       {profile.role === "client" && <FollowupPrompts />}
+      {profile.role !== "admin" && (
+        <PushToggle audience={profile.role === "worker" ? "worker" : "client"} />
+      )}
 
       <HelpBox
         topic={

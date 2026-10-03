@@ -58,6 +58,13 @@ export function AvailabilityStep({
       router.refresh();
       return;
     }
+    // Tell the worker's phone. A failure here must never block the client:
+    // the request itself is already saved and shows on the worker's dashboard.
+    fetch("/api/push/notify-request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ workerProfileId }),
+    }).catch(() => {});
     router.refresh();
   }
 

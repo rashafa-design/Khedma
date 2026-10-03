@@ -25,6 +25,12 @@ export function RequestButtons({ requestId }: { requestId: string }) {
       router.refresh();
       return;
     }
+    // Tell the client's phone the answer; never blocks the worker.
+    fetch("/api/push/notify-answer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ requestId }),
+    }).catch(() => {});
     router.refresh();
   }
 
