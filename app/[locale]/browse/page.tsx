@@ -102,6 +102,13 @@ export default async function BrowsePage({
     areasByWorkerId.set(row.worker_profile_id, list);
   }
   workerList = workerList.filter((w) => areasByWorkerId.has(w.id));
+
+  // Also leave out workers who haven't confirmed their details in over
+  // three months, or whom two different clients have reported (number not
+  // working, not looking, already found a job) - until they confirm again.
+  const { data: hiddenRows } = await supabase.rpc("get_hidden_worker_ids");
+  const hiddenIds = new Set((hiddenRows as string[] | null) ?? []);
+  workerList = workerList.filter((w) => !hiddenIds.has(w.id));
   if (areaFilter) {
     workerList = workerList.filter((w) =>
       areasByWorkerId.get(w.id)?.includes(areaFilter)
@@ -398,6 +405,7 @@ export default async function BrowsePage({
                   : null
               }
               trackView={isClient}
+              confirmedOn={formatDate(worker.last_confirmed_at)}
             />
           );
         })}

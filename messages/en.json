@@ -5,6 +5,34 @@
     "arabic": "Arabic",
     "english": "English"
   },
+  "checkin": {
+    "dueTitle": "Time to confirm your details",
+    "dueBody": "Every 3 months we ask you to confirm your listing is still correct. It is due in {days} days.",
+    "overdueTitle": "Please confirm your details now",
+    "overdueBody": "Your 3-month check-in is overdue. If you don't confirm within {days} days, clients will stop seeing your listing.",
+    "reportedTitle": "A client reported a problem",
+    "reportedBody": "A client who unlocked you said your number doesn't work, or that you are not looking for work or already found a job. Please check your phone number and availability, then confirm below.",
+    "hiddenTitle": "Your listing is hidden from clients",
+    "hiddenBody": "You haven't confirmed your details for over 3 months, so clients can't see you. Confirm below and you will appear again straight away.",
+    "hiddenReportedBody": "Several clients reported a problem (wrong number, not looking, or already working), so clients can't see you. Check your phone number and availability, then confirm below and you will appear again straight away.",
+    "checkList": "Check your prices, locations and phone number first:",
+    "openListing": "open my listing",
+    "stillAvailable": "Yes - my details are correct and I'm available",
+    "notAvailable": "I'm no longer available",
+    "error": "Something went wrong. Please try again."
+  },
+  "report": {
+    "open": "Report a problem with this worker",
+    "question": "What is wrong?",
+    "number_not_working": "The number doesn't work or isn't in service",
+    "not_looking": "They are not looking for work",
+    "found_job": "They already found another job",
+    "other": "Something else",
+    "send": "Send report",
+    "cancel": "Cancel",
+    "thanks": "Thank you. We have asked the worker to confirm their details.",
+    "error": "Something went wrong. Please try again."
+  },
   "location": {
     "title": "Where you live and work",
     "intro": "Clients use this to find workers near them, so keep it accurate.",
@@ -100,6 +128,7 @@
         "What you offer: add each task with a price. You can add the same task twice, for example one price for homes and another for businesses.",
         "Availability: switch to \"unavailable\" when you are fully booked. Clients still see you but know not to expect an answer.",
         "Contact phone: clients only see this number after paying to unlock you - keep it correct and keep your phone on.",
+        "Every 3 months you will be asked to confirm your details and that you are still available. If you don't, your listing is hidden from clients until you do. It is also hidden if clients report your number doesn't work or that you aren't looking for work.",
         "Deleting your profile removes you from Khedma completely."
       ]
     },
@@ -109,6 +138,7 @@
         "Use the filters to narrow the list - especially the governorate, so you only see workers who work in your area.",
         "Each card shows where the worker lives, where they work, what they offer and their prices.",
         "Unlock contact uses one of your 10 slots and shows the phone number until your month ends. Call or message them yourself.",
+        "If a number doesn't work, or the worker says they aren't looking or already found a job, tap \"Report a problem\" under their number. We ask the worker to confirm their details, and hide them from everyone if several clients report the same worker.",
         "Colours help you remember: green = unlocked now, orange = unlocked in an earlier month, blue = you looked at them but never unlocked, white = new to you.",
         "Use the \"Show\" filter to see only workers you haven't seen yet."
       ]
@@ -246,7 +276,9 @@
     "needsAttention": "Needs your attention",
     "openAdmin": "Open admin panel",
     "pendingWorkers": "Pending worker reviews",
-    "pendingPayments": "Pending payments"
+    "pendingPayments": "Pending payments",
+    "lastConfirmed": "Details last confirmed",
+    "reportedWorkers": "Workers reported by clients"
   },
   "admin": {
     "navOverview": "Overview",
@@ -362,6 +394,7 @@
     "noActiveSubscription": "You don't have an active subscription.",
     "unlockedBefore": "You unlocked this worker before ({date})",
     "viewedBefore": "You viewed this worker ({date}) - not unlocked",
+    "confirmedOn": "Worker confirmed their details on {date}",
     "allAreas": "All governorates",
     "livesIn": "Lives in",
     "worksIn": "Works in",

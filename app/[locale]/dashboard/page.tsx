@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HelpBox } from "@/components/help-box";
+import { WorkerCheckin } from "@/components/worker-checkin";
 import { Link } from "@/i18n/navigation";
 import { nationalityLabel } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/server";
@@ -195,6 +196,10 @@ export default async function DashboardPage({
           value: tWorker(workerProfile.availability),
         },
         { label: t("servicesOffered"), value: String(servicesCount ?? 0) },
+        {
+          label: t("lastConfirmed"),
+          value: formatDate(workerProfile.last_confirmed_at),
+        },
       ];
 
       if (workerProfile.status === "approved") {
@@ -224,9 +229,17 @@ export default async function DashboardPage({
           .eq("status", "pending"),
       ]);
 
+    const { data: reportedWorkers } = await supabase.rpc(
+      "get_reported_worker_count"
+    );
+
     summaryRows = [
       { label: t("pendingWorkers"), value: String(pendingWorkers ?? 0) },
       { label: t("pendingPayments"), value: String(pendingPayments ?? 0) },
+      {
+        label: t("reportedWorkers"),
+        value: String((reportedWorkers as number | null) ?? 0),
+      },
     ];
     summaryAction = { href: "/admin", label: t("openAdmin") };
   }
@@ -250,6 +263,8 @@ export default async function DashboardPage({
         <h1 className="text-2xl font-bold">{greeting}</h1>
         <p className="mt-1 text-gray-600">{intro}</p>
       </div>
+
+      {profile.role === "worker" && <WorkerCheckin />}
 
       <HelpBox
         topic={

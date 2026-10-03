@@ -10,6 +10,7 @@ import type {
   WorkerTaskEntryRow,
 } from "@/lib/types";
 import { HelpBox } from "@/components/help-box";
+import { WorkerCheckin } from "@/components/worker-checkin";
 import { LocationForm } from "./location-form";
 import { AvailabilityToggle } from "./availability-toggle";
 import { ContactPhoneForm } from "./contact-phone-form";
@@ -101,6 +102,8 @@ export default async function WorkerDashboardPage({
           availability={workerProfile.availability}
         />
       </div>
+
+      <WorkerCheckin />
 
       {serviceAreas.length === 0 && (
         <div className="rounded-md border border-red-300 bg-red-50 p-4 text-sm text-red-900">

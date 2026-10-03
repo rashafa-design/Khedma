@@ -6,6 +6,7 @@ import type {
   WorkerAvailability,
   WorkerTaskEntryRow,
 } from "@/lib/types";
+import { ReportButton } from "./report-button";
 import { UnlockButton } from "./unlock-button";
 import { ViewTracker } from "./view-tracker";
 
@@ -37,6 +38,7 @@ export async function WorkerCard({
   previouslyUnlockedOn,
   viewedOn,
   trackView,
+  confirmedOn,
 }: {
   workerProfileId: string;
   fullName: string;
@@ -54,6 +56,7 @@ export async function WorkerCard({
   previouslyUnlockedOn: string | null;
   viewedOn: string | null;
   trackView: boolean;
+  confirmedOn: string;
 }) {
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
@@ -149,9 +152,12 @@ export async function WorkerCard({
 
         <div className="mt-3">
           {contact.type === "unlocked" && (
-            <p className="text-sm font-medium" dir="ltr">
-              {t("phone")}: {contact.phone ?? "—"}
-            </p>
+            <>
+              <p className="text-sm font-medium" dir="ltr">
+                {t("phone")}: {contact.phone ?? "—"}
+              </p>
+              <ReportButton workerProfileId={workerProfileId} />
+            </>
           )}
           {contact.type === "can_unlock" && (
             <UnlockButton
@@ -172,6 +178,9 @@ export async function WorkerCard({
             </Link>
           )}
         </div>
+        <p className="mt-2 text-xs text-gray-500">
+          {t("confirmedOn", { date: confirmedOn })}
+        </p>
       </div>
     </ViewTracker>
   );

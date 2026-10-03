@@ -41,6 +41,7 @@ export interface WorkerProfileRow {
   photo_path: string | null;
   id_document_path: string;
   availability: WorkerAvailability;
+  last_confirmed_at: string;
   status: WorkerStatus;
   reviewed_by: string | null;
   reviewed_at: string | null;

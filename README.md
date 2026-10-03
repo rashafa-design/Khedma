@@ -360,3 +360,6 @@ Run `supabase/sql/phase12_worker_views.sql` once. For clients, every worker card
 
 ## Worker locations and on-screen help (Phase 13)
 Run `supabase/sql/phase13_worker_locations.sql` once. Workers now give the governorate they live in and at least one governorate where they work (`worker_profiles.base_governorate`, `worker_service_areas`; names in `lib/governorates.ts`). The database refuses to remove a worker's last area, and Browse hides any worker with no area. Clients get a governorate filter and each card shows where the worker lives and works. Every page also has a blue help box (`components/help-box.tsx`) whose text lives under `help.*` in `messages/en.json` and `messages/ar.json`.
+
+## Keeping listings honest (Phase 14)
+Run `supabase/sql/phase14_checkins_and_reports.sql` once. Workers are asked every 90 days to confirm their details and availability (banner on both worker dashboards, 14 days' warning); ignoring it for 14 more days hides the listing from Browse until they confirm. Clients can report an unlocked worker (number not working / not looking / found a job); two different clients reporting since the worker last confirmed also hides the worker until they confirm again. The admin dashboard shows how many workers have open reports. Numbers live in `lib/checkin.ts` and `get_hidden_worker_ids()` - change both together.
