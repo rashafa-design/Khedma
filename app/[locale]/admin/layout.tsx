@@ -31,7 +31,7 @@ export default async function AdminLayout({
 
   return (
     <div>
-      <nav className="flex gap-4 border-b border-gray-200 px-4 py-3 text-sm">
+      <nav className="flex gap-4 overflow-x-auto whitespace-nowrap border-b border-gray-200 px-4 py-3 text-sm">
         <Link href="/admin" className="font-medium hover:underline">
           {t("navOverview")}
         </Link>
@@ -49,6 +49,12 @@ export default async function AdminLayout({
           className="font-medium hover:underline"
         >
           {t("navPendingPayments")}
+        </Link>
+        <Link
+          href="/admin/workers/flagged"
+          className="font-medium hover:underline"
+        >
+          {t("navFlaggedWorkers")}
         </Link>
       </nav>
       {children}

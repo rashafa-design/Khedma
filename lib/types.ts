@@ -42,6 +42,7 @@ export interface WorkerProfileRow {
   id_document_path: string;
   availability: WorkerAvailability;
   last_confirmed_at: string;
+  availability_confirmed_at: string;
   status: WorkerStatus;
   reviewed_by: string | null;
   reviewed_at: string | null;
@@ -68,6 +69,16 @@ export interface WorkerServiceAreaRow {
   worker_profile_id: string;
   governorate: string;
   created_at: string;
+}
+
+export interface AvailabilityRequestRow {
+  id: string;
+  client_id: string;
+  worker_profile_id: string;
+  status: "pending" | "available" | "unavailable";
+  created_at: string;
+  expires_at: string;
+  responded_at: string | null;
 }
 
 export type PaymentMethod = "instapay" | "vodafone_cash";

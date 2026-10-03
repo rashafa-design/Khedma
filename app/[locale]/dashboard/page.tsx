@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HelpBox } from "@/components/help-box";
+import { FollowupPrompts } from "@/components/followup-prompts";
 import { WorkerCheckin } from "@/components/worker-checkin";
+import { WorkerRequests } from "@/components/worker-requests";
 import { Link } from "@/i18n/navigation";
 import { nationalityLabel } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/server";
@@ -264,7 +266,13 @@ export default async function DashboardPage({
         <p className="mt-1 text-gray-600">{intro}</p>
       </div>
 
-      {profile.role === "worker" && <WorkerCheckin />}
+      {profile.role === "worker" && (
+        <>
+          <WorkerRequests />
+          <WorkerCheckin />
+        </>
+      )}
+      {profile.role === "client" && <FollowupPrompts />}
 
       <HelpBox
         topic={

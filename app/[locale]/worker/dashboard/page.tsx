@@ -11,6 +11,7 @@ import type {
 } from "@/lib/types";
 import { HelpBox } from "@/components/help-box";
 import { WorkerCheckin } from "@/components/worker-checkin";
+import { WorkerRequests } from "@/components/worker-requests";
 import { LocationForm } from "./location-form";
 import { AvailabilityToggle } from "./availability-toggle";
 import { ContactPhoneForm } from "./contact-phone-form";
@@ -103,6 +104,7 @@ export default async function WorkerDashboardPage({
         />
       </div>
 
+      <WorkerRequests />
       <WorkerCheckin />
 
       {serviceAreas.length === 0 && (

@@ -7,7 +7,8 @@ import type {
   WorkerTaskEntryRow,
 } from "@/lib/types";
 import { ReportButton } from "./report-button";
-import { UnlockButton } from "./unlock-button";
+import type { CheckState } from "./availability-step";
+import { AvailabilityStep } from "./availability-step";
 import { ViewTracker } from "./view-tracker";
 
 function capitalize(value: string) {
@@ -16,7 +17,7 @@ function capitalize(value: string) {
 
 export type ContactState =
   | { type: "unlocked"; phone: string | null }
-  | { type: "can_unlock"; subscriptionId: string }
+  | { type: "can_unlock"; subscriptionId: string; check: CheckState }
   | { type: "no_slots" }
   | { type: "subscribe" }
   | { type: "hidden" };
@@ -39,6 +40,7 @@ export async function WorkerCard({
   viewedOn,
   trackView,
   confirmedOn,
+  availabilityStale,
 }: {
   workerProfileId: string;
   fullName: string;
@@ -57,6 +59,7 @@ export async function WorkerCard({
   viewedOn: string | null;
   trackView: boolean;
   confirmedOn: string;
+  availabilityStale: boolean;
 }) {
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
@@ -159,11 +162,15 @@ export async function WorkerCard({
               <ReportButton workerProfileId={workerProfileId} />
             </>
           )}
-          {contact.type === "can_unlock" && (
-            <UnlockButton
+          {contact.type === "can_unlock" && availability === "unavailable" && (
+            <p className="text-sm text-gray-600">{t("workerUnavailable")}</p>
+          )}
+          {contact.type === "can_unlock" && availability === "available" && (
+            <AvailabilityStep
               subscriptionId={contact.subscriptionId}
               workerProfileId={workerProfileId}
               previouslyUnlockedOn={previouslyUnlockedOn}
+              check={contact.check}
             />
           )}
           {contact.type === "no_slots" && (
@@ -178,9 +185,17 @@ export async function WorkerCard({
             </Link>
           )}
         </div>
-        <p className="mt-2 text-xs text-gray-500">
-          {t("confirmedOn", { date: confirmedOn })}
-        </p>
+        {availability === "available" && (
+          <p
+            className={`mt-2 text-xs ${
+              availabilityStale ? "font-medium text-amber-800" : "text-green-800"
+            }`}
+          >
+            {availabilityStale
+              ? t("availabilityStale", { date: confirmedOn })
+              : t("availabilityFresh", { date: confirmedOn })}
+          </p>
+        )}
       </div>
     </ViewTracker>
   );

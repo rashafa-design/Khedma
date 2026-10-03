@@ -86,6 +86,7 @@ export function OnboardingForm({
       profession_id: professionId,
       nationality,
       base_governorate: baseGovernorate,
+      response_terms_accepted_at: new Date().toISOString(),
       years_experience: Number(yearsExperience) || 0,
       id_document_path: idPath,
       photo_path: photoPath,
@@ -208,6 +209,15 @@ export function OnboardingForm({
           onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
         />
       </label>
+
+      <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950">
+        <p className="font-semibold">{t("responseTermsTitle")}</p>
+        <p className="mt-1">{t("responseTermsBody")}</p>
+        <label className="mt-2 flex items-start gap-2">
+          <input type="checkbox" required className="mt-1" />
+          <span>{t("responseTermsCheck")}</span>
+        </label>
+      </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 

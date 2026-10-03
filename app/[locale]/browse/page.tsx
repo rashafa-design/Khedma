@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { nationalityLabel } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/server";
 import type {
+  AvailabilityRequestRow,
   ProfessionRow,
   SubscriptionRow,
   TaskTypeRow,
@@ -12,8 +13,11 @@ import type {
   WorkerServiceAreaRow,
   WorkerTaskEntryRow,
 } from "@/lib/types";
+import { FollowupPrompts } from "@/components/followup-prompts";
 import { HelpBox } from "@/components/help-box";
+import { AVAILABILITY_EVERY_DAYS, daysSince } from "@/lib/checkin";
 import { governorateLabel } from "@/lib/governorates";
+import type { CheckState } from "./availability-step";
 import { BrowseControls } from "./browse-controls";
 import type { ContactState } from "./worker-card";
 import { WorkerCard } from "./worker-card";
@@ -207,6 +211,38 @@ export default async function BrowsePage({
       viewedByWorkerId.set(v.worker_profile_id, v.first_viewed_at);
     }
 
+    // This client's recent "are you available?" checks, newest first, so the
+    // first one seen per worker is the one that counts.
+    const { data: requestRows } = await supabase
+      .from("availability_requests")
+      .select("*")
+      .gt("created_at", new Date(Date.now() - 3 * 86_400_000).toISOString())
+      .order("created_at", { ascending: false })
+      .returns<AvailabilityRequestRow[]>();
+    const checkByWorkerId = new Map<string, CheckState>();
+    for (const r of requestRows ?? []) {
+      if (checkByWorkerId.has(r.worker_profile_id)) continue;
+      const now = Date.now();
+      if (r.status === "available") {
+        // A yes is good for 48 hours.
+        if (
+          r.responded_at &&
+          now - new Date(r.responded_at).getTime() < 48 * 3_600_000
+        ) {
+          checkByWorkerId.set(r.worker_profile_id, { kind: "confirmed" });
+        }
+      } else if (r.status === "unavailable") {
+        checkByWorkerId.set(r.worker_profile_id, { kind: "declined" });
+      } else if (new Date(r.expires_at).getTime() > now) {
+        checkByWorkerId.set(r.worker_profile_id, {
+          kind: "waiting",
+          expiresAt: r.expires_at,
+        });
+      } else {
+        checkByWorkerId.set(r.worker_profile_id, { kind: "no_reply" });
+      }
+    }
+
     let unlockedWorkerIds = new Set<string>();
     let phoneByWorkerId = new Map<string, string | null>();
     let slotsUsed = 0;
@@ -246,6 +282,7 @@ export default async function BrowsePage({
         contactByWorkerId.set(worker.id, {
           type: "can_unlock",
           subscriptionId: subscription.id,
+          check: checkByWorkerId.get(worker.id) ?? { kind: "none" },
         });
       }
     }
@@ -289,6 +326,8 @@ export default async function BrowsePage({
   return (
     <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-6 px-4 py-16">
       <h1 className="text-2xl font-bold">{t("title")}</h1>
+
+      {isClient && <FollowupPrompts />}
 
       <HelpBox topic={isClient ? "browseClient" : "browseViewer"} />
 
@@ -405,7 +444,11 @@ export default async function BrowsePage({
                   : null
               }
               trackView={isClient}
-              confirmedOn={formatDate(worker.last_confirmed_at)}
+              confirmedOn={formatDate(worker.availability_confirmed_at)}
+              availabilityStale={
+                daysSince(worker.availability_confirmed_at) >=
+                AVAILABILITY_EVERY_DAYS
+              }
             />
           );
         })}

@@ -17,6 +17,15 @@
     "hiddenReportedBody": "Several clients reported a problem (wrong number, not looking, or already working), so clients can't see you. Check your phone number and availability, then confirm below and you will appear again straight away.",
     "checkList": "Check your prices, locations and phone number first:",
     "openListing": "open my listing",
+    "availDueTitle": "Are you still available for work?",
+    "availDueBody": "Every 2 weeks we ask workers marked \"available\" to confirm it. Please answer within {days} days.",
+    "availOverdueTitle": "Please confirm you're still available",
+    "availOverdueBody": "Clients now see a warning that your availability is out of date. If you don't answer within {days} days, your listing is hidden from clients.",
+    "availHiddenTitle": "Your listing is hidden from clients",
+    "availHiddenBody": "You haven't confirmed you're available for over 4 weeks, so clients can't see you. Answer below and you will appear again straight away.",
+    "yesAvailable": "Yes - I'm still available",
+    "flaggedTitle": "An admin is reviewing your listing",
+    "flaggedBody": "Several clients had a bad experience (no answer, wrong number, or not available), so your listing is hidden while an admin looks into it. You don't need to do anything.",
     "stillAvailable": "Yes - my details are correct and I'm available",
     "notAvailable": "I'm no longer available",
     "error": "Something went wrong. Please try again."
@@ -31,6 +40,47 @@
     "send": "Send report",
     "cancel": "Cancel",
     "thanks": "Thank you. We have asked the worker to confirm their details.",
+    "error": "Something went wrong. Please try again."
+  },
+  "requests": {
+    "title": "A client is asking if you're available ({count})",
+    "body": "A client wants to contact you and is waiting for your answer before they continue. Please answer honestly - if you say yes, they will get your phone number.",
+    "hoursLeft": "Please answer within {hours} hours.",
+    "yes": "Yes, I'm available",
+    "no": "No, I'm not available",
+    "error": "That request is no longer open."
+  },
+  "check": {
+    "ask": "Check availability",
+    "askAgain": "Ask again",
+    "askHint": "Free - we ask the worker first, and you only use a slot if they say yes.",
+    "asking": "Asking...",
+    "waiting": "Waiting for the worker's reply (about {hours} hours left). You can ask other workers meanwhile.",
+    "confirmed": "✓ The worker confirmed they are available. You can unlock now.",
+    "declined": "The worker said they are not available. Please choose another worker.",
+    "noReply": "The worker didn't reply in time. No slot was used - you can ask again or choose another worker.",
+    "tooMany": "You can have 3 open checks at a time. Wait for a reply, then ask another worker.",
+    "alreadyAsked": "You already asked this worker. Please wait for the reply.",
+    "error": "Something went wrong. Please try again."
+  },
+  "followup": {
+    "title": "How did it go?",
+    "body": "A few days ago you unlocked these workers. Your answer helps keep Khedma's list honest.",
+    "question": "Did you reach {name}, and were they available?",
+    "answerGood": "Yes, all good",
+    "answerUnavailable": "Reached them, but not available",
+    "answerNotReached": "Couldn't reach them",
+    "error": "Something went wrong. Please try again."
+  },
+  "adminFlagged": {
+    "title": "Flagged workers",
+    "empty": "No workers have open complaints.",
+    "openCount": "{count} clients had a problem since the worker last confirmed",
+    "count90": "{count} in the last 90 days",
+    "hidden": "Hidden from clients",
+    "visible": "Still visible to clients",
+    "clear": "Clear flags (looked into it)",
+    "confirmClear": "Clear this worker's complaints and show them to clients again?",
     "error": "Something went wrong. Please try again."
   },
   "location": {
@@ -104,6 +154,7 @@
         "Choose the governorate you live in, and every governorate you are willing to work in. At least one is required - clients only contact workers who serve their area.",
         "Upload a clear photo of your national ID or residency permit. Only the admin reviewing your account can ever see it.",
         "A profile photo is optional but helps clients trust you.",
+        "Important: when a client wants your number, you will get a question on your dashboard \"Are you available?\" and must answer within 24 hours. We also ask every 2 weeks if you are still available. Check the app regularly.",
         "After you submit, an admin reviews your ID. You will see the result the next time you log in."
       ]
     },
@@ -128,7 +179,8 @@
         "What you offer: add each task with a price. You can add the same task twice, for example one price for homes and another for businesses.",
         "Availability: switch to \"unavailable\" when you are fully booked. Clients still see you but know not to expect an answer.",
         "Contact phone: clients only see this number after paying to unlock you - keep it correct and keep your phone on.",
-        "Every 3 months you will be asked to confirm your details and that you are still available. If you don't, your listing is hidden from clients until you do. It is also hidden if clients report your number doesn't work or that you aren't looking for work.",
+        "Client questions: when a client wants your number, a green box appears at the top of this page asking if you are available. Answer within 24 hours. A client only gets your number if you say yes. If you don't answer, it counts against you.",
+        "Every 2 weeks you will be asked if you are still available, and every 3 months to confirm your details and that you are still available. If you don't, your listing is hidden from clients until you do. It is also hidden if clients report your number doesn't work or that you aren't looking for work.",
         "Deleting your profile removes you from Khedma completely."
       ]
     },
@@ -137,7 +189,9 @@
       "items": [
         "Use the filters to narrow the list - especially the governorate, so you only see workers who work in your area.",
         "Each card shows where the worker lives, where they work, what they offer and their prices.",
+        "To contact a worker, first tap \"Check availability\". It is free: we ask the worker, and they have 24 hours to say yes or no. If they say yes you can unlock them; if not, nothing is spent and you can pick someone else.",
         "Unlock contact uses one of your 10 slots and shows the phone number until your month ends. Call or message them yourself.",
+        "A few days after unlocking, we will ask you how it went. Please answer - it keeps the list honest for everyone.",
         "If a number doesn't work, or the worker says they aren't looking or already found a job, tap \"Report a problem\" under their number. We ask the worker to confirm their details, and hide them from everyone if several clients report the same worker.",
         "Colours help you remember: green = unlocked now, orange = unlocked in an earlier month, blue = you looked at them but never unlocked, white = new to you.",
         "Use the \"Show\" filter to see only workers you haven't seen yet."
@@ -178,6 +232,14 @@
       "items": [
         "Open the ID and check the photo is clear and the details match the profile.",
         "Check the locations make sense. Approve to make the worker visible to clients, or reject and give a reason the worker will see."
+      ]
+    },
+    "adminFlagged": {
+      "title": "Flagged workers",
+      "items": [
+        "These workers had bad experiences with clients: no reply to an availability check, a wrong number, or not available.",
+        "Two different clients since the worker last confirmed, or three in 90 days, hides the worker from clients.",
+        "Contact the worker to find out what happened. Press \"Clear flags\" only once you are satisfied, so a worker can't erase their own record."
       ]
     },
     "adminPayments": {
@@ -285,6 +347,7 @@
     "navProfessions": "Professions & tasks",
     "navPendingWorkers": "Pending workers",
     "navPendingPayments": "Pending payments",
+    "navFlaggedWorkers": "Flagged workers",
     "overviewTitle": "Overview",
     "pendingWorkersCount": "Pending worker reviews",
     "pendingPaymentsCount": "Pending payments",
@@ -312,6 +375,9 @@
     "profession": "Profession",
     "nationality": "Nationality",
     "selectNationality": "Select your nationality",
+    "responseTermsTitle": "Please read: you must reply to clients",
+    "responseTermsBody": "Before a client can get your phone number, Khedma asks you if you are available. You will see the question on your dashboard and have 24 hours to answer Yes or No. Every 2 weeks we also ask if you are still available. If you don't answer, clients see a warning and then your listing is hidden.",
+    "responseTermsCheck": "I understand and will answer these questions honestly and on time.",
     "scopeHint": "Choose whether this price is for homes, businesses or both.",
     "priceHint": "Enter your price in Egyptian pounds and whether it is per hour, per day or per month.",
     "yearsExperience": "Years of experience",
@@ -394,7 +460,9 @@
     "noActiveSubscription": "You don't have an active subscription.",
     "unlockedBefore": "You unlocked this worker before ({date})",
     "viewedBefore": "You viewed this worker ({date}) - not unlocked",
-    "confirmedOn": "Worker confirmed their details on {date}",
+    "availabilityFresh": "✓ Availability confirmed on {date}",
+    "availabilityStale": "⚠ Availability not confirmed since {date}",
+    "workerUnavailable": "This worker is currently not available.",
     "allAreas": "All governorates",
     "livesIn": "Lives in",
     "worksIn": "Works in",
