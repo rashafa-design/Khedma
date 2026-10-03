@@ -47,6 +47,24 @@ export function ProfessionsForm({
     router.refresh();
   }
 
+  // Switching the main profession is how a worker fully changes career: add
+  // the new profession, make it main, then remove the old one.
+  async function makeMain(professionId: string) {
+    if (!window.confirm(t("confirmMakeMain"))) return;
+    setBusy(true);
+    setError(null);
+    const { error: updateError } = await supabase
+      .from("worker_profiles")
+      .update({ profession_id: professionId })
+      .eq("id", workerProfileId);
+    setBusy(false);
+    if (updateError) {
+      setError(t("error"));
+      return;
+    }
+    router.refresh();
+  }
+
   async function remove(professionId: string) {
     if (!window.confirm(t("confirmRemove"))) return;
     setBusy(true);
@@ -96,14 +114,24 @@ export function ProfessionsForm({
               )}
             </span>
             {profession.id !== mainProfessionId && (
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => remove(profession.id)}
-                className="text-xs font-medium text-red-700 underline disabled:opacity-50"
-              >
-                {t("remove")}
-              </button>
+              <span className="flex gap-3">
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => makeMain(profession.id)}
+                  className="text-xs font-medium underline disabled:opacity-50"
+                >
+                  {t("makeMain")}
+                </button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => remove(profession.id)}
+                  className="text-xs font-medium text-red-700 underline disabled:opacity-50"
+                >
+                  {t("remove")}
+                </button>
+              </span>
             )}
           </li>
         ))}
@@ -133,6 +161,8 @@ export function ProfessionsForm({
           </button>
         </div>
       )}
+
+      <p className="text-xs text-gray-500">{t("changeHint")}</p>
 
       {error && <p className="text-sm text-red-600">{error}</p>}
     </div>
