@@ -21,3 +21,12 @@
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# secrets and build output - never commit these
+*.keystore
+*.jks
+android.keystore.base64.txt
+android-keystore-*.zip
+*.apk
+/API key/
+*.docx
