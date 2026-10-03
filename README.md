@@ -392,3 +392,6 @@ Run `supabase/sql/phase19_incomplete_worker_ids.sql` once. Phone number is now r
 
 ## Transportation fee (Phase 20)
 Run `supabase/sql/phase20_transport_fee.sql` once. Visit workers enter a transportation fee per visit (EGP, 0 = free; `worker_profiles.transport_fee`). It is explicitly separate from their visit/hourly prices (worker screens say so; client cards say "on top of the price"). Required for visit workers (checklist item; visit workers without it stay out of the Visits tab).
+
+## One group per worker (Phase 22)
+Run `supabase/sql/phase22_one_work_type_per_worker.sql` once. A worker is EITHER a monthly worker OR a visit worker (radio buttons; the database requires exactly one value in `work_types`). A phone number is one number, so a worker offering both would reveal it under a plan the client never bought. A worker who truly does both registers a second account.
