@@ -1,3 +1,5 @@
+-- SUPERSEDED by phase23_unlock_follows_paid_plan.sql (the "matching plan only"
+-- rule below was replaced: a paid worker now shows under both plans).
 -- Phase 21: a phone number is only revealed under a plan that fits the worker.
 -- Run this once in Supabase: dashboard -> SQL Editor -> New query -> paste -> Run.
 --

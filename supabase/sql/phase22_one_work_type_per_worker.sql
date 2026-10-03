@@ -1,3 +1,5 @@
+-- SUPERSEDED by phase23_unlock_follows_paid_plan.sql (workers may offer both
+-- kinds of work again; this exclusive rule was dropped).
 -- Phase 22: a worker is EITHER a monthly worker OR a visit worker.
 -- Run this once in Supabase: dashboard -> SQL Editor -> New query -> paste -> Run.
 --

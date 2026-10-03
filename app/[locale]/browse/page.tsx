@@ -213,6 +213,10 @@ export default async function BrowsePage({
   const viewedByWorkerId = new Map<string, string>();
   const unlockedNowIds = new Set<string>();
   const isClient = profile?.role === "client";
+  let unlockedViaByWorkerId = new Map<
+    string,
+    { plan: WorkType; until: string }
+  >();
   const slotCounters: {
     plan: WorkType;
     used: number;
@@ -319,27 +323,32 @@ export default async function BrowsePage({
       }
     }
 
-    // An unlock only counts as "unlocked" (and reveals the number) when the
-    // plan it was made under fits the worker's kind of work. Older unlocks
-    // made before the two plans existed may not - they still used up a slot,
-    // but they show nothing.
+    // A worker the client has paid for is unlocked wherever they appear - in
+    // the Monthly tab AND the Visits tab - with no second payment and no
+    // second slot. But the access lasts only as long as the plan the client
+    // PAID with: a visits-pass unlock stops after 3 days even if the worker
+    // is also shown under the monthly plan.
     const planBySubscriptionId = new Map(
-      (subscriptionRows ?? []).map((s) => [s.id, s.plan] as const)
+      (subscriptionRows ?? []).map((s) => [s.id, s] as const)
     );
-    const workTypesByWorkerId = new Map(
-      (workers ?? []).map((w) => [w.id, w.work_types] as const)
-    );
-    const unlockedWorkerIds = new Set(
-      currentUnlocks
-        .filter((u) => {
-          const plan = planBySubscriptionId.get(u.subscription_id);
-          return (
-            !!plan &&
-            (workTypesByWorkerId.get(u.worker_profile_id) ?? []).includes(plan)
-          );
-        })
-        .map((u) => u.worker_profile_id)
-    );
+    const unlockedVia = new Map<string, { plan: WorkType; until: string }>();
+    for (const u of currentUnlocks) {
+      const subscription = planBySubscriptionId.get(u.subscription_id);
+      if (!subscription) continue;
+      const existing = unlockedVia.get(u.worker_profile_id);
+      // Keep whichever paid access lasts longest.
+      if (
+        !existing ||
+        new Date(subscription.expires_at) > new Date(existing.until)
+      ) {
+        unlockedVia.set(u.worker_profile_id, {
+          plan: subscription.plan,
+          until: subscription.expires_at,
+        });
+      }
+    }
+    const unlockedWorkerIds = new Set(unlockedVia.keys());
+    unlockedViaByWorkerId = unlockedVia;
     unlockedWorkerIds.forEach((id) => unlockedNowIds.add(id));
 
     const usedByPlan: Partial<Record<WorkType, number>> = {};
@@ -573,6 +582,16 @@ export default async function BrowsePage({
               workerProfileId={worker.id}
               fullName={nameByWorkerId.get(worker.id) ?? ""}
               photoUrl={photoUrl}
+              unlockedVia={
+                unlockedViaByWorkerId.has(worker.id)
+                  ? {
+                      plan: unlockedViaByWorkerId.get(worker.id)!.plan,
+                      until: formatDateTime(
+                        unlockedViaByWorkerId.get(worker.id)!.until
+                      ),
+                    }
+                  : null
+              }
               professionNames={professionNames}
               workTypes={worker.work_types}
               neighborhoods={

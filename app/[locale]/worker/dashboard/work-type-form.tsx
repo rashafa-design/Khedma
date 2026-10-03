@@ -30,12 +30,6 @@ export function WorkTypeForm({
       setError(t("atLeastOne"));
       return;
     }
-    // Switching group changes which plan clients need to see this worker's
-    // number, so warn before doing it.
-    if (selected[0] !== workTypes[0] && !window.confirm(t("confirmChange"))) {
-      return;
-    }
-
     setSaving(true);
     const { error: updateError } = await supabase
       .from("worker_profiles")

@@ -31,6 +31,7 @@ export async function WorkerCard({
   workerProfileId,
   fullName,
   photoUrl,
+  unlockedVia,
   professionNames,
   workTypes,
   neighborhoods,
@@ -54,6 +55,7 @@ export async function WorkerCard({
   workerProfileId: string;
   fullName: string;
   photoUrl: string | null;
+  unlockedVia: { plan: WorkType; until: string } | null;
   professionNames: string[];
   workTypes: WorkType[];
   neighborhoods: string[];
@@ -124,6 +126,16 @@ export async function WorkerCard({
         {contact.type === "unlocked" && (
           <p className="mt-1 inline-block rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-900">
             {t("unlockedBadge")}
+          </p>
+        )}
+        {contact.type === "unlocked" && unlockedVia && (
+          <p className="mt-1 text-xs text-green-900">
+            {t(
+              unlockedVia.plan === "visits"
+                ? "paidViaVisits"
+                : "paidViaMonthly",
+              { date: unlockedVia.until }
+            )}
           </p>
         )}
         {previouslyUnlockedOn && contact.type !== "unlocked" && (

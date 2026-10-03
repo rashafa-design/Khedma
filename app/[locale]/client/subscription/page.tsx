@@ -143,13 +143,9 @@ export default async function ClientSubscriptionPage({
           (u) => u.subscription_id === subscription.id
         );
         const used = planUnlocks.length;
-        // Only workers whose kind of work fits this plan show a number.
-        const visibleUnlocks = planUnlocks.filter((u) =>
-          unlockedById
-            .get(u.worker_profile_id)
-            ?.workerProfile.work_types.includes(plan)
-        );
-        const hiddenCount = planUnlocks.length - visibleUnlocks.length;
+        // Each worker is listed once, under the plan the client paid with.
+        const visibleUnlocks = planUnlocks;
+        const hiddenCount = 0;
 
         return (
           <section key={plan} className="flex flex-col gap-3">

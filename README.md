@@ -395,3 +395,6 @@ Run `supabase/sql/phase20_transport_fee.sql` once. Visit workers enter a transpo
 
 ## One group per worker (Phase 22)
 Run `supabase/sql/phase22_one_work_type_per_worker.sql` once. A worker is EITHER a monthly worker OR a visit worker (radio buttons; the database requires exactly one value in `work_types`). A phone number is one number, so a worker offering both would reveal it under a plan the client never bought. A worker who truly does both registers a second account.
+
+## Paid worker follows the plan paid with (Phase 23 - replaces phases 21 and 22)
+Workers may offer monthly work, visit work, or both. A worker you paid for under one plan also shows (unlocked, number visible) under the other plan's tab with no second payment and never counted twice (`unlocks_no_duplicate_across_plans` trigger) - but only until the plan you PAID with expires: 3 days for the visits pass, 1 month for the monthly plan (each unlock belongs to one subscription; `get_worker_phone_number` checks that subscription's expiry). Browse shows "Paid with your ... until <date>" on those cards. Phase 21/22 SQL files are kept for history but superseded.
