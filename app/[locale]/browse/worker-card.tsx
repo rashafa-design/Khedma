@@ -58,7 +58,7 @@ export async function WorkerCard({
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
   const list = new Intl.ListFormat(await getLocale(), {
-    style: "narrow",
+    style: "short",
     type: "unit",
   });
 
