@@ -15,6 +15,7 @@ import type {
   WorkerTaskEntryRow,
   WorkType,
 } from "@/lib/types";
+import { coversArea } from "@/lib/neighborhoods";
 import { isActive, PLAN_ORDER } from "@/lib/plans";
 import { FollowupPrompts } from "@/components/followup-prompts";
 import { HelpBox } from "@/components/help-box";
@@ -99,17 +100,11 @@ export default async function BrowsePage({
       (w) => w.service_neighborhoods.length > 0 && w.transport_fee !== null
     );
   }
-  // Suggestions for the "near me" box, taken before it narrows the list.
-  const neighborhoodSuggestions = [
-    ...new Set(workerList.flatMap((w) => w.service_neighborhoods)),
-  ].sort();
+  // "Near me": the client picks an area from the list. A worker matches if
+  // they listed that exact area, or listed the whole governorate it is in.
   if (nearFilter) {
-    const needle = nearFilter.toLowerCase();
     workerList = workerList.filter((w) =>
-      w.service_neighborhoods.some((n) => {
-        const name = n.toLowerCase();
-        return name.includes(needle) || needle.includes(name);
-      })
+      coversArea(w.service_neighborhoods, nearFilter)
     );
   }
 
@@ -573,7 +568,6 @@ export default async function BrowsePage({
 
       <BrowseControls
         professions={professions ?? []}
-        neighborhoodSuggestions={neighborhoodSuggestions}
         nameKey={nameKey}
         showSeenFilter={isClient}
       />

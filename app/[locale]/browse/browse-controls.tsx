@@ -4,6 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { governorateOptions } from "@/lib/governorates";
+import { areaGroups } from "@/lib/neighborhoods";
 import { nationalityOptions } from "@/lib/nationalities";
 import type { ProfessionRow } from "@/lib/types";
 
@@ -11,12 +12,10 @@ export function BrowseControls({
   professions,
   nameKey,
   showSeenFilter,
-  neighborhoodSuggestions,
 }: {
   professions: ProfessionRow[];
   nameKey: "name_en" | "name_ar";
   showSeenFilter: boolean;
-  neighborhoodSuggestions: string[];
 }) {
   const t = useTranslations("browse");
   const locale = useLocale();
@@ -74,31 +73,22 @@ export function BrowseControls({
             : t("typeAllHint")}
       </p>
     <div className="flex flex-wrap gap-3">
-      <div className="flex w-full gap-2">
-        <input
-          key={searchParams.get("near") ?? ""}
-          type="search"
-          list="near-suggestions"
-          defaultValue={searchParams.get("near") ?? ""}
-          placeholder={t("nearPlaceholder")}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              updateParam("near", (e.target as HTMLInputElement).value.trim());
-            }
-          }}
-          onBlur={(e) => {
-            if (e.target.value.trim() !== (searchParams.get("near") ?? "")) {
-              updateParam("near", e.target.value.trim());
-            }
-          }}
-          className="min-w-0 flex-1 rounded-md border border-gray-300 px-3 py-2 text-base"
-        />
-        <datalist id="near-suggestions">
-          {neighborhoodSuggestions.map((s) => (
-            <option key={s} value={s} />
-          ))}
-        </datalist>
-      </div>
+      <select
+        value={searchParams.get("near") ?? ""}
+        onChange={(e) => updateParam("near", e.target.value)}
+        className="w-full rounded-md border border-gray-300 px-3 py-2 text-base"
+      >
+        <option value="">{t("nearAll")}</option>
+        {areaGroups(null, locale).map((group) => (
+          <optgroup key={group.governorate} label={group.governorateName}>
+            {group.options.map((option) => (
+              <option key={option.code} value={option.code}>
+                {option.label}
+              </option>
+            ))}
+          </optgroup>
+        ))}
+      </select>
       <select
         value={searchParams.get("profession") ?? ""}
         onChange={(e) => updateParam("profession", e.target.value)}

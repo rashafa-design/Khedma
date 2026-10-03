@@ -61,16 +61,6 @@ export default async function WorkerDashboardPage({
     heldIds.push(workerProfile.profession_id);
   }
 
-  // Neighborhood names other workers already used, offered as suggestions.
-  const { data: neighborhoodRows } = await supabase
-    .from("worker_profiles")
-    .select("service_neighborhoods")
-    .eq("status", "approved")
-    .returns<{ service_neighborhoods: string[] }[]>();
-  const neighborhoodSuggestions = [
-    ...new Set((neighborhoodRows ?? []).flatMap((r) => r.service_neighborhoods)),
-  ].sort();
-
   const [
     { data: allProfessions },
     { data: taskTypes },
@@ -219,7 +209,6 @@ export default async function WorkerDashboardPage({
         serviceAreas={serviceAreas}
         neighborhoods={workerProfile.service_neighborhoods}
         worksByVisits={workerProfile.work_types.includes("visits")}
-        suggestions={neighborhoodSuggestions}
         transportFee={workerProfile.transport_fee}
       />
 

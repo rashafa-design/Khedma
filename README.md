@@ -409,3 +409,6 @@ Run `supabase/sql/phase25_unanswered_requests_move_down.sql` once. A request tha
 
 ## Worker activity numbers (Phase 26)
 Run `supabase/sql/phase26_worker_activity_stats.sql` once. The worker dashboards show three counts (last 30 days + all time): clients who viewed the card but never unlocked, "are you available?" questions received (with answered/missed), and clients who paid to unlock the number. `get_worker_activity()` returns counts only - never who - and only to the worker themself or an admin. "Viewed" comes from `worker_views` (card on screen 2+ seconds).
+
+## Areas are picked from a list, not typed (Phase 27)
+No SQL needed. Visit workers tick the areas they visit from `lib/neighborhoods.ts` (areas/towns for all 27 governorates, EN + AR, plus "All of <governorate>" for each), grouped by the governorates they work in. Stored in `worker_profiles.service_neighborhoods` as `"<governorate>:<slug>"` (e.g. `cairo:maadi`). Browse's "Near me" is a dropdown of the same list; a worker matches if they listed that area OR "All of" its governorate (`coversArea`). Old free-text values still display as typed and show a "please re-pick from the list" notice to the worker. On 2026-10-03 the two typed values on record ("Maadi", "المعادي") were converted to `cairo:maadi`. To add an area, add a line to `AREAS`.

@@ -2,10 +2,11 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { NeighborhoodInput } from "@/components/neighborhood-input";
+import { NeighborhoodPicker } from "@/components/neighborhood-picker";
 import { ServiceAreaPicker } from "@/components/service-area-picker";
 import { useRouter } from "@/i18n/navigation";
 import { governorateOptions } from "@/lib/governorates";
+import { governorateOfArea } from "@/lib/neighborhoods";
 import { createClient } from "@/lib/supabase/client";
 
 // Lets an approved worker change where they live and where they work.
@@ -17,7 +18,6 @@ export function LocationForm({
   serviceAreas,
   neighborhoods,
   worksByVisits,
-  suggestions,
   transportFee,
 }: {
   workerProfileId: string;
@@ -25,7 +25,6 @@ export function LocationForm({
   serviceAreas: string[];
   neighborhoods: string[];
   worksByVisits: boolean;
-  suggestions: string[];
   transportFee: number | null;
 }) {
   const t = useTranslations("location");
@@ -52,7 +51,13 @@ export function LocationForm({
       return;
     }
 
-    if (worksByVisits && spots.length === 0) {
+    // Drop areas that belong to a governorate the worker no longer works in.
+    const keptSpots = spots.filter((s) => {
+      const governorate = governorateOfArea(s);
+      return !governorate || areas.includes(governorate);
+    });
+
+    if (worksByVisits && keptSpots.length === 0) {
       setError(t("neighborhoodsRequired"));
       return;
     }
@@ -69,7 +74,7 @@ export function LocationForm({
       .from("worker_profiles")
       .update({
         base_governorate: base,
-        service_neighborhoods: spots,
+        service_neighborhoods: keptSpots,
         transport_fee: feeNumber !== null && feeNumber >= 0 ? feeNumber : null,
       })
       .eq("id", workerProfileId);
@@ -107,6 +112,7 @@ export function LocationForm({
       return;
     }
 
+    setSpots(keptSpots);
     setSaved(true);
     router.refresh();
   }
@@ -149,10 +155,10 @@ export function LocationForm({
             ? t("neighborhoodsTitleRequired")
             : t("neighborhoodsTitleOptional")}
         </p>
-        <NeighborhoodInput
+        <NeighborhoodPicker
+          governorates={areas}
           value={spots}
           onChange={setSpots}
-          suggestions={suggestions}
         />
         <span className="text-xs text-gray-500">{t("neighborhoodsHint")}</span>
       </div>

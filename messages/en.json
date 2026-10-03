@@ -117,8 +117,9 @@
     "getMonthly": "Get a monthly plan (2,000 EGP)"
   },
   "neighborhoods": {
-    "placeholder": "e.g. Maadi, Nasr City, 6th October",
-    "add": "Add",
+    "chooseGovernoratesFirst": "First tick the governorates where you work (above). The areas inside them will appear here to choose from.",
+    "legacy": "These were typed before the list existed. Please remove them and tick your areas from the list instead:",
+    "count": "{count} of {max} areas chosen",
     "remove": "Remove"
   },
   "push": {
@@ -205,7 +206,7 @@
     "saveError": "Something went wrong saving your locations. Please try again.",
     "neighborhoodsTitleRequired": "Neighborhoods you visit (required for visit work)",
     "neighborhoodsTitleOptional": "Neighborhoods you visit (optional)",
-    "neighborhoodsHint": "Clients near you search by neighborhood, so list the areas you can reach quickly. Type a name and press Add.",
+    "neighborhoodsHint": "Clients near you search by area, so tick the areas you can reach quickly. Choose \"All of ...\" if you go anywhere in that governorate, or if your area isn't listed.",
     "transportTitle": "Transportation fee per visit (EGP)",
     "transportHint": "What you charge on top of your price to travel to the client. Type 0 if transportation is free. Clients see this before they pay to unlock you.",
     "transportSeparateNote": "Important: transportation is NOT part of your visit or hourly price. Price your work only, without travel, and put the travel cost here. The client pays it separately, on top of your price.",
@@ -629,7 +630,7 @@
     "transportFree": "Included (no extra charge)",
     "transportNotStated": "Not stated",
     "transportFee": "{fee} EGP per visit, on top of the price",
-    "nearPlaceholder": "Near you? Type your neighborhood, e.g. Maadi (press Enter)",
+    "nearAll": "Near me - choose your area (any area)",
     "typeAll": "All workers",
     "typeMonthly": "Monthly",
     "typeVisits": "Visits",

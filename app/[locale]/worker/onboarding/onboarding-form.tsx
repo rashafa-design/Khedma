@@ -3,10 +3,11 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
-import { NeighborhoodInput } from "@/components/neighborhood-input";
+import { NeighborhoodPicker } from "@/components/neighborhood-picker";
 import { ServiceAreaPicker } from "@/components/service-area-picker";
 import { WorkTypePicker } from "@/components/work-type-picker";
 import { governorateOptions } from "@/lib/governorates";
+import { governorateOfArea } from "@/lib/neighborhoods";
 import { nationalityOptions } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/client";
 import type { ProfessionRow, WorkType } from "@/lib/types";
@@ -15,12 +16,10 @@ export function OnboardingForm({
   userId,
   professions,
   nameKey,
-  suggestions,
 }: {
   userId: string;
   professions: ProfessionRow[];
   nameKey: "name_en" | "name_ar";
-  suggestions: string[];
 }) {
   const t = useTranslations("worker");
   const tLocation = useTranslations("location");
@@ -58,7 +57,13 @@ export function OnboardingForm({
       return;
     }
 
-    if (workTypes.includes("visits") && neighborhoods.length === 0) {
+    // Only keep areas inside governorates the worker said they work in.
+    const keptNeighborhoods = neighborhoods.filter((n) => {
+      const governorate = governorateOfArea(n);
+      return !governorate || serviceAreas.includes(governorate);
+    });
+
+    if (workTypes.includes("visits") && keptNeighborhoods.length === 0) {
       setError(tLocation("neighborhoodsRequired"));
       return;
     }
@@ -111,7 +116,7 @@ export function OnboardingForm({
       nationality,
       base_governorate: baseGovernorate,
       work_types: workTypes,
-      service_neighborhoods: neighborhoods,
+      service_neighborhoods: keptNeighborhoods,
       transport_fee:
         workTypes.includes("visits") && feeNumber !== null ? feeNumber : null,
       response_terms_accepted_at: new Date().toISOString(),
@@ -226,10 +231,10 @@ export function OnboardingForm({
             ? tLocation("neighborhoodsTitleRequired")
             : tLocation("neighborhoodsTitleOptional")}
         </p>
-        <NeighborhoodInput
+        <NeighborhoodPicker
+          governorates={serviceAreas}
           value={neighborhoods}
           onChange={setNeighborhoods}
-          suggestions={suggestions}
         />
         <span className="text-xs text-gray-500">
           {tLocation("neighborhoodsHint")}

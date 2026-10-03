@@ -1,4 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import { areaLabel } from "@/lib/neighborhoods";
 import { Link } from "@/i18n/navigation";
 import type {
   WorkType,
@@ -82,7 +83,8 @@ export async function WorkerCard({
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
   const tWorkType = await getTranslations("workType");
-  const list = new Intl.ListFormat(await getLocale(), {
+  const locale = await getLocale();
+  const list = new Intl.ListFormat(locale, {
     style: "short",
     type: "unit",
   });
@@ -199,7 +201,9 @@ export async function WorkerCard({
         {neighborhoods.length > 0 && (
           <p className="mt-1 text-sm text-gray-700">
             🚗 {t("visitsIn")}:{" "}
-            <span className="font-medium">{list.format(neighborhoods)}</span>
+            <span className="font-medium">
+              {list.format(neighborhoods.map((n) => areaLabel(n, locale)))}
+            </span>
           </p>
         )}
         <ul className="mt-2 flex flex-col gap-1 text-sm">
