@@ -402,7 +402,8 @@
     "workerCta": "I'm a worker looking for clients",
     "loginCta": "Log in",
     "signupCta": "Sign up",
-    "androidAppCta": "Get the Android app"
+    "noDownload": "No download needed - Khedma works right here in your browser, on any phone or computer. The Android app is optional.",
+    "androidAppCta": "Get the Android app (optional)"
   },
   "auth": {
     "email": "Email",

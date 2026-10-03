@@ -35,6 +35,10 @@ export default async function HomePage({
         </Link>
       </div>
 
+      <p className="rounded-md border border-green-300 bg-green-50 p-3 text-sm text-green-950">
+        ✅ {t("noDownload")}
+      </p>
+
       <Link href="/download" className="text-sm underline">
         {t("androidAppCta")}
       </Link>
