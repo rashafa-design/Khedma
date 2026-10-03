@@ -2,6 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { NeighborhoodInput } from "@/components/neighborhood-input";
 import { ServiceAreaPicker } from "@/components/service-area-picker";
 import { useRouter } from "@/i18n/navigation";
 import { governorateOptions } from "@/lib/governorates";
@@ -14,10 +15,16 @@ export function LocationForm({
   workerProfileId,
   baseGovernorate,
   serviceAreas,
+  neighborhoods,
+  worksByVisits,
+  suggestions,
 }: {
   workerProfileId: string;
   baseGovernorate: string | null;
   serviceAreas: string[];
+  neighborhoods: string[];
+  worksByVisits: boolean;
+  suggestions: string[];
 }) {
   const t = useTranslations("location");
   const locale = useLocale();
@@ -27,6 +34,7 @@ export function LocationForm({
 
   const [base, setBase] = useState(baseGovernorate ?? "");
   const [areas, setAreas] = useState<string[]>(serviceAreas);
+  const [spots, setSpots] = useState<string[]>(neighborhoods);
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -41,11 +49,16 @@ export function LocationForm({
       return;
     }
 
+    if (worksByVisits && spots.length === 0) {
+      setError(t("neighborhoodsRequired"));
+      return;
+    }
+
     setSaving(true);
 
     const { error: baseError } = await supabase
       .from("worker_profiles")
-      .update({ base_governorate: base })
+      .update({ base_governorate: base, service_neighborhoods: spots })
       .eq("id", workerProfileId);
 
     // Add first, remove second: the worker is never left with zero areas
@@ -115,6 +128,20 @@ export function LocationForm({
         <p>{t("worksIn")}</p>
         <ServiceAreaPicker selected={areas} onChange={setAreas} />
         <span className="text-xs text-gray-500">{t("worksInHint")}</span>
+      </div>
+
+      <div className="flex flex-col gap-1 text-sm">
+        <p className="font-medium">
+          {worksByVisits
+            ? t("neighborhoodsTitleRequired")
+            : t("neighborhoodsTitleOptional")}
+        </p>
+        <NeighborhoodInput
+          value={spots}
+          onChange={setSpots}
+          suggestions={suggestions}
+        />
+        <span className="text-xs text-gray-500">{t("neighborhoodsHint")}</span>
       </div>
 
       {error && <p className="text-sm text-red-600">{error}</p>}

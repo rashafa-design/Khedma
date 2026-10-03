@@ -81,6 +81,15 @@ export default async function WorkerOnboardingPage({
     .order("created_at")
     .returns<ProfessionRow[]>();
 
+  const { data: neighborhoodRows } = await supabase
+    .from("worker_profiles")
+    .select("service_neighborhoods")
+    .eq("status", "approved")
+    .returns<{ service_neighborhoods: string[] }[]>();
+  const neighborhoodSuggestions = [
+    ...new Set((neighborhoodRows ?? []).flatMap((r) => r.service_neighborhoods)),
+  ].sort();
+
   return (
     <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-sm flex-col justify-center gap-6 px-4 py-16">
       <div>
@@ -95,6 +104,7 @@ export default async function WorkerOnboardingPage({
       ) : (
         <OnboardingForm
           userId={user.id}
+          suggestions={neighborhoodSuggestions}
           professions={professions ?? []}
           nameKey={locale === "ar" ? "name_ar" : "name_en"}
         />

@@ -53,7 +53,9 @@ export function AvailabilityStep({
           ? t("tooMany")
           : insertError.message.includes("already asked")
             ? t("alreadyAsked")
-            : t("error")
+            : insertError.message.includes("active plan")
+              ? t("noPlan")
+              : t("error")
       );
       router.refresh();
       return;

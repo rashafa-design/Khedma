@@ -46,6 +46,7 @@ export interface WorkerProfileRow {
   nationality: string;
   base_governorate: string | null;
   work_types: WorkType[];
+  service_neighborhoods: string[];
   years_experience: number;
   photo_path: string | null;
   id_document_path: string;
@@ -98,6 +99,7 @@ export interface PaymentRequestRow {
   client_id: string;
   amount: number;
   currency: string;
+  plan: WorkType;
   payment_method: PaymentMethod;
   proof_screenshot_path: string;
   status: PaymentStatus;
@@ -112,6 +114,7 @@ export interface SubscriptionRow {
   id: string;
   client_id: string;
   payment_request_id: string | null;
+  plan: WorkType;
   slots_total: number;
   starts_at: string;
   expires_at: string;

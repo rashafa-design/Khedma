@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { HelpBox } from "@/components/help-box";
 import { FollowupPrompts } from "@/components/followup-prompts";
 import { PushToggle } from "@/components/push-toggle";
+import { isActive, PLAN_ORDER } from "@/lib/plans";
 import { WorkerCheckin } from "@/components/worker-checkin";
 import { WorkerRequests } from "@/components/worker-requests";
 import { Link } from "@/i18n/navigation";
@@ -111,29 +112,43 @@ export default async function DashboardPage({
   if (profile.role === "client") {
     summaryTitle = t("subscriptionTitle");
 
-    const { data: subscription } = await supabase
+    const { data: subscriptionRows } = await supabase
       .from("subscriptions")
       .select("*")
       .eq("client_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle<SubscriptionRow>();
+      .returns<SubscriptionRow[]>();
 
-    if (subscription && new Date(subscription.expires_at) > new Date()) {
-      const { count } = await supabase
-        .from("unlocks")
-        .select("*", { count: "exact", head: true })
-        .eq("subscription_id", subscription.id);
-      const used = count ?? 0;
+    // A client can hold one active plan of each kind (visits / monthly).
+    const activeSubscriptions = PLAN_ORDER.map((plan) =>
+      (subscriptionRows ?? []).find((s) => s.plan === plan && isActive(s))
+    ).filter((s): s is SubscriptionRow => !!s);
 
-      summaryRows = [
-        {
-          label: t("unlockedWorkers"),
-          value: t("unlockedOf", { used, total: subscription.slots_total }),
-        },
-        { label: t("slotsLeft"), value: String(subscription.slots_total - used) },
-        { label: t("accessUntil"), value: formatDate(subscription.expires_at) },
-      ];
+    if (activeSubscriptions.length > 0) {
+      for (const subscription of activeSubscriptions) {
+        const { count } = await supabase
+          .from("unlocks")
+          .select("*", { count: "exact", head: true })
+          .eq("subscription_id", subscription.id);
+        const used = count ?? 0;
+
+        summaryRows.push({
+          label:
+            subscription.plan === "visits"
+              ? `🔧 ${t("planVisits")}`
+              : `📅 ${t("planMonthly")}`,
+          value: `${t("unlockedOf", {
+            used,
+            total: subscription.slots_total,
+          })} · ${new Date(subscription.expires_at).toLocaleString(locale, {
+            day: "numeric",
+            month: "short",
+            hour: "numeric",
+            minute: "2-digit",
+            timeZone: "Africa/Cairo",
+          })}`,
+        });
+      }
+      summaryAction = { href: "/client/subscribe", label: t("managePlans") };
     } else {
       summaryNote = t("noActiveSubscription");
       summaryAction = { href: "/client/subscribe", label: t("subscribeNow") };

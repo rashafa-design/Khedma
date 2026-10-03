@@ -4,9 +4,15 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { PaymentMethod } from "@/lib/types";
+import type { PaymentMethod, WorkType } from "@/lib/types";
 
-export function SubscribeForm({ userId }: { userId: string }) {
+export function SubscribeForm({
+  userId,
+  plan,
+}: {
+  userId: string;
+  plan: WorkType;
+}) {
   const t = useTranslations("payment");
   const router = useRouter();
   const supabase = createClient();
@@ -40,8 +46,7 @@ export function SubscribeForm({ userId }: { userId: string }) {
 
     const { error: insertError } = await supabase.from("payment_requests").insert({
       client_id: userId,
-      amount: 2000,
-      currency: "EGP",
+      plan,
       payment_method: method,
       proof_screenshot_path: proofPath,
     });

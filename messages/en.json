@@ -71,6 +71,30 @@
     "add": "Add",
     "error": "Something went wrong. Please try again."
   },
+  "plans": {
+    "chooseTitle": "Choose a plan",
+    "chooseIntro": "Browsing is always free. You only pay to see a worker's phone number. Pick the plan that matches the kind of worker you need - you can have both at the same time.",
+    "visitsTitle": "Visit workers",
+    "visitsBody": "For workers who come for a visit or a job, such as plumbers, electricians, technicians or one-off cleaning. A small price for a short time.",
+    "monthlyTitle": "Monthly workers",
+    "monthlyBody": "For workers who work for you by the month, such as drivers, cooks, nannies and housekeepers.",
+    "egp": "EGP",
+    "youGet": "You get {slots} workers for {duration}.",
+    "1month": "1 month",
+    "3days": "3 days",
+    "activeUntil": "Active until {date}",
+    "seeIt": "See it",
+    "pending": "Your payment is being checked.",
+    "choose": "Choose this plan",
+    "backToPlans": "Back to plans",
+    "getVisits": "Get a visits pass (50 EGP)",
+    "getMonthly": "Get a monthly plan (2,000 EGP)"
+  },
+  "neighborhoods": {
+    "placeholder": "e.g. Maadi, Nasr City, 6th October",
+    "add": "Add",
+    "remove": "Remove"
+  },
   "push": {
     "title": "Turn on notifications",
     "bodyWorker": "So your phone buzzes the moment a client asks if you're available - you only have 24 hours to answer, and a quick reply is how you get hired.",
@@ -104,6 +128,7 @@
     "noReply": "The worker didn't reply in time. No slot was used - you can ask again or choose another worker.",
     "tooMany": "You can have 3 open checks at a time. Wait for a reply, then ask another worker.",
     "alreadyAsked": "You already asked this worker. Please wait for the reply.",
+    "noPlan": "You need an active plan that fits this worker (visits pass or monthly plan).",
     "error": "Something went wrong. Please try again."
   },
   "followup": {
@@ -140,6 +165,12 @@
     "saving": "Saving...",
     "saved": "Saved.",
     "saveError": "Something went wrong saving your locations. Please try again.",
+    "neighborhoodsTitleRequired": "Neighborhoods you visit (required for visit work)",
+    "neighborhoodsTitleOptional": "Neighborhoods you visit (optional)",
+    "neighborhoodsHint": "Clients near you search by neighborhood, so list the areas you can reach quickly. Type a name and press Add.",
+    "neighborhoodsRequired": "Please add at least one neighborhood you visit, so nearby clients can find you.",
+    "noNeighborhoodsTitle": "Nearby clients can't find you yet",
+    "noNeighborhoodsBody": "You work by visits but haven't added any neighborhoods. Add the areas you visit below - until you do, you won't appear in the Visits tab.",
     "missingTitle": "Clients can't see you yet",
     "missingBody": "You haven't chosen where you work. Add at least one governorate below - until you do, your listing stays hidden from clients."
   },
@@ -169,7 +200,7 @@
     "dashboardClient": {
       "title": "Your dashboard",
       "items": [
-        "Browsing workers is free. Paying 2,000 EGP unlocks the phone numbers of up to 10 workers for one month.",
+        "Browsing workers is free. You pay only to see phone numbers: 50 EGP unlocks up to 5 visit workers for 3 days, and 2,000 EGP unlocks up to 10 monthly workers for one month.",
         "Below you can see your subscription: how many workers you have unlocked and until when it lasts.",
         "Tap \"Browse workers\" to find someone, or \"My subscription\" to see the numbers you already unlocked."
       ]
@@ -195,6 +226,7 @@
       "items": [
         "Choose your main profession, for example Driver or Plumber. Later you can add other professions too and price the tasks for each.",
         "Say whether you work by the month, by visits, or both. Clients can filter for either.",
+        "If you work by visits, add the neighborhoods you visit (for example Maadi or Nasr City). Nearby clients search by neighborhood, so this is how they find you.",
         "Choose the governorate you live in, and every governorate you are willing to work in. At least one is required - clients only contact workers who serve their area.",
         "Upload a clear photo of your national ID or residency permit. Only the admin reviewing your account can ever see it.",
         "A profile photo is optional but helps clients trust you.",
@@ -222,6 +254,7 @@
       "items": [
         "Professions: you can offer more than one, for example a cleaner who also drives. Add them in \"Your professions\", then price each profession's tasks below. Your main profession can't be removed.",
         "How you work: tick monthly, visits or both. Clients can filter for workers who work by the month or who come for visits.",
+        "Neighborhoods: if you work by visits, list the neighborhoods you visit. Nearby clients search by neighborhood, and you won't appear in the Visits tab without at least one.",
         "Locations: clients filter by governorate, so list every place you really work. You always need at least one.",
         "What you offer: add each task with a price. You can add the same task twice, for example one price for homes and another for businesses.",
         "Availability: switch to \"unavailable\" when you are fully booked. Clients still see you but know not to expect an answer.",
@@ -255,7 +288,7 @@
     "subscribe": {
       "title": "How to pay",
       "items": [
-        "Send 2,000 EGP to the number below using Instapay or Vodafone Cash.",
+        "Send the exact amount shown below to the number below using Instapay or Vodafone Cash: 50 EGP for the visits pass, 2,000 EGP for the monthly plan.",
         "Take a screenshot of the confirmation, choose the method you used, upload the screenshot and press Submit.",
         "An admin checks it and starts your month. You will see the status on this page when you log in again."
       ]
@@ -270,7 +303,7 @@
     "mySubscription": {
       "title": "Your subscription",
       "items": [
-        "This lists every worker you unlocked this month, with their phone number.",
+        "This lists every worker you unlocked, with their phone number, for each plan you have: the visits pass (3 days) and the monthly plan (1 month).",
         "On the expiry date everything locks again, even workers you unlocked. Subscribe again to unlock new ones.",
         "Workers you unlocked before are flagged on the Browse page so you don't spend a slot on them twice by accident."
       ]
@@ -280,6 +313,14 @@
       "items": [
         "Open the ID and check the photo is clear and the details match the profile.",
         "Check the locations make sense. Approve to make the worker visible to clients, or reject and give a reason the worker will see."
+      ]
+    },
+    "plans": {
+      "title": "Which plan do I need?",
+      "items": [
+        "Visits pass (50 EGP): for workers who come for a visit or job - plumbers, electricians, technicians, one-off cleaning. You can unlock 5 workers within 3 days.",
+        "Monthly plan (2,000 EGP): for workers who work for you by the month - drivers, cooks, nannies, housekeepers. You can unlock 10 workers within one month.",
+        "Each plan only unlocks the matching kind of worker. You can buy both at the same time."
       ]
     },
     "adminFlagged": {
@@ -293,7 +334,7 @@
     "adminPayments": {
       "title": "Confirming payments",
       "items": [
-        "Open the screenshot and check the amount (2,000 EGP) and that the money reached your Instapay or Vodafone Cash.",
+        "Open the screenshot and check the amount matches the plan shown (50 EGP for a visits pass, 2,000 EGP for a monthly plan) and that the money reached your Instapay or Vodafone Cash.",
         "Approve to start the client's month with 10 unlock slots. Reject with a reason if something is wrong."
       ]
     }
@@ -387,6 +428,9 @@
     "openAdmin": "Open admin panel",
     "pendingWorkers": "Pending worker reviews",
     "pendingPayments": "Pending payments",
+    "planVisits": "Visits pass",
+    "planMonthly": "Monthly plan",
+    "managePlans": "Manage my plans",
     "lastConfirmed": "Details last confirmed",
     "reportedWorkers": "Workers reported by clients"
   },
@@ -514,6 +558,17 @@
     "availabilityFresh": "✓ Availability confirmed on {date}",
     "availabilityStale": "⚠ Availability not confirmed since {date}",
     "workerUnavailable": "This worker is currently not available.",
+    "counterPlanVisits": "Visits pass",
+    "counterPlanMonthly": "Monthly plan",
+    "noVisitsPlan": "You don't have a visits pass (50 EGP for 5 visit workers, 3 days).",
+    "noMonthlyPlan": "You don't have a monthly plan (2,000 EGP for 10 monthly workers, 1 month).",
+    "getPlan": "Get it",
+    "usesVisitsPass": "Unlocking uses 1 slot of your visits pass.",
+    "usesMonthlyPlan": "Unlocking uses 1 slot of your monthly plan.",
+    "subscribeVisits": "Get a visits pass to unlock",
+    "subscribeMonthly": "Get a monthly plan to unlock",
+    "visitsIn": "Visits",
+    "nearPlaceholder": "Near you? Type your neighborhood, e.g. Maadi (press Enter)",
     "typeAll": "All workers",
     "typeMonthly": "Monthly",
     "typeVisits": "Visits",
@@ -537,6 +592,8 @@
   },
   "payment": {
     "subscribeTitle": "Unlock worker contacts",
+    "explainerVisits": "50 EGP unlocks the phone numbers of up to 5 workers who come for visits, for 3 days. After that everything locks again - even workers you already unlocked. Workers' availability changes quickly, so a short pass keeps the list accurate.",
+    "payViaAmount": "Send {amount} EGP via Instapay or Vodafone Cash to:",
     "explainerBody": "2,000 EGP unlocks phone numbers for up to 10 workers of your choice, for exactly 1 month. After that, everything locks again - even workers you already unlocked - so you'll need to subscribe again for a new month. Worker availability can change, so a fresh month means a fresh, accurate list.",
     "amount": "2,000 EGP",
     "payVia": "Send 2,000 EGP via Instapay or Vodafone Cash to:",
@@ -566,6 +623,8 @@
   },
   "adminPayments": {
     "title": "Pending payments",
+    "planVisits": "Visits pass (50 EGP expected)",
+    "planMonthly": "Monthly plan (2,000 EGP expected)",
     "empty": "No payments waiting for review.",
     "client": "Client",
     "method": "Method",

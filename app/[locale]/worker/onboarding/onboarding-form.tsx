@@ -3,6 +3,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
+import { NeighborhoodInput } from "@/components/neighborhood-input";
 import { ServiceAreaPicker } from "@/components/service-area-picker";
 import { WorkTypePicker } from "@/components/work-type-picker";
 import { governorateOptions } from "@/lib/governorates";
@@ -14,10 +15,12 @@ export function OnboardingForm({
   userId,
   professions,
   nameKey,
+  suggestions,
 }: {
   userId: string;
   professions: ProfessionRow[];
   nameKey: "name_en" | "name_ar";
+  suggestions: string[];
 }) {
   const t = useTranslations("worker");
   const tLocation = useTranslations("location");
@@ -30,6 +33,7 @@ export function OnboardingForm({
 
   const [professionId, setProfessionId] = useState("");
   const [workTypes, setWorkTypes] = useState<WorkType[]>([]);
+  const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
   const [nationality, setNationality] = useState("");
   const [yearsExperience, setYearsExperience] = useState("");
   const [baseGovernorate, setBaseGovernorate] = useState("");
@@ -50,6 +54,11 @@ export function OnboardingForm({
 
     if (workTypes.length === 0) {
       setError(tWorkType("atLeastOne"));
+      return;
+    }
+
+    if (workTypes.includes("visits") && neighborhoods.length === 0) {
+      setError(tLocation("neighborhoodsRequired"));
       return;
     }
 
@@ -95,6 +104,7 @@ export function OnboardingForm({
       nationality,
       base_governorate: baseGovernorate,
       work_types: workTypes,
+      service_neighborhoods: neighborhoods,
       response_terms_accepted_at: new Date().toISOString(),
       years_experience: Number(yearsExperience) || 0,
       id_document_path: idPath,
@@ -199,6 +209,22 @@ export function OnboardingForm({
         <p>{tLocation("worksIn")}</p>
         <ServiceAreaPicker selected={serviceAreas} onChange={setServiceAreas} />
         <span className="text-xs text-gray-500">{tLocation("worksInHint")}</span>
+      </div>
+
+      <div className="flex flex-col gap-1 text-sm">
+        <p className="font-medium">
+          {workTypes.includes("visits")
+            ? tLocation("neighborhoodsTitleRequired")
+            : tLocation("neighborhoodsTitleOptional")}
+        </p>
+        <NeighborhoodInput
+          value={neighborhoods}
+          onChange={setNeighborhoods}
+          suggestions={suggestions}
+        />
+        <span className="text-xs text-gray-500">
+          {tLocation("neighborhoodsHint")}
+        </span>
       </div>
 
       <input

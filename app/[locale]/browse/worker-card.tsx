@@ -17,9 +17,14 @@ function capitalize(value: string) {
 
 export type ContactState =
   | { type: "unlocked"; phone: string | null }
-  | { type: "can_unlock"; subscriptionId: string; check: CheckState }
+  | {
+      type: "can_unlock";
+      subscriptionId: string;
+      plan: WorkType;
+      check: CheckState;
+    }
   | { type: "no_slots" }
-  | { type: "subscribe" }
+  | { type: "subscribe"; plan: WorkType }
   | { type: "hidden" };
 
 export async function WorkerCard({
@@ -28,6 +33,7 @@ export async function WorkerCard({
   photoUrl,
   professionNames,
   workTypes,
+  neighborhoods,
   nationality,
   livesIn,
   worksIn,
@@ -48,6 +54,7 @@ export async function WorkerCard({
   photoUrl: string | null;
   professionNames: string[];
   workTypes: WorkType[];
+  neighborhoods: string[];
   nationality: string;
   livesIn: string;
   worksIn: string[];
@@ -153,6 +160,12 @@ export async function WorkerCard({
               : list.format(worksIn)}
           </span>
         </p>
+        {neighborhoods.length > 0 && (
+          <p className="mt-1 text-sm text-gray-700">
+            🚗 {t("visitsIn")}:{" "}
+            <span className="font-medium">{list.format(neighborhoods)}</span>
+          </p>
+        )}
         <ul className="mt-2 flex flex-col gap-1 text-sm">
           {taskEntries.map((entry) => {
             const taskType = taskTypes.find((tt) => tt.id === entry.task_type_id);
@@ -179,6 +192,13 @@ export async function WorkerCard({
             <p className="text-sm text-gray-600">{t("workerUnavailable")}</p>
           )}
           {contact.type === "can_unlock" && availability === "available" && (
+            <p className="mb-1 text-xs text-gray-500">
+              {t(
+                contact.plan === "visits" ? "usesVisitsPass" : "usesMonthlyPlan"
+              )}
+            </p>
+          )}
+          {contact.type === "can_unlock" && availability === "available" && (
             <AvailabilityStep
               subscriptionId={contact.subscriptionId}
               workerProfileId={workerProfileId}
@@ -191,10 +211,14 @@ export async function WorkerCard({
           )}
           {contact.type === "subscribe" && (
             <Link
-              href="/client/subscribe"
+              href={`/client/subscribe?plan=${contact.plan}`}
               className="text-xs font-medium underline"
             >
-              {t("subscribeToUnlock")}
+              {t(
+                contact.plan === "visits"
+                  ? "subscribeVisits"
+                  : "subscribeMonthly"
+              )}
             </Link>
           )}
         </div>

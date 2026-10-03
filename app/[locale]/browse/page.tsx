@@ -13,7 +13,9 @@ import type {
   WorkerProfessionRow,
   WorkerServiceAreaRow,
   WorkerTaskEntryRow,
+  WorkType,
 } from "@/lib/types";
+import { isActive, PLAN_ORDER } from "@/lib/plans";
 import { FollowupPrompts } from "@/components/followup-prompts";
 import { HelpBox } from "@/components/help-box";
 import { AVAILABILITY_EVERY_DAYS, daysSince } from "@/lib/checkin";
@@ -42,6 +44,7 @@ export default async function BrowsePage({
     typeof sp.nationality === "string" ? sp.nationality : "";
   const areaFilter = typeof sp.area === "string" ? sp.area : "";
   const typeFilter = typeof sp.type === "string" ? sp.type : "";
+  const nearFilter = typeof sp.near === "string" ? sp.near.trim() : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "newest";
 
   const supabase = await createClient();
@@ -88,6 +91,25 @@ export default async function BrowsePage({
 
   const { data: workers } = await workerQuery.returns<WorkerProfileRow[]>();
   let workerList = workers ?? [];
+
+  // Visit workers are found by neighborhood. One with none listed can't be
+  // found "nearby", so they stay out of the Visits tab until they add some.
+  if (typeFilter === "visits") {
+    workerList = workerList.filter((w) => w.service_neighborhoods.length > 0);
+  }
+  // Suggestions for the "near me" box, taken before it narrows the list.
+  const neighborhoodSuggestions = [
+    ...new Set(workerList.flatMap((w) => w.service_neighborhoods)),
+  ].sort();
+  if (nearFilter) {
+    const needle = nearFilter.toLowerCase();
+    workerList = workerList.filter((w) =>
+      w.service_neighborhoods.some((n) => {
+        const name = n.toLowerCase();
+        return name.includes(needle) || needle.includes(name);
+      })
+    );
+  }
 
   const t = await getTranslations("browse");
   const nameKey = locale === "ar" ? "name_ar" : "name_en";
@@ -181,8 +203,21 @@ export default async function BrowsePage({
   const viewedByWorkerId = new Map<string, string>();
   const unlockedNowIds = new Set<string>();
   const isClient = profile?.role === "client";
-  let slotCounter: { used: number; total: number; validUntil: string } | null =
-    null;
+  const slotCounters: {
+    plan: WorkType;
+    used: number;
+    total: number;
+    validUntil: string;
+  }[] = [];
+
+  const formatDateTime = (iso: string) =>
+    new Date(iso).toLocaleString(locale, {
+      day: "numeric",
+      month: "short",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: "Africa/Cairo",
+    });
 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString(locale, {
@@ -193,16 +228,19 @@ export default async function BrowsePage({
     });
 
   if (isClient) {
-    const { data: subscription } = await supabase
+    // A client can hold one active plan of each kind (monthly / visits).
+    const { data: subscriptionRows } = await supabase
       .from("subscriptions")
       .select("*")
       .eq("client_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle<SubscriptionRow>();
-
-    const hasActiveSubscription =
-      !!subscription && new Date(subscription.expires_at) > new Date();
+      .returns<SubscriptionRow[]>();
+    const activeByPlan: Partial<Record<WorkType, SubscriptionRow>> = {};
+    for (const s of subscriptionRows ?? []) {
+      if (isActive(s) && !activeByPlan[s.plan]) activeByPlan[s.plan] = s;
+    }
+    const activeIds = new Set(
+      Object.values(activeByPlan).map((s) => s.id)
+    );
 
     // Every unlock this client ever made, across all their months (RLS already
     // limits this to their own). Newest first, so the first one seen per
@@ -213,18 +251,16 @@ export default async function BrowsePage({
       .order("unlocked_at", { ascending: false })
       .returns<UnlockRow[]>();
 
-    const currentSubscriptionId =
-      hasActiveSubscription && subscription ? subscription.id : null;
-    const currentUnlocks = (allUnlocks ?? []).filter(
-      (u) => u.subscription_id === currentSubscriptionId
+    const currentUnlocks = (allUnlocks ?? []).filter((u) =>
+      activeIds.has(u.subscription_id)
     );
 
-    // Workers unlocked in an EARLIER month: once that month ends the contact
+    // Workers unlocked under an EARLIER plan period: once it ends the contact
     // number re-locks, so without this flag nothing tells the client they've
     // already paid a slot to see this person and would pay again.
     for (const u of allUnlocks ?? []) {
       if (
-        u.subscription_id !== currentSubscriptionId &&
+        !activeIds.has(u.subscription_id) &&
         !previousUnlockByWorkerId.has(u.worker_profile_id)
       ) {
         previousUnlockByWorkerId.set(u.worker_profile_id, u.unlocked_at);
@@ -273,30 +309,42 @@ export default async function BrowsePage({
       }
     }
 
-    let unlockedWorkerIds = new Set<string>();
-    let phoneByWorkerId = new Map<string, string | null>();
-    let slotsUsed = 0;
+    const unlockedWorkerIds = new Set(
+      currentUnlocks.map((u) => u.worker_profile_id)
+    );
+    unlockedWorkerIds.forEach((id) => unlockedNowIds.add(id));
 
-    if (hasActiveSubscription && subscription) {
-      slotsUsed = currentUnlocks.length;
-      unlockedWorkerIds = new Set(currentUnlocks.map((u) => u.worker_profile_id));
-      unlockedWorkerIds.forEach((id) => unlockedNowIds.add(id));
-      slotCounter = {
-        used: slotsUsed,
+    const usedByPlan: Partial<Record<WorkType, number>> = {};
+    for (const plan of PLAN_ORDER) {
+      const subscription = activeByPlan[plan];
+      if (!subscription) continue;
+      const used = currentUnlocks.filter(
+        (u) => u.subscription_id === subscription.id
+      ).length;
+      usedByPlan[plan] = used;
+      slotCounters.push({
+        plan,
+        used,
         total: subscription.slots_total,
-        validUntil: formatDate(subscription.expires_at),
-      };
-
-      const phoneResults = await Promise.all(
-        [...unlockedWorkerIds].map(async (workerProfileId) => {
-          const { data } = await supabase.rpc("get_worker_phone_number", {
-            p_worker_profile_id: workerProfileId,
-          });
-          return [workerProfileId, (data as string | null) ?? null] as const;
-        })
-      );
-      phoneByWorkerId = new Map(phoneResults);
+        validUntil: formatDateTime(subscription.expires_at),
+      });
     }
+
+    const phoneResults = await Promise.all(
+      [...unlockedWorkerIds].map(async (workerProfileId) => {
+        const { data } = await supabase.rpc("get_worker_phone_number", {
+          p_worker_profile_id: workerProfileId,
+        });
+        return [workerProfileId, (data as string | null) ?? null] as const;
+      })
+    );
+    const phoneByWorkerId = new Map(phoneResults);
+
+    const tab: WorkType | null =
+      typeFilter === "monthly" || typeFilter === "visits" ? typeFilter : null;
+    const hasSlots = (plan: WorkType) =>
+      !!activeByPlan[plan] &&
+      (usedByPlan[plan] ?? 0) < activeByPlan[plan]!.slots_total;
 
     for (const worker of workerList) {
       if (unlockedWorkerIds.has(worker.id)) {
@@ -304,17 +352,41 @@ export default async function BrowsePage({
           type: "unlocked",
           phone: phoneByWorkerId.get(worker.id) ?? null,
         });
-      } else if (!hasActiveSubscription || !subscription) {
-        contactByWorkerId.set(worker.id, { type: "subscribe" });
-      } else if (slotsUsed >= subscription.slots_total) {
-        contactByWorkerId.set(worker.id, { type: "no_slots" });
-      } else {
-        contactByWorkerId.set(worker.id, {
-          type: "can_unlock",
-          subscriptionId: subscription.id,
-          check: checkByWorkerId.get(worker.id) ?? { kind: "none" },
-        });
+        continue;
       }
+
+      // Which of the client's plans fit this worker's kind of work?
+      const fitting = PLAN_ORDER.filter(
+        (plan) => worker.work_types.includes(plan) && activeByPlan[plan]
+      );
+
+      if (fitting.length === 0) {
+        // No plan that fits - point them at the one that would.
+        const wanted: WorkType =
+          tab && worker.work_types.includes(tab)
+            ? tab
+            : worker.work_types.includes("visits")
+              ? "visits"
+              : "monthly";
+        contactByWorkerId.set(worker.id, { type: "subscribe", plan: wanted });
+        continue;
+      }
+
+      const usable = fitting.filter(hasSlots);
+      if (usable.length === 0) {
+        contactByWorkerId.set(worker.id, { type: "no_slots" });
+        continue;
+      }
+
+      // The tab the client is on decides when both plans would fit;
+      // otherwise the cheaper visits pass is used first.
+      const plan = tab && usable.includes(tab) ? tab : usable[0];
+      contactByWorkerId.set(worker.id, {
+        type: "can_unlock",
+        subscriptionId: activeByPlan[plan]!.id,
+        plan,
+        check: checkByWorkerId.get(worker.id) ?? { kind: "none" },
+      });
     }
   } else {
     for (const worker of workerList) {
@@ -361,48 +433,67 @@ export default async function BrowsePage({
 
       <HelpBox topic={isClient ? "browseClient" : "browseViewer"} />
 
+      {isClient && slotCounters.length > 0 && (
+        <div className="sticky top-2 z-10 flex flex-col gap-2">
+          {slotCounters.map((counter) => (
+            <div
+              key={counter.plan}
+              className="rounded-md border border-gray-200 bg-white p-3 shadow-sm"
+            >
+              <div className="flex items-center justify-between gap-3 text-sm">
+                <p className="font-semibold">
+                  {counter.plan === "visits" ? "🔧 " : "📅 "}
+                  {t("counterUnlocked", {
+                    used: counter.used,
+                    total: counter.total,
+                  })}
+                </p>
+                <p
+                  className={
+                    counter.total - counter.used === 0
+                      ? "font-semibold text-red-700"
+                      : "font-semibold"
+                  }
+                >
+                  {t("counterLeft", { left: counter.total - counter.used })}
+                </p>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded bg-gray-200">
+                <div
+                  className="h-2 bg-gray-900"
+                  style={{ width: `${(counter.used / counter.total) * 100}%` }}
+                />
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                {t(
+                  counter.plan === "visits"
+                    ? "counterPlanVisits"
+                    : "counterPlanMonthly"
+                )}{" "}
+                · {t("counterValidUntil", { date: counter.validUntil })}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+
       {isClient &&
-        (slotCounter ? (
-          <div className="sticky top-2 z-10 rounded-md border border-gray-200 bg-white p-3 shadow-sm">
-            <div className="flex items-center justify-between gap-3 text-sm">
-              <p className="font-semibold">
-                {t("counterUnlocked", {
-                  used: slotCounter.used,
-                  total: slotCounter.total,
-                })}
-              </p>
-              <p
-                className={
-                  slotCounter.total - slotCounter.used === 0
-                    ? "font-semibold text-red-700"
-                    : "font-semibold"
-                }
+        (["visits", "monthly"] as const)
+          .filter((plan) => !slotCounters.some((c) => c.plan === plan))
+          .map((plan) => (
+            <div
+              key={plan}
+              className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm"
+            >
+              {t(plan === "visits" ? "noVisitsPlan" : "noMonthlyPlan")}{" "}
+              <Link
+                href={`/client/subscribe?plan=${plan}`}
+                className="font-medium underline"
               >
-                {t("counterLeft", {
-                  left: slotCounter.total - slotCounter.used,
-                })}
-              </p>
+                {t("getPlan")}
+              </Link>
             </div>
-            <div className="mt-2 h-2 overflow-hidden rounded bg-gray-200">
-              <div
-                className="h-2 bg-gray-900"
-                style={{
-                  width: `${(slotCounter.used / slotCounter.total) * 100}%`,
-                }}
-              />
-            </div>
-            <p className="mt-1 text-xs text-gray-500">
-              {t("counterValidUntil", { date: slotCounter.validUntil })}
-            </p>
-          </div>
-        ) : (
-          <div className="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm">
-            {t("noActiveSubscription")}{" "}
-            <Link href="/client/subscribe" className="font-medium underline">
-              {t("subscribeToUnlock")}
-            </Link>
-          </div>
-        ))}
+          ))}
 
       {isClient && (
         <ul className="flex flex-wrap gap-2 text-xs">
@@ -423,6 +514,7 @@ export default async function BrowsePage({
 
       <BrowseControls
         professions={professions ?? []}
+        neighborhoodSuggestions={neighborhoodSuggestions}
         nameKey={nameKey}
         showSeenFilter={isClient}
       />
@@ -455,6 +547,11 @@ export default async function BrowsePage({
               photoUrl={photoUrl}
               professionNames={professionNames}
               workTypes={worker.work_types}
+              neighborhoods={
+                worker.work_types.includes("visits")
+                  ? worker.service_neighborhoods
+                  : []
+              }
               nationality={nationalityLabel(worker.nationality, locale)}
               livesIn={governorateLabel(worker.base_governorate, locale)}
               worksIn={(areasByWorkerId.get(worker.id) ?? []).map((code) =>

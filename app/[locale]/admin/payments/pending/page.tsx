@@ -62,6 +62,10 @@ export default async function AdminPendingPaymentsPage({
               <p className="font-semibold">
                 {t("client")}: {profile?.full_name ?? "—"}
               </p>
+              <p className="text-sm font-medium">
+                {payment.plan === "visits" ? "🔧 " : "📅 "}
+                {t(payment.plan === "visits" ? "planVisits" : "planMonthly")}
+              </p>
               <p className="text-sm text-gray-600">
                 {payment.amount} {payment.currency} · {t("method")}:{" "}
                 {methodLabel}
