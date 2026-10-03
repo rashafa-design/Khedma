@@ -462,7 +462,7 @@ export default async function BrowsePage({
     workerList = workerList.filter((w) => stateOf(w.id) === seenFilter);
   }
 
-  const sorted = [...workerList].sort((a, b) => {
+  const bySortChoice = [...workerList].sort((a, b) => {
     if (sort === "price") {
       return minPrice(a.id) - minPrice(b.id);
     }
@@ -471,6 +471,18 @@ export default async function BrowsePage({
     }
     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
   });
+
+  // Workers who recently let a client's question expire unanswered are shown
+  // LAST (in whatever order was chosen) instead of being hidden - they may
+  // simply reply when asked again.
+  const { data: unresponsiveRows } = await supabase.rpc(
+    "get_unresponsive_worker_ids"
+  );
+  const unresponsiveIds = new Set((unresponsiveRows as string[] | null) ?? []);
+  const sorted = [
+    ...bySortChoice.filter((w) => !unresponsiveIds.has(w.id)),
+    ...bySortChoice.filter((w) => unresponsiveIds.has(w.id)),
+  ];
 
   return (
     <main className="mx-auto flex min-h-[calc(100vh-7rem)] max-w-2xl flex-col gap-6 px-4 py-16">
@@ -592,6 +604,7 @@ export default async function BrowsePage({
               workerProfileId={worker.id}
               fullName={nameByWorkerId.get(worker.id) ?? ""}
               photoUrl={photoUrl}
+              slowToReply={unresponsiveIds.has(worker.id)}
               unlockedVia={
                 unlockedViaByWorkerId.has(worker.id)
                   ? {

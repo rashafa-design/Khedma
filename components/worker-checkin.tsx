@@ -44,13 +44,20 @@ export async function WorkerCheckin() {
   // Only approved listings are visible to clients, so only those need this.
   if (!worker || worker.status !== "approved") return null;
 
-  const [{ data: reportCount }, { data: isHidden }] = await Promise.all([
-    supabase.rpc("get_worker_open_report_count", {
-      p_worker_profile_id: worker.id,
-    }),
-    supabase.rpc("get_worker_is_hidden", { p_worker_profile_id: worker.id }),
-  ]);
+  const [{ data: reportCount }, { data: isHidden }, { data: slowRows }] =
+    await Promise.all([
+      supabase.rpc("get_worker_open_report_count", {
+        p_worker_profile_id: worker.id,
+      }),
+      supabase.rpc("get_worker_is_hidden", { p_worker_profile_id: worker.id }),
+      supabase.rpc("get_unresponsive_worker_ids"),
+    ]);
   const reports = (reportCount as number | null) ?? 0;
+  // Missed a client's question recently: shown lower in the list until they
+  // answer or confirm they are still available.
+  const missedRequest = ((slowRows as string[] | null) ?? []).includes(
+    worker.id
+  );
   const detailsState = checkinState(worker.last_confirmed_at);
   const availState =
     worker.availability === "available"
@@ -106,6 +113,17 @@ export async function WorkerCheckin() {
         </p>
         {listingLink}
         <CheckinButtons kind="details" />
+      </section>
+    );
+  }
+
+  // 1b. A client's question expired unanswered.
+  if (missedRequest) {
+    return (
+      <section className="rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
+        <h2 className="font-semibold">{t("missedTitle")}</h2>
+        <p className="mt-1">{t("missedBody")}</p>
+        <CheckinButtons kind="availability" />
       </section>
     );
   }

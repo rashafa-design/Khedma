@@ -17,6 +17,8 @@
     "hiddenReportedBody": "Several clients reported a problem (wrong number, not looking, or already working), so clients can't see you. Check your phone number and availability, then confirm below and you will appear again straight away.",
     "checkList": "Check your prices, locations and phone number first:",
     "openListing": "open my listing",
+    "missedTitle": "You missed a client's question",
+    "missedBody": "A client asked if you were available and the time ran out. You are shown lower in the list for now, and clients see \"slow to reply\". Tap below to say you are available (or not) and you go back to your normal place.",
     "availDueTitle": "Are you still available for work?",
     "availDueBody": "Every 2 weeks we ask workers marked \"available\" to confirm it. Please answer within {days} days.",
     "availOverdueTitle": "Please confirm you're still available",
@@ -25,7 +27,7 @@
     "availHiddenBody": "You haven't confirmed you're available for over 4 weeks, so clients can't see you. Answer below and you will appear again straight away.",
     "yesAvailable": "Yes - I'm still available",
     "flaggedTitle": "An admin is reviewing your listing",
-    "flaggedBody": "Several clients had a bad experience (no answer, wrong number, or not available), so your listing is hidden while an admin looks into it. You don't need to do anything.",
+    "flaggedBody": "Several clients had a bad experience (wrong number, or not available when they reached you), so your listing is hidden while an admin looks into it. You don't need to do anything.",
     "stillAvailable": "Yes - my details are correct and I'm available",
     "notAvailable": "I'm no longer available",
     "error": "Something went wrong. Please try again."
@@ -278,7 +280,7 @@
         "What you offer: add each task with a price. You can add the same task twice, for example one price for homes and another for businesses.",
         "Availability: switch to \"unavailable\" when you are fully booked. Clients still see you but know not to expect an answer.",
         "Contact phone: clients only see this number after paying to unlock you - keep it correct and keep your phone on.",
-        "Client questions: when a client wants your number, a green box appears at the top of this page asking if you are available. Visit requests must be answered within 3 hours, monthly requests within 24 hours. A client only gets your number if you say yes. If you don't answer, it counts against you.",
+        "Client questions: when a client wants your number, a green box appears at the top of this page asking if you are available. Visit requests must be answered within 3 hours, monthly requests within 24 hours. A client only gets your number if you say yes. If you miss a question, you move lower in the list and clients see \"slow to reply\" - you are NOT hidden, and a client can ask you again. Answer the next question, or tap \"still available\", and you go back to your normal place.",
         "Every 2 weeks you will be asked if you are still available, and every 3 months to confirm your details and that you are still available. If you don't, your listing is hidden from clients until you do. It is also hidden if clients report your number doesn't work or that you aren't looking for work.",
         "Deleting your profile removes you from Khedma completely."
       ]
@@ -346,7 +348,7 @@
     "adminFlagged": {
       "title": "Flagged workers",
       "items": [
-        "These workers had bad experiences with clients: no reply to an availability check, a wrong number, or not available.",
+        "These workers had bad experiences with clients: a wrong number, or not available when reached. (A missed availability question does not hide a worker - they just move lower in Browse.)",
         "Two different clients since the worker last confirmed, or three in 90 days, hides the worker from clients.",
         "Contact the worker to find out what happened. Press \"Clear flags\" only once you are satisfied, so a worker can't erase their own record."
       ]
@@ -492,7 +494,7 @@
     "selectProfession": "Select your profession",
     "mainProfessionHint": "You can add more professions later from your dashboard.",
     "responseTermsTitle": "Please read: you must reply to clients",
-    "responseTermsBody": "Before a client can get your phone number, Khedma asks you if you are available. You will see the question on your dashboard and must answer Yes or No: within 3 hours for a visit request, or 24 hours for a monthly request. Every 2 weeks we also ask if you are still available. If you don't answer, clients see a warning and then your listing is hidden.",
+    "responseTermsBody": "Before a client can get your phone number, Khedma asks you if you are available. You will see the question on your dashboard and must answer Yes or No: within 3 hours for a visit request, or 24 hours for a monthly request. If you miss a question you move lower in the list until you answer the next one. Every 2 weeks we also ask if you are still available. If you don't answer that, clients see a warning and then your listing is hidden.",
     "responseTermsCheck": "I understand and will answer these questions honestly and on time.",
     "priceWithoutTransport": "Visit workers: do not include transportation in these prices. Enter your transportation fee separately under \"Where you live and work\" - the client pays it on top.",
     "addManyHint": "You can add as many things as you like: fill in a row, press \"Add another\" for more, then save them all at once.",
@@ -593,6 +595,7 @@
     "paidViaVisits": "Paid with your visits pass - you can see this worker until {date}, even in the Monthly tab. No second payment, and they are not counted twice.",
     "paidViaMonthly": "Paid with your monthly plan - you can see this worker until {date}, even in the Visits tab. No second payment, and they are not counted twice.",
     "chooseTab": "This worker does both kinds of work. To unlock them, open the Monthly tab (uses your monthly plan) or the Visits tab (uses your visits pass) - each plan only pays for its own tab.",
+    "slowToReply": "Slow to reply recently - may take a while to answer",
     "usesVisitsPass": "Unlocking uses 1 slot of your visits pass.",
     "usesMonthlyPlan": "Unlocking uses 1 slot of your monthly plan.",
     "subscribeVisits": "Get a visits pass to unlock",

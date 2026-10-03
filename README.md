@@ -403,3 +403,6 @@ Pricing guard (UI): each plan only pays for its OWN tab. On the Monthly tab only
 
 ## Reply window by plan (Phase 24)
 Run `supabase/sql/phase24_reply_window_by_plan.sql` once. An availability request now records its plan: the worker has **3 hours** to answer a visit request and **24 hours** for a monthly one (set by a trigger, `availability_requests.plan`). A "yes" only counts for an unlock under the same plan. The worker's dashboard labels each question "Visit request" / "Monthly request" with the time left, and the push notification says the same. Reminder: every worker who ignores requests collects "no reply" strikes (2 clients since last confirm hides them), so visit workers must keep notifications on.
+
+## Unanswered requests move a worker down, not out (Phase 25)
+Run `supabase/sql/phase25_unanswered_requests_move_down.sql` once. A request that expires unanswered no longer counts toward hiding a worker (reports and bad follow-up answers still do). Instead `get_unresponsive_worker_ids()` lists workers who missed a question since they last answered/confirmed (and within 30 days); Browse shows them LAST with a "slow to reply" tag, and their dashboard shows a "you missed a client's question" box with the one-tap availability buttons. Answering any later question, or tapping "still available", puts them back immediately.

@@ -32,6 +32,7 @@ export async function WorkerCard({
   workerProfileId,
   fullName,
   photoUrl,
+  slowToReply,
   unlockedVia,
   professionNames,
   workTypes,
@@ -56,6 +57,7 @@ export async function WorkerCard({
   workerProfileId: string;
   fullName: string;
   photoUrl: string | null;
+  slowToReply: boolean;
   unlockedVia: { plan: WorkType; until: string } | null;
   professionNames: string[];
   workTypes: WorkType[];
@@ -127,6 +129,11 @@ export async function WorkerCard({
         {contact.type === "unlocked" && (
           <p className="mt-1 inline-block rounded bg-green-100 px-2 py-0.5 text-xs font-medium text-green-900">
             {t("unlockedBadge")}
+          </p>
+        )}
+        {slowToReply && contact.type !== "unlocked" && (
+          <p className="mt-1 inline-block rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-700">
+            ⏳ {t("slowToReply")}
           </p>
         )}
         {contact.type === "unlocked" && unlockedVia && (
