@@ -380,3 +380,6 @@ Run `supabase/sql/phase16_push_subscriptions.sql` once. Workers and clients tap 
 
 ## Android signing key was replaced (2026-10-03)
 The first signing key was accidentally committed to this public repo, so it was retired. The new key (fingerprint in `public/.well-known/assetlinks.json`) and its password are kept in the git-ignored folder `Khedma-signing-key-BACKUP` next to this README (never committed) and in two GitHub secrets (`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`). Keep a second backup of that folder somewhere safe (password manager / private cloud): if the key and password are lost, the app can never be updated again, only replaced.
+
+## Several professions + monthly/visit workers (Phase 17)
+Run `supabase/sql/phase17_multiple_professions_and_work_types.sql` once. A worker picks a MAIN profession at sign-up (now a required choice with a placeholder - it used to pre-select Cleaner), can add more from "Your professions" on their dashboard (`worker_professions`; task entries must belong to one of their professions, enforced by a trigger), and ticks how they work: `monthly`, `visits` or both (`worker_profiles.work_types`). Browse has All / Monthly / Visits tabs, the profession filter matches any of a worker's professions, and cards show every profession plus a work-type badge.

@@ -10,6 +10,7 @@ import type {
   TaskTypeRow,
   UnlockRow,
   WorkerProfileRow,
+  WorkerProfessionRow,
   WorkerServiceAreaRow,
   WorkerTaskEntryRow,
 } from "@/lib/types";
@@ -40,6 +41,7 @@ export default async function BrowsePage({
   const nationalityFilter =
     typeof sp.nationality === "string" ? sp.nationality : "";
   const areaFilter = typeof sp.area === "string" ? sp.area : "";
+  const typeFilter = typeof sp.type === "string" ? sp.type : "";
   const sort = typeof sp.sort === "string" ? sp.sort : "newest";
 
   const supabase = await createClient();
@@ -62,11 +64,26 @@ export default async function BrowsePage({
     .select("*")
     .eq("status", "approved");
 
+  // A worker can offer several professions, so the profession filter looks
+  // at all of them, not just the one they signed up with.
   if (professionFilter) {
-    workerQuery = workerQuery.eq("profession_id", professionFilter);
+    const { data: matches } = await supabase
+      .from("worker_professions")
+      .select("worker_profile_id")
+      .eq("profession_id", professionFilter)
+      .returns<{ worker_profile_id: string }[]>();
+    workerQuery = workerQuery.in(
+      "id",
+      matches && matches.length > 0
+        ? matches.map((m) => m.worker_profile_id)
+        : [NIL_UUID]
+    );
   }
   if (nationalityFilter) {
     workerQuery = workerQuery.eq("nationality", nationalityFilter);
+  }
+  if (typeFilter === "monthly" || typeFilter === "visits") {
+    workerQuery = workerQuery.contains("work_types", [typeFilter]);
   }
 
   const { data: workers } = await workerQuery.returns<WorkerProfileRow[]>();
@@ -90,6 +107,19 @@ export default async function BrowsePage({
     .select("*")
     .in("worker_profile_id", workerIds)
     .returns<WorkerTaskEntryRow[]>();
+
+  // Every profession each listed worker offers (shown on their card).
+  const { data: professionRows } = await supabase
+    .from("worker_professions")
+    .select("*")
+    .in("worker_profile_id", workerIds)
+    .returns<WorkerProfessionRow[]>();
+  const professionIdsByWorkerId = new Map<string, string[]>();
+  for (const row of professionRows ?? []) {
+    const list = professionIdsByWorkerId.get(row.worker_profile_id) ?? [];
+    list.push(row.profession_id);
+    professionIdsByWorkerId.set(row.worker_profile_id, list);
+  }
 
   // Where each worker works. A worker with no service area at all is left
   // out of the list: a client would spend an unlock on someone who may not
@@ -403,9 +433,11 @@ export default async function BrowsePage({
         )}
 
         {sorted.map((worker) => {
-          const profession = professions?.find(
-            (p) => p.id === worker.profession_id
-          );
+          const professionNames = (
+            professionIdsByWorkerId.get(worker.id) ?? [worker.profession_id]
+          )
+            .map((id) => professions?.find((p) => p.id === id)?.[nameKey])
+            .filter((name): name is string => !!name);
           const entries = (taskEntries ?? []).filter(
             (e) => e.worker_profile_id === worker.id
           );
@@ -421,7 +453,8 @@ export default async function BrowsePage({
               workerProfileId={worker.id}
               fullName={nameByWorkerId.get(worker.id) ?? ""}
               photoUrl={photoUrl}
-              profession={profession}
+              professionNames={professionNames}
+              workTypes={worker.work_types}
               nationality={nationalityLabel(worker.nationality, locale)}
               livesIn={governorateLabel(worker.base_governorate, locale)}
               worksIn={(areasByWorkerId.get(worker.id) ?? []).map((code) =>

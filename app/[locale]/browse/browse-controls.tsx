@@ -34,7 +34,43 @@ export function BrowseControls({
     router.push(`${pathname}?${params.toString()}`);
   }
 
+  const currentType = searchParams.get("type") ?? "";
+  const typeTabs = [
+    { value: "", label: t("typeAll") },
+    { value: "monthly", label: `📅 ${t("typeMonthly")}` },
+    { value: "visits", label: `🔧 ${t("typeVisits")}` },
+  ];
+
   return (
+    <div className="flex flex-col gap-3">
+      <div
+        role="tablist"
+        className="grid grid-cols-3 gap-1 rounded-lg bg-gray-200 p-1 text-sm font-medium"
+      >
+        {typeTabs.map((tab) => (
+          <button
+            key={tab.value}
+            type="button"
+            role="tab"
+            aria-selected={currentType === tab.value}
+            onClick={() => updateParam("type", tab.value)}
+            className={`rounded-md px-2 py-2 ${
+              currentType === tab.value
+                ? "bg-white shadow-sm"
+                : "text-gray-700 hover:bg-gray-100"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      <p className="text-xs text-gray-600">
+        {currentType === "monthly"
+          ? t("typeMonthlyHint")
+          : currentType === "visits"
+            ? t("typeVisitsHint")
+            : t("typeAllHint")}
+      </p>
     <div className="flex flex-wrap gap-3">
       <select
         value={searchParams.get("profession") ?? ""}
@@ -107,6 +143,7 @@ export function BrowseControls({
         <option value="price">{t("sortPrice")}</option>
         <option value="experience">{t("sortExperience")}</option>
       </select>
+    </div>
     </div>
   );
 }

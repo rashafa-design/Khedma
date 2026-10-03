@@ -4,10 +4,11 @@ import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { ServiceAreaPicker } from "@/components/service-area-picker";
+import { WorkTypePicker } from "@/components/work-type-picker";
 import { governorateOptions } from "@/lib/governorates";
 import { nationalityOptions } from "@/lib/nationalities";
 import { createClient } from "@/lib/supabase/client";
-import type { ProfessionRow } from "@/lib/types";
+import type { ProfessionRow, WorkType } from "@/lib/types";
 
 export function OnboardingForm({
   userId,
@@ -20,13 +21,15 @@ export function OnboardingForm({
 }) {
   const t = useTranslations("worker");
   const tLocation = useTranslations("location");
+  const tWorkType = useTranslations("workType");
   const locale = useLocale();
   const governorates = governorateOptions(locale);
   const router = useRouter();
   const supabase = createClient();
   const nationalities = nationalityOptions(locale);
 
-  const [professionId, setProfessionId] = useState(professions[0]?.id ?? "");
+  const [professionId, setProfessionId] = useState("");
+  const [workTypes, setWorkTypes] = useState<WorkType[]>([]);
   const [nationality, setNationality] = useState("");
   const [yearsExperience, setYearsExperience] = useState("");
   const [baseGovernorate, setBaseGovernorate] = useState("");
@@ -42,6 +45,11 @@ export function OnboardingForm({
 
     if (!idFile) {
       setError(t("error"));
+      return;
+    }
+
+    if (workTypes.length === 0) {
+      setError(tWorkType("atLeastOne"));
       return;
     }
 
@@ -86,6 +94,7 @@ export function OnboardingForm({
       profession_id: professionId,
       nationality,
       base_governorate: baseGovernorate,
+      work_types: workTypes,
       response_terms_accepted_at: new Date().toISOString(),
       years_experience: Number(yearsExperience) || 0,
       id_document_path: idPath,
@@ -121,17 +130,30 @@ export function OnboardingForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <select
-        value={professionId}
-        onChange={(e) => setProfessionId(e.target.value)}
-        className="rounded-md border border-gray-300 px-3 py-2"
-      >
-        {professions.map((profession) => (
-          <option key={profession.id} value={profession.id}>
-            {profession[nameKey]}
+      <label className="flex flex-col gap-1 text-sm">
+        {t("mainProfession")}
+        <select
+          required
+          value={professionId}
+          onChange={(e) => setProfessionId(e.target.value)}
+          className="rounded-md border border-gray-300 px-3 py-2 text-base"
+        >
+          <option value="" disabled>
+            {t("selectProfession")}
           </option>
-        ))}
-      </select>
+          {professions.map((profession) => (
+            <option key={profession.id} value={profession.id}>
+              {profession[nameKey]}
+            </option>
+          ))}
+        </select>
+        <span className="text-xs text-gray-500">{t("mainProfessionHint")}</span>
+      </label>
+
+      <div className="flex flex-col gap-1 text-sm">
+        <p>{tWorkType("onboardingQuestion")}</p>
+        <WorkTypePicker selected={workTypes} onChange={setWorkTypes} />
+      </div>
 
       <select
         required

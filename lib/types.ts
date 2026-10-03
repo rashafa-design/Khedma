@@ -31,12 +31,21 @@ export interface TaskTypeRow {
 export type WorkerAvailability = "available" | "unavailable";
 export type WorkerStatus = "pending_review" | "approved" | "rejected";
 
+export type WorkType = "monthly" | "visits";
+
+export interface WorkerProfessionRow {
+  worker_profile_id: string;
+  profession_id: string;
+  created_at: string;
+}
+
 export interface WorkerProfileRow {
   id: string;
   user_id: string;
   profession_id: string;
   nationality: string;
   base_governorate: string | null;
+  work_types: WorkType[];
   years_experience: number;
   photo_path: string | null;
   id_document_path: string;

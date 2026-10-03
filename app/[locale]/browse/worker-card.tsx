@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type {
-  ProfessionRow,
+  WorkType,
   TaskTypeRow,
   WorkerAvailability,
   WorkerTaskEntryRow,
@@ -26,7 +26,8 @@ export async function WorkerCard({
   workerProfileId,
   fullName,
   photoUrl,
-  profession,
+  professionNames,
+  workTypes,
   nationality,
   livesIn,
   worksIn,
@@ -45,7 +46,8 @@ export async function WorkerCard({
   workerProfileId: string;
   fullName: string;
   photoUrl: string | null;
-  profession: ProfessionRow | undefined;
+  professionNames: string[];
+  workTypes: WorkType[];
   nationality: string;
   livesIn: string;
   worksIn: string[];
@@ -63,6 +65,7 @@ export async function WorkerCard({
 }) {
   const t = await getTranslations("browse");
   const tWorker = await getTranslations("worker");
+  const tWorkType = await getTranslations("workType");
   const list = new Intl.ListFormat(await getLocale(), {
     style: "short",
     type: "unit",
@@ -123,8 +126,18 @@ export async function WorkerCard({
           </p>
         )}
         <p className="text-sm text-gray-600">
-          {profession?.[nameKey]} · {nationality} · {yearsExperience}{" "}
+          {professionNames.join(" + ")} · {nationality} · {yearsExperience}{" "}
           {t("years")}
+        </p>
+        <p className="mt-1 flex flex-wrap gap-1">
+          {workTypes.map((type) => (
+            <span
+              key={type}
+              className="rounded-full border border-gray-300 bg-white px-2 py-0.5 text-xs font-medium"
+            >
+              {type === "monthly" ? "📅" : "🔧"} {tWorkType(`${type}Badge`)}
+            </span>
+          ))}
         </p>
         <p className="mt-1 text-sm text-gray-700">
           📍{" "}
