@@ -87,6 +87,7 @@ export interface AvailabilityRequestRow {
   client_id: string;
   worker_profile_id: string;
   status: "pending" | "available" | "unavailable";
+  plan: WorkType;
   created_at: string;
   expires_at: string;
   responded_at: string | null;

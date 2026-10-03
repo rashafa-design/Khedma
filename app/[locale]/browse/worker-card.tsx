@@ -233,6 +233,7 @@ export async function WorkerCard({
               workerProfileId={workerProfileId}
               previouslyUnlockedOn={previouslyUnlockedOn}
               check={contact.check}
+              plan={contact.plan}
             />
           )}
           {contact.type === "choose_tab" && (

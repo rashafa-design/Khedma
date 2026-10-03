@@ -300,8 +300,11 @@ export default async function BrowsePage({
       .order("created_at", { ascending: false })
       .returns<AvailabilityRequestRow[]>();
     const checkByWorkerId = new Map<string, CheckState>();
+    // Keyed by worker AND plan: a "yes" asked under the visits pass can't be
+    // used for a monthly unlock, and the reply windows differ (3h / 24h).
     for (const r of requestRows ?? []) {
-      if (checkByWorkerId.has(r.worker_profile_id)) continue;
+      const key = `${r.worker_profile_id}:${r.plan}`;
+      if (checkByWorkerId.has(key)) continue;
       const now = Date.now();
       if (r.status === "available") {
         // A yes is good for 48 hours.
@@ -309,17 +312,17 @@ export default async function BrowsePage({
           r.responded_at &&
           now - new Date(r.responded_at).getTime() < 48 * 3_600_000
         ) {
-          checkByWorkerId.set(r.worker_profile_id, { kind: "confirmed" });
+          checkByWorkerId.set(key, { kind: "confirmed" });
         }
       } else if (r.status === "unavailable") {
-        checkByWorkerId.set(r.worker_profile_id, { kind: "declined" });
+        checkByWorkerId.set(key, { kind: "declined" });
       } else if (new Date(r.expires_at).getTime() > now) {
-        checkByWorkerId.set(r.worker_profile_id, {
+        checkByWorkerId.set(key, {
           kind: "waiting",
           expiresAt: r.expires_at,
         });
       } else {
-        checkByWorkerId.set(r.worker_profile_id, { kind: "no_reply" });
+        checkByWorkerId.set(key, { kind: "no_reply" });
       }
     }
 
@@ -429,7 +432,7 @@ export default async function BrowsePage({
         type: "can_unlock",
         subscriptionId: activeByPlan[plan]!.id,
         plan,
-        check: checkByWorkerId.get(worker.id) ?? { kind: "none" },
+        check: checkByWorkerId.get(`${worker.id}:${plan}`) ?? { kind: "none" },
       });
     }
   } else {

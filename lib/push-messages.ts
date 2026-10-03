@@ -9,14 +9,18 @@ export function pushLocale(value: string | null | undefined): PushLocale {
 
 const TEXT = {
   request: {
-    ar: {
-      title: "عميل يسأل إن كنت متاحًا",
-      body: "افتح خدمة وأجب بنعم أو لا خلال 24 ساعة.",
-    },
-    en: {
-      title: "A client is asking if you're available",
-      body: "Open Khedma and answer Yes or No within 24 hours.",
-    },
+    ar: (hours: number, visits: boolean) => ({
+      title: visits
+        ? "عميل يريد زيارة - هل أنت متاح؟"
+        : "عميل يسأل إن كنت متاحًا",
+      body: `افتح خدمة وأجب بنعم أو لا خلال ${hours === 3 ? "3 ساعات" : `${hours} ساعة`}.`,
+    }),
+    en: (hours: number, visits: boolean) => ({
+      title: visits
+        ? "A client wants a visit - are you available?"
+        : "A client is asking if you're available",
+      body: `Open Khedma and answer Yes or No within ${hours} hours.`,
+    }),
   },
   answerYes: {
     ar: (name: string) => ({
@@ -71,10 +75,19 @@ const TEXT = {
 } as const;
 
 export function pushText(
-  kind: "request" | "availDue" | "detailsDue" | "test",
+  kind: "availDue" | "detailsDue" | "test",
   locale: PushLocale
 ) {
   return TEXT[kind][locale];
+}
+
+// "A client is asking if you're available" - the reply window is 3 hours for
+// visit requests and 24 hours for monthly ones (see phase 24 SQL).
+export function pushRequestText(
+  locale: PushLocale,
+  plan: "monthly" | "visits"
+) {
+  return TEXT.request[locale](plan === "visits" ? 3 : 24, plan === "visits");
 }
 
 export function pushAnswerText(

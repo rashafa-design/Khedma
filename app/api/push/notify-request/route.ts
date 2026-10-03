@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getPreferredLocale, sendPush } from "@/lib/push";
-import { pushLocale, pushText } from "@/lib/push-messages";
+import { pushLocale, pushRequestText } from "@/lib/push-messages";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 
@@ -28,13 +28,17 @@ export async function POST(request: Request) {
   // client their own requests, so this proves the request is theirs.
   const { data: availabilityRequest } = await supabase
     .from("availability_requests")
-    .select("id, push_sent_at")
+    .select("id, push_sent_at, plan")
     .eq("worker_profile_id", body.workerProfileId)
     .eq("status", "pending")
     .gt("expires_at", new Date().toISOString())
     .order("created_at", { ascending: false })
     .limit(1)
-    .maybeSingle<{ id: string; push_sent_at: string | null }>();
+    .maybeSingle<{
+      id: string;
+      push_sent_at: string | null;
+      plan: "monthly" | "visits";
+    }>();
 
   if (!availabilityRequest) {
     return NextResponse.json({ error: "No open request" }, { status: 404 });
@@ -59,7 +63,7 @@ export async function POST(request: Request) {
   }
 
   const locale = pushLocale(await getPreferredLocale(worker.user_id));
-  const text = pushText("request", locale);
+  const text = pushRequestText(locale, availabilityRequest.plan);
   const sent = await sendPush(worker.user_id, {
     ...text,
     url: `/${locale}/dashboard`,

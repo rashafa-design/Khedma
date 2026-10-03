@@ -2,7 +2,12 @@ import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { RequestButtons } from "./request-buttons";
 
-type PendingRequest = { id: string; created_at: string; expires_at: string };
+type PendingRequest = {
+  id: string;
+  created_at: string;
+  expires_at: string;
+  plan: "monthly" | "visits";
+};
 
 // "A client is waiting to know if you're available" - the top prompt on a
 // worker's dashboard. Deliberately does not say which client asked.
@@ -21,18 +26,28 @@ export async function WorkerRequests() {
       <p className="mt-1">{t("body")}</p>
       <ul className="mt-3 flex flex-col gap-3">
         {requests.map((request) => {
-          const hoursLeft = Math.max(
+          const minutesLeft = Math.max(
             1,
             Math.ceil(
-              (new Date(request.expires_at).getTime() - Date.now()) / 3_600_000
+              (new Date(request.expires_at).getTime() - Date.now()) / 60_000
             )
           );
+          const hoursLeft = Math.ceil(minutesLeft / 60);
           return (
             <li
               key={request.id}
               className="rounded-md border border-green-300 bg-white p-3"
             >
-              <p>{t("hoursLeft", { hours: hoursLeft })}</p>
+              <p className="font-medium">
+                {request.plan === "visits"
+                  ? `🔧 ${t("kindVisits")}`
+                  : `📅 ${t("kindMonthly")}`}
+              </p>
+              <p>
+                {minutesLeft < 60
+                  ? t("minutesLeft", { minutes: minutesLeft })
+                  : t("hoursLeft", { hours: hoursLeft })}
+              </p>
               <RequestButtons requestId={request.id} />
             </li>
           );

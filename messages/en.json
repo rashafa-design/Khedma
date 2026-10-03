@@ -108,7 +108,7 @@
   },
   "push": {
     "title": "Turn on notifications",
-    "bodyWorker": "So your phone buzzes the moment a client asks if you're available - you only have 24 hours to answer, and a quick reply is how you get hired.",
+    "bodyWorker": "So your phone buzzes the moment a client asks if you're available - you have 3 hours to answer a visit request (24 hours for monthly work), and a quick reply is how you get hired.",
     "bodyClient": "So your phone buzzes as soon as a worker answers whether they're available, without you having to keep checking.",
     "turnOn": "Turn on notifications",
     "turnOff": "Turn off",
@@ -124,6 +124,9 @@
     "title": "A client is asking if you're available ({count})",
     "body": "A client wants to contact you and is waiting for your answer before they continue. Please answer honestly - if you say yes, they will get your phone number.",
     "hoursLeft": "Please answer within {hours} hours.",
+    "minutesLeft": "Please answer within {minutes} minutes.",
+    "kindVisits": "Visit request",
+    "kindMonthly": "Monthly request",
     "yes": "Yes, I'm available",
     "no": "No, I'm not available",
     "error": "That request is no longer open."
@@ -247,7 +250,7 @@
         "Upload a clear photo of your national ID or residency permit. Only the admin reviewing your account can ever see it.",
         "A profile photo is optional but helps clients trust you.",
         "Turn on notifications on your dashboard so your phone buzzes when a client asks if you're available.",
-        "Important: when a client wants your number, you will get a question on your dashboard \"Are you available?\" and must answer within 24 hours. We also ask every 2 weeks if you are still available. Check the app regularly.",
+        "Important: when a client wants your number, you will get a question on your dashboard \"Are you available?\" and must answer within 3 hours for a visit request, or 24 hours for a monthly request. We also ask every 2 weeks if you are still available. Check the app regularly.",
         "After you submit, an admin reviews your ID. You will see the result the next time you log in."
       ]
     },
@@ -275,7 +278,7 @@
         "What you offer: add each task with a price. You can add the same task twice, for example one price for homes and another for businesses.",
         "Availability: switch to \"unavailable\" when you are fully booked. Clients still see you but know not to expect an answer.",
         "Contact phone: clients only see this number after paying to unlock you - keep it correct and keep your phone on.",
-        "Client questions: when a client wants your number, a green box appears at the top of this page asking if you are available. Answer within 24 hours. A client only gets your number if you say yes. If you don't answer, it counts against you.",
+        "Client questions: when a client wants your number, a green box appears at the top of this page asking if you are available. Visit requests must be answered within 3 hours, monthly requests within 24 hours. A client only gets your number if you say yes. If you don't answer, it counts against you.",
         "Every 2 weeks you will be asked if you are still available, and every 3 months to confirm your details and that you are still available. If you don't, your listing is hidden from clients until you do. It is also hidden if clients report your number doesn't work or that you aren't looking for work.",
         "Deleting your profile removes you from Khedma completely."
       ]
@@ -286,7 +289,7 @@
         "Use the tabs at the top to choose: Monthly (a worker who works for you by the month, like a driver, cook or nanny) or Visits (someone who comes for a job, like a plumber or electrician).",
         "Use the filters to narrow the list - especially the governorate, so you only see workers who work in your area.",
         "Each card shows where the worker lives, where they work, what they offer and their prices. Visit workers also show their transportation fee - it is charged on top of the price, so add it up before you decide.",
-        "To contact a worker, first tap \"Check availability\". It is free: we ask the worker, and they have 24 hours to say yes or no. If they say yes you can unlock them; if not, nothing is spent and you can pick someone else.",
+        "To contact a worker, first tap \"Check availability\". It is free: we ask the worker, and they have 3 hours to answer for visit work or 24 hours for monthly work. If they say yes you can unlock them; if not, nothing is spent and you can pick someone else.",
         "Unlock contact uses one of your 10 slots and shows the phone number until your month ends. Call or message them yourself.",
         "A few days after unlocking, we will ask you how it went. Please answer - it keeps the list honest for everyone.",
         "If a number doesn't work, or the worker says they aren't looking or already found a job, tap \"Report a problem\" under their number. We ask the worker to confirm their details, and hide them from everyone if several clients report the same worker.",
@@ -489,7 +492,7 @@
     "selectProfession": "Select your profession",
     "mainProfessionHint": "You can add more professions later from your dashboard.",
     "responseTermsTitle": "Please read: you must reply to clients",
-    "responseTermsBody": "Before a client can get your phone number, Khedma asks you if you are available. You will see the question on your dashboard and have 24 hours to answer Yes or No. Every 2 weeks we also ask if you are still available. If you don't answer, clients see a warning and then your listing is hidden.",
+    "responseTermsBody": "Before a client can get your phone number, Khedma asks you if you are available. You will see the question on your dashboard and must answer Yes or No: within 3 hours for a visit request, or 24 hours for a monthly request. Every 2 weeks we also ask if you are still available. If you don't answer, clients see a warning and then your listing is hidden.",
     "responseTermsCheck": "I understand and will answer these questions honestly and on time.",
     "priceWithoutTransport": "Visit workers: do not include transportation in these prices. Enter your transportation fee separately under \"Where you live and work\" - the client pays it on top.",
     "addManyHint": "You can add as many things as you like: fill in a row, press \"Add another\" for more, then save them all at once.",

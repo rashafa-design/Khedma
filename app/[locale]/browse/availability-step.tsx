@@ -21,11 +21,13 @@ export function AvailabilityStep({
   subscriptionId,
   previouslyUnlockedOn,
   check,
+  plan,
 }: {
   workerProfileId: string;
   subscriptionId: string;
   previouslyUnlockedOn: string | null;
   check: CheckState;
+  plan: "monthly" | "visits";
 }) {
   const t = useTranslations("check");
   const router = useRouter();
@@ -45,7 +47,7 @@ export function AvailabilityStep({
     setError(null);
     const { error: insertError } = await supabase
       .from("availability_requests")
-      .insert({ worker_profile_id: workerProfileId });
+      .insert({ worker_profile_id: workerProfileId, plan });
     setBusy(false);
     if (insertError) {
       setError(
